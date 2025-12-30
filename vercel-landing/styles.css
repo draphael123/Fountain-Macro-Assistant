@@ -315,6 +315,187 @@ body {
     color: var(--primary-blue);
 }
 
+/* Installation Screenshots */
+.installation-guide {
+    margin-top: 80px;
+    padding-top: 60px;
+    border-top: 2px solid var(--border-color);
+}
+
+.subsection-title {
+    font-size: 32px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 48px;
+    color: var(--text-dark);
+}
+
+.screenshot-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+}
+
+.screenshot-step {
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+}
+
+.step-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.step-badge {
+    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 14px;
+    min-width: 80px;
+    text-align: center;
+}
+
+.step-header h4 {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin: 0;
+}
+
+.screenshot-container {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--bg-light);
+    border: 2px solid var(--border-color);
+}
+
+.screenshot {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+
+.screenshot:hover {
+    transform: scale(1.02);
+}
+
+.screenshot-caption {
+    margin-top: 16px;
+    color: var(--text-gray);
+    text-align: center;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.screenshot-caption code {
+    background: var(--light-blue);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    color: var(--primary-blue);
+}
+
+/* Usage Showcase */
+.usage-showcase {
+    margin-top: 80px;
+    padding-top: 60px;
+    border-top: 2px solid var(--border-color);
+}
+
+.usage-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 32px;
+}
+
+.usage-item {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s;
+}
+
+.usage-item:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-blue);
+}
+
+.usage-image-container {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    background: var(--bg-light);
+    position: relative;
+}
+
+.usage-screenshot {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+}
+
+.usage-item:hover .usage-screenshot {
+    transform: scale(1.05);
+}
+
+.usage-item h4 {
+    font-size: 20px;
+    font-weight: 600;
+    padding: 20px 24px 12px;
+    color: var(--text-dark);
+    margin: 0;
+}
+
+.usage-item p {
+    padding: 0 24px 24px;
+    color: var(--text-gray);
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Placeholder for missing screenshots */
+.screenshot:not([src]),
+.usage-screenshot:not([src]) {
+    background: linear-gradient(135deg, var(--light-blue) 0%, rgba(0, 184, 255, 0.1) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    color: var(--text-light);
+    font-size: 16px;
+    position: relative;
+}
+
+.screenshot:not([src])::after,
+.usage-screenshot:not([src])::after {
+    content: 'Screenshot placeholder - Add image here';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    border: 2px dashed var(--border-color);
+}
+
 /* Guide Section */
 .guide {
     padding: 100px 0;
