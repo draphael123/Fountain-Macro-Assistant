@@ -315,7 +315,7 @@ body {
     color: var(--primary-blue);
 }
 
-/* Installation Screenshots */
+/* Installation Guide */
 .installation-guide {
     margin-top: 80px;
     padding-top: 60px;
@@ -330,81 +330,89 @@ body {
     color: var(--text-dark);
 }
 
-.screenshot-steps {
-    display: flex;
-    flex-direction: column;
-    gap: 48px;
-}
-
-.screenshot-step {
+.install-steps-list {
+    max-width: 800px;
+    margin: 0 auto;
     background: white;
+    padding: 40px;
     border-radius: 16px;
-    padding: 32px;
     box-shadow: var(--shadow);
     border: 1px solid var(--border-color);
 }
 
-.step-header {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 24px;
-}
-
-.step-badge {
-    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
-    color: white;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-weight: 600;
-    font-size: 14px;
-    min-width: 80px;
-    text-align: center;
-}
-
-.step-header h4 {
-    font-size: 24px;
-    font-weight: 600;
-    color: var(--text-dark);
+.steps-list {
+    list-style: none;
+    counter-reset: step-counter;
+    padding: 0;
     margin: 0;
 }
 
-.screenshot-container {
+.steps-list li {
+    counter-increment: step-counter;
+    padding: 20px 20px 20px 60px;
+    margin-bottom: 16px;
     position: relative;
-    border-radius: 12px;
-    overflow: hidden;
     background: var(--bg-light);
-    border: 2px solid var(--border-color);
-}
-
-.screenshot {
-    width: 100%;
-    height: auto;
-    display: block;
     border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s;
-}
-
-.screenshot:hover {
-    transform: scale(1.02);
-}
-
-.screenshot-caption {
-    margin-top: 16px;
-    color: var(--text-gray);
-    text-align: center;
-    font-size: 15px;
+    border-left: 4px solid var(--primary-blue);
     line-height: 1.6;
+    color: var(--text-gray);
 }
 
-.screenshot-caption code {
-    background: var(--light-blue);
+.steps-list li::before {
+    content: counter(step-counter);
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.steps-list li strong {
+    color: var(--text-dark);
+    font-weight: 600;
+}
+
+.steps-list li code {
+    background: white;
     padding: 2px 6px;
     border-radius: 4px;
     font-family: 'Courier New', monospace;
     font-size: 13px;
     color: var(--primary-blue);
+}
+
+.steps-list li a {
+    color: var(--primary-blue);
+    text-decoration: none;
+    font-weight: 500;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s;
+}
+
+.steps-list li a:hover {
+    border-bottom-color: var(--primary-blue);
+}
+
+.install-note {
+    margin-top: 32px;
+    padding: 20px;
+    background: var(--light-blue);
+    border-radius: 12px;
+    border-left: 4px solid var(--primary-blue);
+    color: var(--text-gray);
+}
+
+.install-note strong {
+    color: var(--text-dark);
 }
 
 /* Usage Showcase */
