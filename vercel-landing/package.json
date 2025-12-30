@@ -1,0 +1,9 @@
+{
+  "name": "fountain-macro-assistant-landing",
+  "version": "1.0.0",
+  "description": "Landing page for Fountain - Macro Assistant Chrome Extension",
+  "scripts": {
+    "build": "echo 'Static site - no build needed'"
+  }
+}
+

@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fountain - Macro Assistant | Chrome Extension</title>
+    <meta name="description" content="Fountain - Macro Assistant: Create text shortcuts that expand into longer snippets. Type faster with custom macros, aliases, and conditional expansions.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Fountain logo inspired design -->
+                        <path d="M16 4L20 12L16 20L12 12L16 4Z" fill="#0066FF"/>
+                        <path d="M12 12L8 16L12 20L16 16L12 12Z" fill="#00B8FF"/>
+                        <path d="M20 12L24 16L20 20L16 16L20 12Z" fill="#00B8FF"/>
+                        <path d="M16 20L12 24L16 28L20 24L16 20Z" fill="#0066FF"/>
+                    </svg>
+                    <span class="logo-text">Fountain</span>
+                </div>
+                <nav class="nav">
+                    <a href="#features">Features</a>
+                    <a href="#guide">Guide</a>
+                    <a href="#faq">FAQ</a>
+                    <a href="#download" class="btn-download">Download</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Fountain - Macro Assistant</h1>
+                <p class="hero-subtitle">Type faster with intelligent text expansion. Create shortcuts that automatically expand into longer snippets.</p>
+                <div class="hero-buttons">
+                    <a href="#download" class="btn btn-primary">Download for Chrome</a>
+                    <a href="#guide" class="btn btn-secondary">View Guide</a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <div class="stat-number">∞</div>
+                        <div class="stat-label">Unlimited Macros</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">⚡</div>
+                        <div class="stat-label">Instant Expansion</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">🔒</div>
+                        <div class="stat-label">100% Private</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">Powerful Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔗</div>
+                    <h3>Macro Aliases</h3>
+                    <p>Create multiple shortcuts for the same expansion. One macro, many ways to trigger it.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Conditional Expansions</h3>
+                    <p>Different text based on time, day, or context. Smart expansions that adapt to your needs.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔤</div>
+                    <h3>Dynamic Variables</h3>
+                    <p>Use {date}, {time}, {clipboard}, and more. Make your macros dynamic and powerful.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">↩️</div>
+                    <h3>Undo Support</h3>
+                    <p>Press Ctrl+Z to undo any expansion. Never worry about accidental expansions.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Usage Statistics</h3>
+                    <p>Track which macros you use most. See your productivity at a glance.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📁</div>
+                    <h3>Folder Organization</h3>
+                    <p>Organize macros into custom folders. Keep everything organized and easy to find.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Smart Search</h3>
+                    <p>Find macros quickly by shortcut or expansion. Advanced filtering and sorting options.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⌨️</div>
+                    <h3>Keyboard Shortcuts</h3>
+                    <p>Power user features with keyboard shortcuts. Work faster with hotkeys.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Download Section -->
+    <section id="download" class="download">
+        <div class="container">
+            <h2 class="section-title">Download & Install</h2>
+            <div class="download-content">
+                <div class="download-card">
+                    <h3>Install from Chrome Web Store</h3>
+                    <p>Get the official version from the Chrome Web Store for automatic updates and security.</p>
+                    <a href="https://chrome.google.com/webstore" class="btn btn-primary btn-large" target="_blank" rel="noopener">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                        </svg>
+                        Install from Chrome Web Store
+                    </a>
+                    <p class="download-note">Coming soon to Chrome Web Store</p>
+                </div>
+                <div class="download-card">
+                    <h3>Manual Installation</h3>
+                    <p>Download the extension package and install it manually for development or testing.</p>
+                    <a href="https://github.com/draphael123/Fountain-Macro-Assistant/releases/latest" class="btn btn-secondary btn-large" target="_blank" rel="noopener">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                        Download ZIP
+                    </a>
+                    <div class="install-steps">
+                        <h4>Installation Steps:</h4>
+                        <ol>
+                            <li>Download the ZIP file from GitHub</li>
+                            <li>Extract the ZIP file to a folder</li>
+                            <li>Open Chrome and go to <code>chrome://extensions/</code></li>
+                            <li>Enable "Developer mode" (toggle in top right)</li>
+                            <li>Click "Load unpacked"</li>
+                            <li>Select the extracted folder</li>
+                            <li>Pin the extension to your toolbar</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- User Guide Section -->
+    <section id="guide" class="guide">
+        <div class="container">
+            <h2 class="section-title">User Guide</h2>
+            <div class="guide-content">
+                <div class="guide-section">
+                    <h3>Getting Started</h3>
+                    <div class="guide-steps">
+                        <div class="guide-step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>Install the Extension</h4>
+                                <p>Download and install Fountain - Macro Assistant from the Chrome Web Store or manually load it as an unpacked extension.</p>
+                            </div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>Create Your First Macro</h4>
+                                <p>Click the extension icon, then click "+ Add Macro". Enter a shortcut (e.g., <code>/email</code>) and the expansion text (e.g., <code>your.email@example.com</code>).</p>
+                            </div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>Start Typing</h4>
+                                <p>Go to any website, type your shortcut, and press Space or Enter. Watch it automatically expand!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="guide-section">
+                    <h3>Creating Macros</h3>
+                    <div class="guide-tips">
+                        <div class="tip-card">
+                            <h4>Basic Macro</h4>
+                            <p><strong>Shortcut:</strong> <code>/email</code></p>
+                            <p><strong>Expansion:</strong> <code>your.email@example.com</code></p>
+                        </div>
+                        <div class="tip-card">
+                            <h4>With Variables</h4>
+                            <p><strong>Shortcut:</strong> <code>/sig</code></p>
+                            <p><strong>Expansion:</strong> <code>Best regards,{newline}John Doe{newline}Sent on {date} at {time}</code></p>
+                        </div>
+                        <div class="tip-card">
+                            <h4>With Aliases</h4>
+                            <p><strong>Shortcut:</strong> <code>/email</code></p>
+                            <p><strong>Aliases:</strong> <code>/e, /mail</code></p>
+                            <p><strong>Expansion:</strong> <code>your.email@example.com</code></p>
+                            <p class="tip-note">All three shortcuts work: /email, /e, /mail</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="guide-section">
+                    <h3>Available Variables</h3>
+                    <div class="variables-grid">
+                        <div class="variable-item">
+                            <code>{date}</code>
+                            <span>Current date</span>
+                        </div>
+                        <div class="variable-item">
+                            <code>{time}</code>
+                            <span>Current time</span>
+                        </div>
+                        <div class="variable-item">
+                            <code>{datetime}</code>
+                            <span>Date and time</span>
+                        </div>
+                        <div class="variable-item">
+                            <code>{year}</code>
+                            <span>Current year</span>
+                        </div>
+                        <div class="variable-item">
+                            <code>{month}</code>
+                            <span>Month (01-12)</span>
+                        </div>
+                        <div class="variable-item">
+                            <code>{day}</code>
+                            <span>Day of month</span>
+                        </div>
+                        <div class="variable-item">
+                            <code>{clipboard}</code>
+                            <span>Paste clipboard</span>
+                        </div>
+                        <div class="variable-item">
+                            <code>{newline}</code>
+                            <span>Line break</span>
+                        </div>
+                        <div class="variable-item">
+                            <code>{tab}</code>
+                            <span>Tab character</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="guide-section">
+                    <h3>Organizing Macros</h3>
+                    <ul class="guide-list">
+                        <li><strong>Create Folders:</strong> Click the 📁 button to create folders for organizing your macros</li>
+                        <li><strong>Assign to Folders:</strong> When creating or editing a macro, select a folder from the dropdown</li>
+                        <li><strong>Filter by Folder:</strong> Use the folder filter dropdown to view macros by category</li>
+                        <li><strong>Search:</strong> Use the search box to quickly find macros by shortcut or expansion</li>
+                        <li><strong>Sort:</strong> Sort by name, usage, recent, or created date</li>
+                    </ul>
+                </div>
+
+                <div class="guide-section">
+                    <h3>Keyboard Shortcuts</h3>
+                    <div class="shortcuts-list">
+                        <div class="shortcut-item">
+                            <kbd>Ctrl</kbd> + <kbd>N</kbd> / <kbd>Cmd</kbd> + <kbd>N</kbd>
+                            <span>Add New Macro</span>
+                        </div>
+                        <div class="shortcut-item">
+                            <kbd>Ctrl</kbd> + <kbd>F</kbd> / <kbd>Cmd</kbd> + <kbd>F</kbd>
+                            <span>Focus Search</span>
+                        </div>
+                        <div class="shortcut-item">
+                            <kbd>Ctrl</kbd> + <kbd>/</kbd> / <kbd>Cmd</kbd> + <kbd>/</kbd>
+                            <span>Show Shortcuts Help</span>
+                        </div>
+                        <div class="shortcut-item">
+                            <kbd>Esc</kbd>
+                            <span>Close Modal</span>
+                        </div>
+                        <div class="shortcut-item">
+                            <kbd>Ctrl</kbd> + <kbd>Z</kbd> / <kbd>Cmd</kbd> + <kbd>Z</kbd>
+                            <span>Undo Expansion</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="faq">
+        <div class="container">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>How does Fountain - Macro Assistant work?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Fountain - Macro Assistant monitors text input fields on web pages. When you type a shortcut (like <code>/email</code>) followed by Space or Enter, it automatically replaces the shortcut with your predefined expansion text. All processing happens locally in your browser.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Is my data private and secure?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes! All your macros are stored locally in your browser using Chrome's secure sync storage. We don't collect, transmit, or store any personal data on external servers. Your data stays completely private and is only synced across your devices if you have Chrome sync enabled.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Does it work outside of Chrome?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Fountain - Macro Assistant is a Chrome extension and works within the Chrome browser on all websites. Chrome extensions cannot work in other desktop applications outside of the browser due to browser security restrictions.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Can I use multiple shortcuts for the same expansion?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes! This is called "aliases". When creating or editing a macro, you can add aliases in the "Aliases" field (comma-separated). For example, if your shortcut is <code>/email</code>, you can add aliases like <code>/e, /mail</code> and all three will trigger the same expansion.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>What are conditional expansions?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Conditional expansions allow you to have different text based on time, day, or context. For example, you can have a greeting macro that says "Good morning!" in the morning, "Good afternoon!" in the afternoon, and "Good evening!" in the evening. You can also set different expansions for weekdays vs weekends.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>How do I backup my macros?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>You can export your macros at any time from the Settings page (right-click the extension icon → Options). Click "Export Macros" to download a JSON file with all your macros. You can import this file later to restore your macros or share them with another device.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Can I undo an expansion?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes! After an expansion, you'll see an undo notification. You can click "Undo" or simply press <kbd>Ctrl+Z</kbd> (or <kbd>Cmd+Z</kbd> on Mac) to revert the expansion. The extension keeps track of the last 10 expansions for undo.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Why does the extension need access to all websites?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>The extension needs access to all URLs (<code>&lt;all_urls&gt;</code> permission) to enable text expansion functionality on any website where you type. This is essential for the core functionality - without it, the extension would only work on specific websites. The extension only reads text input fields and does not collect or transmit any data.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>How many macros can I create?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>There's no hard limit! You can create as many macros as you need. Chrome's sync storage has a limit of about 100KB per item, but with typical macro sizes, you can easily have hundreds or even thousands of macros.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Does it sync across devices?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes! If you have Chrome sync enabled, your macros will automatically sync across all your devices where you're signed in with the same Google account. This is handled by Chrome's built-in sync functionality.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 4L20 12L16 20L12 12L16 4Z" fill="#0066FF"/>
+                            <path d="M12 12L8 16L12 20L16 16L12 12Z" fill="#00B8FF"/>
+                            <path d="M20 12L24 16L20 20L16 16L20 12Z" fill="#00B8FF"/>
+                            <path d="M16 20L12 24L16 28L20 24L16 20Z" fill="#0066FF"/>
+                        </svg>
+                        <span class="logo-text">Fountain</span>
+                    </div>
+                    <p>Type faster with intelligent text expansion.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Product</h4>
+                        <a href="#features">Features</a>
+                        <a href="#guide">User Guide</a>
+                        <a href="#download">Download</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <a href="https://github.com/draphael123/Fountain-Macro-Assistant" target="_blank" rel="noopener">GitHub</a>
+                        <a href="#faq">FAQ</a>
+                        <a href="https://github.com/draphael123/Fountain-Macro-Assistant/blob/main/PRIVACY_POLICY_TEMPLATE.md" target="_blank" rel="noopener">Privacy Policy</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Fountain. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
