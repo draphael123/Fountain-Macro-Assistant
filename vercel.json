@@ -1,7 +1,7 @@
 {
   "version": 2,
   "buildCommand": null,
-  "outputDirectory": ".",
+  "outputDirectory": "vercel-landing",
   "framework": null,
   "rewrites": [
     {
