@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fountain - Macro Assistant - Test Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #333;
+    }
+    .test-input {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      margin: 20px 0;
+    }
+    .test-input:focus {
+      border-color: #4285f4;
+      outline: none;
+    }
+    .instructions {
+      background: #e3f2fd;
+      padding: 15px;
+      border-radius: 6px;
+      margin: 20px 0;
+    }
+    .instructions h3 {
+      margin-top: 0;
+      color: #1976d2;
+    }
+    .instructions code {
+      background: #fff;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Fountain - Macro Assistant - Test Page</h1>
+    
+    <div class="instructions">
+      <h3>How to Test:</h3>
+      <ol>
+        <li>Make sure you have created at least one macro (e.g., <code>.paula</code> → <code>This is a test</code>)</li>
+        <li>Type your shortcut in the input below (e.g., <code>.paula</code>)</li>
+        <li>Press <strong>Space</strong> or <strong>Enter</strong></li>
+        <li>It should expand automatically!</li>
+      </ol>
+      <p><strong>Tip:</strong> Open the browser console (F12) to see debug messages.</p>
+    </div>
+
+    <label for="testInput"><strong>Test Input:</strong></label>
+    <input 
+      type="text" 
+      id="testInput" 
+      class="test-input" 
+      placeholder="Type your shortcut here (e.g., .paula) then press Space"
+      autocomplete="off"
+    />
+
+    <div style="margin-top: 30px;">
+      <h3>Expected Behavior:</h3>
+      <ul>
+        <li>Type <code>.paula</code> + Space → Should expand to "This is a test"</li>
+        <li>Type <code>.dr</code> + Space → Should expand to "Daniel Raphael"</li>
+        <li>Type <code>DR</code> + Space → Should expand to "Daniel Raphael, Partner Manager"</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
+

@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fountain - Macro Assistant</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>✨ Fountain - Macro Assistant</h1>
+      <div class="header-actions">
+        <button id="helpBtn" class="btn btn-secondary" title="Help & Documentation">❓</button>
+        <button id="addFolderBtn" class="btn btn-secondary" title="Add Folder">📁</button>
+        <button id="addMacroBtn" class="btn btn-primary">+ Add Macro</button>
+      </div>
+    </header>
+
+    <div class="folder-filter">
+      <select id="folderFilter">
+        <option value="all">All Folders</option>
+      </select>
+    </div>
+
+    <div class="search-controls">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search macros...">
+      </div>
+      <div class="sort-controls">
+        <select id="sortSelect">
+          <option value="name">Sort by Name</option>
+          <option value="usage">Sort by Usage</option>
+          <option value="recent">Recently Used</option>
+          <option value="created">Date Created</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="macrosList" class="macros-list">
+      <!-- Macros will be dynamically inserted here -->
+    </div>
+
+    <div id="emptyState" class="empty-state">
+      <p>No macros yet. Click "Add Macro" to create your first shortcut!</p>
+    </div>
+  </div>
+
+  <!-- Help/Read Me Modal -->
+  <div id="helpModal" class="modal">
+    <div class="modal-content help-modal-content">
+      <div class="modal-header">
+        <h2>📖 Fountain - Macro Assistant - User Guide</h2>
+        <button class="close-btn" id="closeHelpModal">&times;</button>
+      </div>
+      <div class="modal-body help-body">
+        <div class="help-nav">
+          <button class="help-nav-btn active" data-section="getting-started">Getting Started</button>
+          <button class="help-nav-btn" data-section="basics">Basics</button>
+          <button class="help-nav-btn" data-section="features">Features</button>
+          <button class="help-nav-btn" data-section="variables">Variables</button>
+          <button class="help-nav-btn" data-section="aliases">Aliases</button>
+          <button class="help-nav-btn" data-section="conditions">Conditions</button>
+          <button class="help-nav-btn" data-section="tips">Tips</button>
+        </div>
+        
+        <div class="help-content">
+          <!-- Getting Started -->
+          <div class="help-section active" id="section-getting-started">
+            <h3>🚀 Getting Started</h3>
+            <p>Welcome to Fountain - Macro Assistant! This extension helps you type faster by creating text shortcuts that automatically expand into longer snippets.</p>
+            
+            <h4>Quick Start (3 Steps):</h4>
+            <ol>
+              <li><strong>Create a Macro:</strong> Click "+ Add Macro" button</li>
+              <li><strong>Set Shortcut:</strong> Enter a shortcut (e.g., <code>/email</code>)</li>
+              <li><strong>Set Expansion:</strong> Enter the text to insert (e.g., <code>your.email@example.com</code>)</li>
+            </ol>
+            
+            <h4>How to Use:</h4>
+            <ol>
+              <li>Go to any website with a text input field</li>
+              <li>Type your shortcut (e.g., <code>/email</code>)</li>
+              <li>Press <strong>Space</strong> or <strong>Enter</strong></li>
+              <li>Watch it expand automatically! ✨</li>
+            </ol>
+          </div>
+          
+          <!-- Basics -->
+          <div class="help-section" id="section-basics">
+            <h3>📝 Basic Usage</h3>
+            
+            <h4>Creating Macros</h4>
+            <ol>
+              <li>Click the <strong>"+ Add Macro"</strong> button</li>
+              <li>Enter a <strong>Shortcut</strong> - this is what you'll type</li>
+              <li>Enter an <strong>Expansion</strong> - this is what will be inserted</li>
+              <li>Optionally assign to a <strong>Folder</strong> for organization</li>
+              <li>Click <strong>"Save"</strong></li>
+            </ol>
+            
+            <h4>Editing Macros</h4>
+            <p>Click on any macro in the list to edit it. You can change the shortcut, expansion, folder, or delete it.</p>
+            
+            <h4>Organizing with Folders</h4>
+            <ol>
+              <li>Click the <strong>📁</strong> button to create a folder</li>
+              <li>When creating/editing a macro, select a folder from the dropdown</li>
+              <li>Use the folder filter to view macros by folder</li>
+            </ol>
+            
+            <h4>Searching Macros</h4>
+            <p>Use the search box to quickly find macros by shortcut or expansion text. Combine with folder filter for precise results.</p>
+          </div>
+          
+          <!-- Features -->
+          <div class="help-section" id="section-features">
+            <h3>✨ Key Features</h3>
+            
+            <h4>🔤 Macro Variables</h4>
+            <p>Use dynamic variables in your expansions:</p>
+            <ul>
+              <li><code>{date}</code> - Current date</li>
+              <li><code>{time}</code> - Current time</li>
+              <li><code>{datetime}</code> - Date and time</li>
+              <li><code>{clipboard}</code> - Paste clipboard content</li>
+              <li><code>{newline}</code> - Line break</li>
+              <li><code>{tab}</code> - Tab character</li>
+            </ul>
+            <p><strong>Example:</strong> <code>Meeting on {date} at {time}</code></p>
+            
+            <h4>↩️ Undo Functionality</h4>
+            <ul>
+              <li>After expansion, an undo notification appears</li>
+              <li>Click "Undo" or press <strong>Ctrl+Z</strong> to revert</li>
+              <li>Works for the last 10 expansions</li>
+            </ul>
+            
+            <h4>📊 Usage Statistics</h4>
+            <ul>
+              <li>See how many times each macro has been used</li>
+              <li>View "Last used" date</li>
+              <li>Sort by usage to find your most valuable macros</li>
+            </ul>
+            
+            <h4>🔍 Enhanced Search</h4>
+            <ul>
+              <li>Search by shortcut or expansion</li>
+              <li>Sort by: Name, Usage, Recent, Created</li>
+              <li>Filter by folder</li>
+            </ul>
+            
+            <h4>⌨️ Keyboard Shortcuts</h4>
+            <ul>
+              <li><strong>Ctrl/Cmd + N</strong> - New macro</li>
+              <li><strong>Ctrl/Cmd + F</strong> - Focus search</li>
+              <li><strong>Ctrl/Cmd + /</strong> - Show shortcuts</li>
+              <li><strong>Escape</strong> - Close modal</li>
+              <li><strong>Ctrl/Cmd + Z</strong> - Undo expansion</li>
+            </ul>
+          </div>
+          
+          <!-- Variables -->
+          <div class="help-section" id="section-variables">
+            <h3>🔤 Macro Variables</h3>
+            <p>Variables make your macros dynamic and powerful. Use them in your expansion text.</p>
+            
+            <h4>Date & Time Variables</h4>
+            <table class="help-table">
+              <tr><td><code>{date}</code></td><td>Current date (e.g., "12/29/2024")</td></tr>
+              <tr><td><code>{time}</code></td><td>Current time (e.g., "3:45:30 PM")</td></tr>
+              <tr><td><code>{datetime}</code></td><td>Date and time together</td></tr>
+              <tr><td><code>{year}</code></td><td>Current year (e.g., "2024")</td></tr>
+              <tr><td><code>{month}</code></td><td>Month (01-12)</td></tr>
+              <tr><td><code>{day}</code></td><td>Day of month (01-31)</td></tr>
+              <tr><td><code>{hour}</code></td><td>Hour (00-23)</td></tr>
+              <tr><td><code>{minute}</code></td><td>Minute (00-59)</td></tr>
+              <tr><td><code>{second}</code></td><td>Second (00-59)</td></tr>
+              <tr><td><code>{timestamp}</code></td><td>Unix timestamp</td></tr>
+            </table>
+            
+            <h4>Other Variables</h4>
+            <table class="help-table">
+              <tr><td><code>{clipboard}</code></td><td>Paste clipboard content</td></tr>
+              <tr><td><code>{newline}</code></td><td>Insert a line break</td></tr>
+              <tr><td><code>{tab}</code></td><td>Insert a tab character</td></tr>
+            </table>
+            
+            <h4>Example Usage</h4>
+            <div class="help-example">
+              <p><strong>Shortcut:</strong> <code>/signature</code></p>
+              <p><strong>Expansion:</strong></p>
+              <pre>Best regards,
+John Doe
+Sent on {date} at {time}</pre>
+              <p><strong>Result:</strong></p>
+              <pre>Best regards,
+John Doe
+Sent on 12/29/2024 at 3:45:30 PM</pre>
+            </div>
+          </div>
+          
+          <!-- Aliases -->
+          <div class="help-section" id="section-aliases">
+            <h3>🔗 Macro Aliases</h3>
+            <p>Aliases allow multiple shortcuts to trigger the same expansion.</p>
+            
+            <h4>How to Add Aliases</h4>
+            <ol>
+              <li>Create or edit a macro</li>
+              <li>In the "Aliases" field, enter comma-separated shortcuts</li>
+              <li>Example: <code>/e, /mail, /email</code></li>
+              <li>Save the macro</li>
+            </ol>
+            
+            <h4>Example</h4>
+            <div class="help-example">
+              <p><strong>Shortcut:</strong> <code>/email</code></p>
+              <p><strong>Aliases:</strong> <code>/e, /mail</code></p>
+              <p><strong>Expansion:</strong> <code>your.email@example.com</code></p>
+              <p><strong>Result:</strong> All three work!</p>
+              <ul>
+                <li>Type <code>/email</code> + Space → expands</li>
+                <li>Type <code>/e</code> + Space → expands</li>
+                <li>Type <code>/mail</code> + Space → expands</li>
+              </ul>
+            </div>
+            
+            <h4>Visual Indicator</h4>
+            <p>Macros with aliases show a 🔗 icon next to the shortcut. Hover to see all aliases.</p>
+          </div>
+          
+          <!-- Conditions -->
+          <div class="help-section" id="section-conditions">
+            <h3>⚡ Conditional Expansions</h3>
+            <p>Conditional expansions let you have different text based on time, day, or context.</p>
+            
+            <h4>How to Set Up</h4>
+            <ol>
+              <li>Create or edit a macro</li>
+              <li>Check <strong>"Enable conditional expansion"</strong></li>
+              <li>Set conditions:
+                <ul>
+                  <li><strong>Time Range:</strong> Hours when macro should work (0-23)</li>
+                  <li><strong>Weekdays Only:</strong> Only expand Mon-Fri</li>
+                </ul>
+              </li>
+              <li>Add conditional expansions for specific scenarios</li>
+            </ol>
+            
+            <h4>Example: Time-Based Greeting</h4>
+            <div class="help-example">
+              <p><strong>Shortcut:</strong> <code>/greeting</code></p>
+              <p><strong>Default:</strong> <code>Hello!</code></p>
+              <p><strong>Conditional 1:</strong></p>
+              <ul>
+                <li>Time: 0-12 (morning)</li>
+                <li>Expansion: <code>Good morning!</code></li>
+              </ul>
+              <p><strong>Conditional 2:</strong></p>
+              <ul>
+                <li>Time: 12-18 (afternoon)</li>
+                <li>Expansion: <code>Good afternoon!</code></li>
+              </ul>
+              <p><strong>Conditional 3:</strong></p>
+              <ul>
+                <li>Time: 18-24 (evening)</li>
+                <li>Expansion: <code>Good evening!</code></li>
+              </ul>
+            </div>
+            
+            <h4>Example: Weekday vs Weekend</h4>
+            <div class="help-example">
+              <p><strong>Shortcut:</strong> <code>/status</code></p>
+              <p><strong>Default:</strong> <code>Available</code></p>
+              <p><strong>Conditional 1:</strong></p>
+              <ul>
+                <li>Weekdays only: ✓</li>
+                <li>Expansion: <code>In the office</code></li>
+              </ul>
+              <p><strong>Conditional 2:</strong></p>
+              <ul>
+                <li>Weekdays only: ✗ (weekends)</li>
+                <li>Expansion: <code>Out of office</code></li>
+              </ul>
+            </div>
+            
+            <h4>Visual Indicator</h4>
+            <p>Macros with conditions show a ⚡ icon next to the shortcut.</p>
+          </div>
+          
+          <!-- Tips -->
+          <div class="help-section" id="section-tips">
+            <h3>💡 Tips & Best Practices</h3>
+            
+            <h4>Shortcut Naming</h4>
+            <ul>
+              <li>Use descriptive shortcuts (e.g., <code>/email</code> not <code>/e1</code>)</li>
+              <li>Start with a special character (e.g., <code>/</code> or <code>.</code>) to avoid conflicts</li>
+              <li>Keep shortcuts short but memorable</li>
+              <li>Be consistent with naming patterns</li>
+            </ul>
+            
+            <h4>Organization</h4>
+            <ul>
+              <li>Use folders to group related macros</li>
+              <li>Name folders clearly (Work, Personal, Email, etc.)</li>
+              <li>Review and clean up unused macros regularly</li>
+              <li>Sort by usage to find your most valuable macros</li>
+            </ul>
+            
+            <h4>Variables</h4>
+            <ul>
+              <li>Combine multiple variables for powerful expansions</li>
+              <li>Use <code>{newline}</code> for multi-line text</li>
+              <li>Test variables to see how they format</li>
+              <li>Use <code>{clipboard}</code> to paste copied content</li>
+            </ul>
+            
+            <h4>Performance</h4>
+            <ul>
+              <li>Keep macro count reasonable (100-200 is fine)</li>
+              <li>Use folders to organize large collections</li>
+              <li>Search is fast even with many macros</li>
+              <li>Export regularly as backup</li>
+            </ul>
+            
+            <h4>Common Use Cases</h4>
+            <ul>
+              <li><strong>Email addresses:</strong> <code>/email</code> → your full email</li>
+              <li><strong>Phone numbers:</strong> <code>/phone</code> → your phone number</li>
+              <li><strong>Signatures:</strong> <code>/sig</code> → email signature with variables</li>
+              <li><strong>Common phrases:</strong> <code>/ty</code> → "Thank you!"</li>
+              <li><strong>Code snippets:</strong> <code>/func</code> → function template</li>
+              <li><strong>Addresses:</strong> <code>/addr</code> → your full address</li>
+            </ul>
+            
+            <h4>Troubleshooting</h4>
+            <ul>
+              <li><strong>Macro not expanding?</strong> Make sure you press Space or Enter after the shortcut</li>
+              <li><strong>Wrong expansion?</strong> Check for similar shortcuts that might conflict</li>
+              <li><strong>Variables not working?</strong> Check spelling and use curly braces <code>{}</code></li>
+              <li><strong>Can't find a macro?</strong> Use search or check folder filter</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="closeHelpBtn" class="btn btn-primary">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Folder Modal -->
+  <div id="folderModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Add Folder</h2>
+        <button class="close-btn" id="closeFolderModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="folderNameInput">Folder Name:</label>
+          <input type="text" id="folderNameInput" placeholder="e.g., Work, Personal, Email" maxlength="30">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="cancelFolderBtn" class="btn btn-secondary">Cancel</button>
+        <button id="saveFolderBtn" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add/Edit Macro Modal -->
+  <div id="macroModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">Add Macro</h2>
+        <button class="close-btn" id="closeModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="shortcutInput">Shortcut (trigger code):</label>
+          <input type="text" id="shortcutInput" placeholder="e.g., /email" maxlength="50">
+          <small>This is what you'll type to trigger the expansion</small>
+        </div>
+        <div class="form-group">
+          <label for="aliasesInput">Aliases (optional):</label>
+          <input type="text" id="aliasesInput" placeholder="e.g., /e, /mail (comma-separated)" maxlength="200">
+          <small>Additional shortcuts that trigger the same expansion</small>
+        </div>
+        <div class="form-group">
+          <label for="expansionInput">Expansion (text to insert):</label>
+          <textarea id="expansionInput" placeholder="Enter the text that will replace the shortcut..." rows="5"></textarea>
+          <small>
+            <strong>Available variables:</strong> {date}, {time}, {datetime}, {year}, {month}, {day}, {hour}, {minute}, {second}, {timestamp}, {clipboard}, {newline}, {tab}
+          </small>
+        </div>
+        <div class="form-group">
+          <label for="folderSelect">Folder:</label>
+          <select id="folderSelect">
+            <option value="">No Folder</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>
+            <input type="checkbox" id="caseSensitiveCheck">
+            Case sensitive
+          </label>
+        </div>
+        <div class="form-group">
+          <label>
+            <input type="checkbox" id="enableConditionsCheck">
+            Enable conditional expansion
+          </label>
+          <small>Different expansions based on time, day, or context</small>
+        </div>
+        <div id="conditionsPanel" class="conditions-panel" style="display: none;">
+          <div class="form-group">
+            <label>Time Range (optional):</label>
+            <div class="time-range-inputs">
+              <input type="number" id="timeStart" placeholder="Start hour (0-23)" min="0" max="23">
+              <span>to</span>
+              <input type="number" id="timeEnd" placeholder="End hour (0-23)" min="0" max="23">
+            </div>
+            <small>Only expand during these hours (leave empty for all day)</small>
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="weekdayOnlyCheck">
+              Weekdays only (Mon-Fri)
+            </label>
+          </div>
+          <div class="form-group">
+            <label>Conditional Expansions:</label>
+            <div id="conditionalExpansions">
+              <!-- Conditional expansions will be added here -->
+            </div>
+            <button type="button" id="addConditionalBtn" class="btn btn-secondary" style="margin-top: 8px;">+ Add Conditional</button>
+            <small>Add different expansions for specific times or days</small>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="cancelBtn" class="btn btn-secondary">Cancel</button>
+        <button id="saveMacroBtn" class="btn btn-primary">Save</button>
+        <button id="deleteMacroBtn" class="btn btn-danger" style="display: none;">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
+

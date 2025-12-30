@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fountain - Macro Assistant - Settings</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Fountain - Macro Assistant Settings</h1>
+    </header>
+
+    <section class="settings-section">
+      <h2>General Settings</h2>
+      
+      <div class="setting-item">
+        <label>
+          <input type="checkbox" id="autoExpandCheck">
+          Auto-expand as you type
+        </label>
+        <p class="setting-description">Automatically expand shortcuts as you type (after a brief pause). If disabled, shortcuts will only expand when you press Space, Enter, or punctuation.</p>
+      </div>
+
+      <div class="setting-item">
+        <label>
+          <input type="checkbox" id="enableNotificationsCheck">
+          Show expansion notifications
+        </label>
+        <p class="setting-description">Display a brief notification when a macro is expanded.</p>
+      </div>
+    </section>
+
+    <section class="settings-section">
+      <h2>Data Management</h2>
+      
+      <div class="setting-item">
+        <button id="exportBtn" class="btn btn-secondary">Export Macros</button>
+        <p class="setting-description">Download your macros as a JSON file for backup.</p>
+      </div>
+
+      <div class="setting-item">
+        <label for="importInput" class="btn btn-secondary">Import Macros</label>
+        <input type="file" id="importInput" accept=".json" style="display: none;">
+        <p class="setting-description">Import macros from a previously exported JSON file.</p>
+      </div>
+
+      <div class="setting-item">
+        <button id="clearAllBtn" class="btn btn-danger">Clear All Macros</button>
+        <p class="setting-description">Permanently delete all your macros. This action cannot be undone.</p>
+      </div>
+    </section>
+
+    <section class="settings-section">
+      <h2>About</h2>
+      <p>Fountain - Macro Assistant v1.0.0</p>
+      <p>Create text shortcuts that expand into longer snippets.</p>
+    </section>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>
+
