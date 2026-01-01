@@ -4,13 +4,42 @@
   box-sizing: border-box;
 }
 
+:root {
+  --bg-gradient-start: #667eea;
+  --bg-gradient-end: #764ba2;
+  --bg-overlay: rgba(255, 255, 255, 0.1);
+  --text-primary: white;
+  --text-secondary: rgba(255, 255, 255, 0.9);
+  --card-bg: rgba(255, 255, 255, 0.95);
+  --card-border: rgba(255, 255, 255, 0.5);
+  --input-bg: rgba(255, 255, 255, 0.95);
+  --modal-bg: white;
+  --modal-text: #333;
+  --border-color: rgba(255, 255, 255, 0.3);
+}
+
+body.dark-mode {
+  --bg-gradient-start: #1a1a2e;
+  --bg-gradient-end: #16213e;
+  --bg-overlay: rgba(0, 0, 0, 0.3);
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.8);
+  --card-bg: rgba(30, 30, 46, 0.95);
+  --card-border: rgba(255, 255, 255, 0.1);
+  --input-bg: rgba(40, 40, 60, 0.95);
+  --modal-bg: #1e1e2e;
+  --modal-text: #e0e0e0;
+  --border-color: rgba(255, 255, 255, 0.2);
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   width: 420px;
   min-height: 550px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
   position: relative;
   overflow: hidden;
+  transition: background 0.3s ease;
 }
 
 body::before {
@@ -21,8 +50,8 @@ body::before {
   right: 0;
   bottom: 0;
   background: 
-    radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+    radial-gradient(circle at 20% 50%, var(--bg-overlay) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, var(--bg-overlay) 0%, transparent 50%);
   pointer-events: none;
 }
 
@@ -38,12 +67,12 @@ header {
   align-items: center;
   margin-bottom: 20px;
   padding-bottom: 16px;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 2px solid var(--border-color);
 }
 
 header h1 {
   font-size: 24px;
-  color: white;
+  color: var(--text-primary);
   font-weight: 700;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   letter-spacing: -0.5px;
@@ -98,8 +127,8 @@ header h1 {
 
 .btn-secondary {
   background: rgba(255, 255, 255, 0.2);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
   backdrop-filter: blur(10px);
   font-size: 18px;
   padding: 10px 14px;
@@ -109,6 +138,21 @@ header h1 {
   background: rgba(255, 255, 255, 0.3);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn-theme {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  backdrop-filter: blur(10px);
+  font-size: 18px;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+
+.btn-theme:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
 }
 
 .btn-danger {
@@ -128,10 +172,11 @@ header h1 {
 .folder-filter select {
   width: 100%;
   padding: 12px 16px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid var(--border-color);
   border-radius: 10px;
   font-size: 14px;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--input-bg);
+  color: var(--modal-text);
   cursor: pointer;
   transition: all 0.3s;
   font-weight: 500;
@@ -140,7 +185,7 @@ header h1 {
 
 .folder-filter select:focus {
   outline: none;
-  border-color: rgba(255, 255, 255, 0.6);
+  border-color: var(--border-color);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transform: translateY(-1px);
 }
@@ -163,10 +208,11 @@ header h1 {
 .sort-controls select {
   width: 100%;
   padding: 14px 16px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid var(--border-color);
   border-radius: 10px;
   font-size: 13px;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--input-bg);
+  color: var(--modal-text);
   cursor: pointer;
   transition: all 0.3s;
   font-weight: 500;
@@ -175,7 +221,7 @@ header h1 {
 
 .sort-controls select:focus {
   outline: none;
-  border-color: rgba(255, 255, 255, 0.6);
+  border-color: var(--border-color);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transform: translateY(-1px);
 }
@@ -183,20 +229,26 @@ header h1 {
 .search-box input {
   width: 100%;
   padding: 14px 18px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid var(--border-color);
   border-radius: 10px;
   font-size: 14px;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--input-bg);
+  color: var(--modal-text);
   transition: all 0.3s;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .search-box input:focus {
   outline: none;
-  border-color: rgba(255, 255, 255, 0.6);
+  border-color: var(--border-color);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transform: translateY(-1px);
-  background: white;
+  background: var(--input-bg);
+}
+
+.search-box input::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.6;
 }
 
 .search-box input::placeholder {
@@ -251,12 +303,12 @@ header h1 {
   align-items: center;
   gap: 10px;
   padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--card-bg);
   border-radius: 12px;
   margin-bottom: 10px;
   font-weight: 700;
   font-size: 14px;
-  color: #333;
+  color: var(--modal-text);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s;
 }
@@ -294,15 +346,16 @@ header h1 {
 }
 
 .macro-item {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--card-bg);
   padding: 14px 16px;
   border-radius: 12px;
-  border: 2px solid rgba(255, 255, 255, 0.5);
+  border: 2px solid var(--card-border);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   position: relative;
   overflow: hidden;
+  color: var(--modal-text);
 }
 
 .macro-item::before {
@@ -357,11 +410,37 @@ header h1 {
   box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
 }
 
+.macro-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+  margin-bottom: 4px;
+}
+
+.tag-badge {
+  display: inline-block;
+  background: rgba(102, 126, 234, 0.2);
+  color: #667eea;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 600;
+  border: 1px solid rgba(102, 126, 234, 0.3);
+}
+
+body.dark-mode .tag-badge {
+  background: rgba(102, 126, 234, 0.3);
+  color: #a5b4fc;
+  border-color: rgba(102, 126, 234, 0.5);
+}
+
 .macro-meta {
-  color: #999;
+  color: var(--text-secondary);
   font-size: 11px;
   margin-top: 4px;
   font-style: italic;
+  opacity: 0.7;
 }
 
 .alias-indicator,
@@ -372,11 +451,11 @@ header h1 {
 }
 
 .conditions-panel {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--bg-overlay);
   padding: 16px;
   border-radius: 10px;
   margin-top: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--border-color);
 }
 
 .time-range-inputs {
@@ -388,13 +467,15 @@ header h1 {
 .time-range-inputs input {
   flex: 1;
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   font-size: 14px;
+  background: var(--input-bg);
+  color: var(--modal-text);
 }
 
 .time-range-inputs span {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 14px;
 }
 
@@ -422,25 +503,25 @@ header h1 {
   flex-direction: column;
   gap: 8px;
   padding-right: 16px;
-  border-right: 2px solid #f0f0f0;
+  border-right: 2px solid var(--border-color);
   overflow-y: auto;
 }
 
 .help-nav-btn {
   padding: 12px 16px;
   border: none;
-  background: #f5f5f5;
+  background: var(--card-bg);
   border-radius: 8px;
   cursor: pointer;
   text-align: left;
   font-size: 13px;
   font-weight: 500;
-  color: #666;
+  color: var(--text-secondary);
   transition: all 0.3s;
 }
 
 .help-nav-btn:hover {
-  background: #e0e0e0;
+  background: var(--input-bg);
   transform: translateX(4px);
 }
 
@@ -461,13 +542,14 @@ header h1 {
 }
 
 .help-content::-webkit-scrollbar-track {
-  background: #f5f5f5;
+  background: var(--card-bg);
   border-radius: 10px;
 }
 
 .help-content::-webkit-scrollbar-thumb {
-  background: #ccc;
+  background: var(--text-secondary);
   border-radius: 10px;
+  opacity: 0.5;
 }
 
 .help-section {
@@ -483,19 +565,19 @@ header h1 {
   color: #667eea;
   margin-bottom: 16px;
   font-size: 20px;
-  border-bottom: 2px solid #f0f0f0;
+  border-bottom: 2px solid var(--border-color);
   padding-bottom: 8px;
 }
 
 .help-section h4 {
-  color: #333;
+  color: var(--modal-text);
   margin-top: 24px;
   margin-bottom: 12px;
   font-size: 16px;
 }
 
 .help-section p {
-  color: #666;
+  color: var(--text-secondary);
   line-height: 1.6;
   margin-bottom: 12px;
 }
@@ -504,7 +586,7 @@ header h1 {
 .help-section ul {
   margin-left: 20px;
   margin-bottom: 16px;
-  color: #666;
+  color: var(--text-secondary);
   line-height: 1.8;
 }
 
@@ -513,7 +595,7 @@ header h1 {
 }
 
 .help-section code {
-  background: #f5f5f5;
+  background: var(--input-bg);
   padding: 2px 6px;
   border-radius: 4px;
   font-family: 'Courier New', monospace;
@@ -525,7 +607,7 @@ header h1 {
   width: 100%;
   border-collapse: collapse;
   margin: 16px 0;
-  background: white;
+  background: var(--card-bg);
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -533,7 +615,8 @@ header h1 {
 
 .help-table td {
   padding: 12px 16px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--modal-text);
 }
 
 .help-table td:first-child {
@@ -547,11 +630,11 @@ header h1 {
 }
 
 .help-table tr:hover {
-  background: #f9f9f9;
+  background: var(--input-bg);
 }
 
 .help-example {
-  background: #f9f9f9;
+  background: var(--card-bg);
   padding: 16px;
   border-radius: 8px;
   margin: 16px 0;
@@ -570,26 +653,27 @@ header h1 {
 }
 
 .help-example strong {
-  color: #333;
+  color: var(--modal-text);
 }
 
 .macro-expansion {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 13px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   line-height: 1.4;
+  opacity: 0.8;
 }
 
 .empty-state {
   text-align: center;
   padding: 60px 20px;
-  color: rgba(255, 255, 255, 0.9);
-  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  background: var(--bg-overlay);
   border-radius: 16px;
   backdrop-filter: blur(10px);
-  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border: 2px dashed var(--border-color);
 }
 
 .empty-state p {
@@ -632,7 +716,8 @@ header h1 {
 }
 
 .modal-content {
-  background: white;
+  background: var(--modal-bg);
+  color: var(--modal-text);
   border-radius: 20px;
   width: 90%;
   max-width: 520px;
@@ -694,7 +779,8 @@ header h1 {
 
 .modal-body {
   padding: 28px;
-  background: white;
+  background: var(--modal-bg);
+  color: var(--modal-text);
 }
 
 .form-group {
@@ -705,7 +791,7 @@ header h1 {
   display: block;
   margin-bottom: 10px;
   font-weight: 600;
-  color: #333;
+  color: var(--modal-text);
   font-size: 14px;
 }
 
@@ -714,12 +800,13 @@ header h1 {
 .form-group select {
   width: 100%;
   padding: 14px 16px;
-  border: 2px solid #e0e0e0;
+  border: 2px solid var(--border-color);
   border-radius: 10px;
   font-size: 14px;
   font-family: inherit;
   transition: all 0.3s;
-  background: #fafafa;
+  background: var(--input-bg);
+  color: var(--modal-text);
 }
 
 .form-group input[type="text"]:focus,
@@ -727,7 +814,7 @@ header h1 {
 .form-group select:focus {
   outline: none;
   border-color: #667eea;
-  background: white;
+  background: var(--input-bg);
   box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
   transform: translateY(-1px);
 }
@@ -741,8 +828,9 @@ header h1 {
 .form-group small {
   display: block;
   margin-top: 6px;
-  color: #888;
+  color: var(--text-secondary);
   font-size: 12px;
+  opacity: 0.8;
 }
 
 .form-group input[type="checkbox"] {
@@ -758,7 +846,26 @@ header h1 {
   justify-content: flex-end;
   gap: 12px;
   padding: 20px 28px;
-  border-top: 2px solid #f0f0f0;
-  background: #fafafa;
+  border-top: 2px solid var(--border-color);
+  background: var(--card-bg);
   border-radius: 0 0 20px 20px;
+}
+
+.bulk-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--card-bg);
+  border-radius: 12px;
+  margin-bottom: 16px;
+  border: 2px solid var(--card-border);
+  flex-wrap: wrap;
+}
+
+.bulk-actions #bulkCount {
+  margin-left: auto;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 600;
 }

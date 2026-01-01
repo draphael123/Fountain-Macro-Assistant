@@ -10,6 +10,7 @@
   <div class="container">
     <header>
       <h1>Fountain - Macro Assistant Settings</h1>
+      <button id="themeToggle" class="theme-toggle" title="Toggle Dark Mode">🌙</button>
     </header>
 
     <section class="settings-section">
@@ -33,11 +34,27 @@
     </section>
 
     <section class="settings-section">
+      <h2>Advanced Settings</h2>
+      
+      <div class="setting-item">
+        <label>
+          <input type="checkbox" id="debugModeCheck">
+          Enable debug mode
+        </label>
+        <p class="setting-description">Show console logs for debugging macro expansion issues.</p>
+      </div>
+    </section>
+
+    <section class="settings-section">
       <h2>Data Management</h2>
       
       <div class="setting-item">
-        <button id="exportBtn" class="btn btn-secondary">Export Macros</button>
-        <p class="setting-description">Download your macros as a JSON file for backup.</p>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+          <button id="exportBtn" class="btn btn-secondary">Export as JSON</button>
+          <button id="exportCSVBtn" class="btn btn-secondary">Export as CSV</button>
+          <button id="exportTextBtn" class="btn btn-secondary">Export as Text</button>
+        </div>
+        <p class="setting-description">Download your macros in various formats for backup or sharing.</p>
       </div>
 
       <div class="setting-item">

@@ -100,11 +100,17 @@ function renderMacros(filter = '') {
   const macrosList = document.getElementById('macrosList');
   const emptyState = document.getElementById('emptyState');
   
-  // Filter macros by search and folder
+  // Filter macros by search and folder (with fuzzy search)
   let filteredMacros = macros.filter(macro => {
-    const matchesSearch = !filter || 
-      macro.shortcut.toLowerCase().includes(filter.toLowerCase()) ||
-      macro.expansion.toLowerCase().includes(filter.toLowerCase());
+    let matchesSearch = true;
+    if (filter) {
+      // Use fuzzy search for better matching
+      matchesSearch = 
+        fuzzySearch(filter, macro.shortcut) ||
+        fuzzySearch(filter, macro.expansion) ||
+        (macro.aliases && macro.aliases.some(alias => fuzzySearch(filter, alias))) ||
+        (macro.tags && macro.tags.some(tag => fuzzySearch(filter, tag)));
+    }
     
     const matchesFolder = selectedFolderId === 'all' || 
       (selectedFolderId === '' && !macro.folderId) ||
@@ -158,6 +164,7 @@ function renderMacros(filter = '') {
               const stats = getMacroStats(macro.id);
               const hasAliases = macro.aliases && macro.aliases.length > 0;
               const hasConditions = macro.conditions && Object.keys(macro.conditions).length > 0;
+              const hasTags = macro.tags && macro.tags.length > 0;
               return `
               <div class="macro-item" data-id="${macro.id}">
                 <div class="macro-header">
@@ -169,6 +176,7 @@ function renderMacros(filter = '') {
                   ${stats.count > 0 ? `<span class="usage-badge" title="Used ${stats.count} time${stats.count !== 1 ? 's' : ''}">${stats.count}</span>` : ''}
                 </div>
                 <div class="macro-expansion">${escapeHtml(macro.expansion)}</div>
+                ${hasTags ? `<div class="macro-tags">${(macro.tags || []).map(tag => `<span class="tag-badge">${escapeHtml(tag)}</span>`).join('')}</div>` : ''}
                 ${stats.lastUsed ? `<div class="macro-meta">Last used: ${formatDate(stats.lastUsed)}</div>` : ''}
               </div>
             `;
@@ -190,19 +198,21 @@ function renderMacros(filter = '') {
         <div class="folder-macros">
           ${noFolderMacros.map(macro => {
             const stats = getMacroStats(macro.id);
-            const aliases = macro.aliases && macro.aliases.length > 0 ? ` (aliases: ${macro.aliases.join(', ')})` : '';
+            const hasAliases = macro.aliases && macro.aliases.length > 0;
             const hasConditions = macro.conditions && Object.keys(macro.conditions).length > 0;
+            const hasTags = macro.tags && macro.tags.length > 0;
             return `
             <div class="macro-item" data-id="${macro.id}">
               <div class="macro-header">
                 <div class="macro-shortcut">
                   ${escapeHtml(macro.shortcut)}
-                  ${aliases ? `<span class="alias-indicator" title="Has aliases">🔗</span>` : ''}
-                  ${hasConditions ? `<span class="condition-indicator" title="Has conditions">⚡</span>` : ''}
+                  ${hasAliases ? `<span class="alias-indicator" title="Aliases: ${(macro.aliases || []).join(', ')}">🔗</span>` : ''}
+                  ${hasConditions ? `<span class="condition-indicator" title="Has conditional expansions">⚡</span>` : ''}
                 </div>
                 ${stats.count > 0 ? `<span class="usage-badge" title="Used ${stats.count} time${stats.count !== 1 ? 's' : ''}">${stats.count}</span>` : ''}
               </div>
               <div class="macro-expansion">${escapeHtml(macro.expansion)}</div>
+              ${hasTags ? `<div class="macro-tags">${(macro.tags || []).map(tag => `<span class="tag-badge">${escapeHtml(tag)}</span>`).join('')}</div>` : ''}
               ${stats.lastUsed ? `<div class="macro-meta">Last used: ${formatDate(stats.lastUsed)}</div>` : ''}
             </div>
           `;
@@ -236,6 +246,7 @@ function addMacro() {
   document.getElementById('modalTitle').textContent = 'Add Macro';
   document.getElementById('shortcutInput').value = '';
   document.getElementById('aliasesInput').value = '';
+  document.getElementById('tagsInput').value = '';
   document.getElementById('expansionInput').value = '';
   document.getElementById('caseSensitiveCheck').checked = false;
   document.getElementById('enableConditionsCheck').checked = false;
@@ -259,6 +270,7 @@ function editMacro(id) {
   document.getElementById('modalTitle').textContent = 'Edit Macro';
   document.getElementById('shortcutInput').value = macro.shortcut;
   document.getElementById('aliasesInput').value = (macro.aliases || []).join(', ');
+  document.getElementById('tagsInput').value = (macro.tags || []).join(', ');
   document.getElementById('expansionInput').value = macro.expansion;
   document.getElementById('caseSensitiveCheck').checked = macro.caseSensitive || false;
   
@@ -293,6 +305,8 @@ async function saveMacro() {
   const shortcut = document.getElementById('shortcutInput').value.trim();
   const aliasesInput = document.getElementById('aliasesInput').value.trim();
   const aliases = aliasesInput ? aliasesInput.split(',').map(a => a.trim()).filter(a => a) : [];
+  const tagsInput = document.getElementById('tagsInput').value.trim();
+  const tags = tagsInput ? tagsInput.split(',').map(t => t.trim()).filter(t => t) : [];
   const expansion = document.getElementById('expansionInput').value.trim();
   const caseSensitive = document.getElementById('caseSensitiveCheck').checked;
   const folderId = document.getElementById('folderSelect').value || null;
@@ -382,6 +396,7 @@ async function saveMacro() {
       id: currentEditingId,
       shortcut,
       aliases: aliases.length > 0 ? aliases : undefined,
+      tags: tags.length > 0 ? tags : undefined,
       expansion,
       caseSensitive,
       folderId,
@@ -393,6 +408,7 @@ async function saveMacro() {
       id: Date.now().toString(),
       shortcut,
       aliases: aliases.length > 0 ? aliases : undefined,
+      tags: tags.length > 0 ? tags : undefined,
       expansion,
       caseSensitive,
       folderId,
@@ -525,10 +541,61 @@ function showKeyboardShortcuts() {
   alert('Keyboard Shortcuts:\n\n' + helpText);
 }
 
+// Dark mode functionality
+let darkMode = false;
+
+async function loadTheme() {
+  const result = await chrome.storage.sync.get(['darkMode']);
+  darkMode = result.darkMode || false;
+  applyTheme();
+}
+
+async function saveTheme() {
+  await chrome.storage.sync.set({ darkMode });
+}
+
+function applyTheme() {
+  const body = document.body;
+  const themeToggle = document.getElementById('themeToggle');
+  
+  if (darkMode) {
+    body.classList.add('dark-mode');
+    if (themeToggle) themeToggle.textContent = '☀️';
+  } else {
+    body.classList.remove('dark-mode');
+    if (themeToggle) themeToggle.textContent = '🌙';
+  }
+}
+
+function toggleTheme() {
+  darkMode = !darkMode;
+  applyTheme();
+  saveTheme();
+}
+
+// Fuzzy search function
+function fuzzySearch(query, text) {
+  if (!query) return true;
+  query = query.toLowerCase();
+  text = text.toLowerCase();
+  
+  let queryIndex = 0;
+  for (let i = 0; i < text.length && queryIndex < query.length; i++) {
+    if (text[i] === query[queryIndex]) {
+      queryIndex++;
+    }
+  }
+  return queryIndex === query.length;
+}
+
 // Event listeners
 document.addEventListener('DOMContentLoaded', () => {
+  loadTheme();
   loadMacros();
 
+  // Theme toggle
+  document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+  
   // Add macro button
   document.getElementById('addMacroBtn').addEventListener('click', addMacro);
   

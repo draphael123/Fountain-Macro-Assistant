@@ -1,8 +1,10 @@
-# PowerShell script to create a shareable ZIP file
-# Excludes development files and only includes necessary extension files
+# PowerShell script to create a shareable extension package
+# Creates a folder instead of ZIP file for easier installation
+# Note: This script now creates a folder. Use create-shareable-folder.ps1 for the new version.
 
 $sourceDir = $PSScriptRoot
-$zipName = "fountain-macro-assistant-extension.zip"
+$folderName = "fountain-macro-assistant-extension"
+$outputDir = Join-Path $sourceDir $folderName
 $tempDir = Join-Path $env:TEMP "fountain-app-temp"
 
 # Clean up temp directory if it exists
@@ -48,20 +50,24 @@ if (Test-Path $iconsSource) {
     Write-Host "    Create icons before sharing (see ICONS_INSTRUCTIONS.md)" -ForegroundColor Yellow
 }
 
-# Create ZIP file
-$zipPath = Join-Path $sourceDir $zipName
-if (Test-Path $zipPath) {
-    Remove-Item $zipPath -Force
+# Create output folder (instead of ZIP)
+if (Test-Path $outputDir) {
+    Remove-Item $outputDir -Recurse -Force
 }
 
-Write-Host "`nCreating ZIP file..." -ForegroundColor Green
-Compress-Archive -Path "$tempDir\*" -DestinationPath $zipPath -Force
+Write-Host "`nCreating extension folder..." -ForegroundColor Green
+New-Item -ItemType Directory -Path $outputDir | Out-Null
+Copy-Item "$tempDir\*" -Destination $outputDir -Recurse -Force
 
 # Clean up temp directory
 Remove-Item $tempDir -Recurse -Force
 
-Write-Host "`n✓ Success! Created: $zipName" -ForegroundColor Green
-Write-Host "`nLocation: $zipPath" -ForegroundColor Cyan
-Write-Host "`nYou can now share this ZIP file with others." -ForegroundColor Cyan
+Write-Host "`n✓ Success! Created folder: $folderName" -ForegroundColor Green
+Write-Host "`nLocation: $outputDir" -ForegroundColor Cyan
+Write-Host "`nThis folder is ready to be loaded as an unpacked extension." -ForegroundColor Cyan
+Write-Host "`nTo install:" -ForegroundColor Yellow
+Write-Host "  1. Open Chrome → chrome://extensions/" -ForegroundColor White
+Write-Host "  2. Enable 'Developer mode'" -ForegroundColor White
+Write-Host "  3. Click 'Load unpacked' and select this folder" -ForegroundColor White
 Write-Host "See SHARING_GUIDE.md for instructions to share with recipients." -ForegroundColor Cyan
 

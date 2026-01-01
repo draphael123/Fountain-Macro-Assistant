@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extension Load Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .success { color: green; }
+        .error { color: red; }
+        .warning { color: orange; }
+        code {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        ol { line-height: 2; }
+    </style>
+</head>
+<body>
+    <h1>Extension Load Troubleshooting Guide</h1>
+    
+    <div class="test-box">
+        <h2>Step 1: Verify Folder Location</h2>
+        <p>Your extension folder should be at:</p>
+        <code>C:\Users\danie\OneDrive\Desktop\Cursor Projects\Fountain-Macro-Assistant\fountain-macro-assistant-extension</code>
+        <p><strong>Action:</strong> Open File Explorer and navigate to this path. You should see <code>manifest.json</code> directly in that folder.</p>
+    </div>
+
+    <div class="test-box">
+        <h2>Step 2: Open Chrome Extensions</h2>
+        <ol>
+            <li>Open Google Chrome</li>
+            <li>Type in address bar: <code>chrome://extensions/</code></li>
+            <li>Press Enter</li>
+        </ol>
+    </div>
+
+    <div class="test-box">
+        <h2>Step 3: Enable Developer Mode</h2>
+        <ol>
+            <li>Look at the <strong>top-right corner</strong> of the extensions page</li>
+            <li>Find the toggle switch: <strong>"Developer mode"</strong></li>
+            <li><strong>Turn it ON</strong> (should highlight/change color)</li>
+            <li>After enabling, you should see new buttons appear</li>
+        </ol>
+        <p class="warning"><strong>⚠️ Important:</strong> If you don't see "Load unpacked" button, Developer mode is not enabled!</p>
+    </div>
+
+    <div class="test-box">
+        <h2>Step 4: Load the Extension</h2>
+        <ol>
+            <li>Click the <strong>"Load unpacked"</strong> button</li>
+            <li>A file picker window opens</li>
+            <li>Navigate to: <code>C:\Users\danie\OneDrive\Desktop\Cursor Projects\Fountain-Macro-Assistant\fountain-macro-assistant-extension</code></li>
+            <li><strong>Click ONCE on the folder</strong> to select it (don't double-click into it)</li>
+            <li>Click <strong>"Select Folder"</strong> button (bottom right)</li>
+        </ol>
+        <p class="error"><strong>❌ Common Mistake:</strong> Don't select <code>manifest.json</code> or any file. Select the FOLDER itself!</p>
+    </div>
+
+    <div class="test-box">
+        <h2>Step 5: Check What Happens</h2>
+        <h3>If Extension Appears:</h3>
+        <ul>
+            <li>✅ Success! Extension is loaded</li>
+            <li>Look for "Fountain - Macro Assistant" in the list</li>
+            <li>Click the puzzle piece icon (🧩) in Chrome toolbar to find it</li>
+            <li>Pin it to your toolbar for easy access</li>
+        </ul>
+
+        <h3>If Extension Doesn't Appear:</h3>
+        <ul>
+            <li>Look for <strong>red error messages</strong> on the page</li>
+            <li>Scroll through the extensions list</li>
+            <li>Click any <strong>"Errors"</strong> button you see</li>
+            <li>Copy the exact error message</li>
+        </ul>
+
+        <h3>If File Picker Closes Immediately:</h3>
+        <ul>
+            <li>You might have selected a file instead of folder</li>
+            <li>Make sure you click the <strong>folder</strong>, not files inside it</li>
+            <li>Try again, being careful to select the folder</li>
+        </ul>
+    </div>
+
+    <div class="test-box">
+        <h2>Quick Verification Checklist</h2>
+        <p>Before loading, verify:</p>
+        <ul>
+            <li>✅ Folder exists at the correct path</li>
+            <li>✅ <code>manifest.json</code> is in the folder root</li>
+            <li>✅ <code>icons/</code> folder exists with PNG files</li>
+            <li>✅ Developer mode is enabled in Chrome</li>
+            <li>✅ You're selecting the FOLDER, not a file</li>
+        </ul>
+    </div>
+
+    <div class="test-box">
+        <h2>Need More Help?</h2>
+        <p>If the extension still doesn't appear, please share:</p>
+        <ol>
+            <li>What happens when you click "Load unpacked"?</li>
+            <li>Does the file picker open?</li>
+            <li>What happens after you select the folder?</li>
+            <li>Any error messages? (Copy the exact text)</li>
+            <li>A screenshot of the Chrome extensions page</li>
+        </ol>
+    </div>
+</body>
+</html>
+

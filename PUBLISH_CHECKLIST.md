@@ -16,14 +16,14 @@
 - [x] icon128.png (128x128) - Present
 
 #### Screenshots (Need to Create)
-- [ ] Screenshot 1: Extension popup showing macros (1280x800px minimum)
+- [ ] Screenshot 1: Extension popup showing macros (1280x800px minimum) - See `SCREENSHOT_GUIDE.md`
 - [ ] Screenshot 2: Adding/editing macro modal (optional but recommended)
 - [ ] Screenshot 3: Settings page (optional)
 - [ ] Screenshot 4: Text expansion in action (optional)
 
 #### Privacy Policy (Need to Create)
-- [ ] Privacy policy HTML file created
-- [ ] Privacy policy hosted online (GitHub Pages, website, etc.)
+- [x] Privacy policy HTML file created (`privacy-policy.html` - ✅ Ready!)
+- [ ] Privacy policy hosted online (GitHub Pages, website, etc.) - See `PRIVACY_POLICY_HOSTING.md`
 - [ ] Privacy policy URL is publicly accessible
 
 ### 3. Chrome Web Store Developer Account
@@ -37,10 +37,10 @@
 - [x] "Fountain - Macro Assistant" (45 char limit)
 
 #### Summary (132 char limit)
-- [ ] Write: "Create text shortcuts that expand into longer snippets. Type faster with custom macros, aliases, and conditional expansions."
+- [x] ✅ Ready: "Create text shortcuts that expand into longer snippets. Type faster with custom macros, aliases, and conditional expansions."
 
 #### Description (16,000 char limit)
-- [ ] Write detailed description (template provided below)
+- [x] ✅ Ready: See `STORE_LISTING_DESCRIPTION.md` for complete description
 
 #### Category
 - [ ] Select: "Productivity" or "Tools"
@@ -52,41 +52,38 @@
 
 ### STEP 1: Create Privacy Policy (15 minutes)
 
-**Option A: GitHub Pages (Free & Easy)**
-1. Create a GitHub repository
-2. Create `privacy-policy.html` file
-3. Enable GitHub Pages in repository settings
-4. Use the GitHub Pages URL
+✅ **Privacy Policy HTML file is ready!** (`privacy-policy.html`)
 
-**Option B: Use Privacy Policy Template**
-- See `PRIVACY_POLICY_TEMPLATE.md` (will be created)
+**Next Steps:**
+1. Host the privacy policy online - See `PRIVACY_POLICY_HOSTING.md` for detailed instructions
+2. Recommended: Use GitHub Pages (free & easy)
+3. Get the public URL and test it
+4. Use this URL in Chrome Web Store submission
 
 ### STEP 2: Take Screenshots (30 minutes)
 
-1. **Screenshot 1 - Main Popup:**
+📸 **See `SCREENSHOT_GUIDE.md` for complete detailed instructions!**
+
+Quick summary:
+1. **Screenshot 1 - Main Popup (REQUIRED):**
    - Open extension popup
-   - Create a few example macros
+   - Create 3-5 example macros
    - Take screenshot (1280x800px minimum)
    - Show: Macro list, search, folders
 
-2. **Screenshot 2 - Adding Macro:**
+2. **Screenshot 2 - Adding Macro (RECOMMENDED):**
    - Click "+ Add Macro"
-   - Fill in example (shortcut: `/email`, expansion: `your.email@example.com`)
-   - Take screenshot showing the modal
+   - Fill in example data
+   - Take screenshot of modal
 
-3. **Screenshot 3 - Settings:**
+3. **Screenshot 3 - Settings (OPTIONAL):**
    - Open options page
    - Show export/import features
-   - Take screenshot
 
-4. **Screenshot 4 - In Action (Optional):**
-   - Show before/after text expansion
-   - Type a shortcut and show it expanding
+4. **Screenshot 4 - In Action (OPTIONAL):**
+   - Show text expansion demo
 
-**Tools for Screenshots:**
-- Windows: Snipping Tool, Windows + Shift + S
-- Mac: Cmd + Shift + 4
-- Online: Use a screenshot tool that allows custom dimensions
+**Tools:** Windows Snipping Tool, Mac Screenshot, or see guide for more options
 
 ### STEP 3: Create Extension ZIP (5 minutes)
 

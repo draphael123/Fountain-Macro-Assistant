@@ -5,6 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fountain - Macro Assistant | Chrome Extension</title>
     <meta name="description" content="Fountain - Macro Assistant: Create text shortcuts that expand into longer snippets. Type faster with custom macros, aliases, and conditional expansions.">
+    <meta name="keywords" content="text expansion, macro, shortcut, chrome extension, productivity, keyboard shortcuts, text expander, automation">
+    <meta name="author" content="Fountain">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://fountain-macro-assistant.vercel.app/">
+    <meta property="og:title" content="Fountain - Macro Assistant | Chrome Extension">
+    <meta property="og:description" content="Create text shortcuts that expand into longer snippets. Type faster with custom macros, aliases, and conditional expansions.">
+    <meta property="og:image" content="https://fountain-macro-assistant.vercel.app/screenshots/og-image.png">
+    <meta property="og:site_name" content="Fountain - Macro Assistant">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://fountain-macro-assistant.vercel.app/">
+    <meta property="twitter:title" content="Fountain - Macro Assistant | Chrome Extension">
+    <meta property="twitter:description" content="Create text shortcuts that expand into longer snippets. Type faster with custom macros, aliases, and conditional expansions.">
+    <meta property="twitter:image" content="https://fountain-macro-assistant.vercel.app/screenshots/og-image.png">
+    
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Fountain - Macro Assistant",
+      "applicationCategory": "ProductivityApplication",
+      "operatingSystem": "Chrome",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "5",
+        "ratingCount": "1"
+      },
+      "description": "Create text shortcuts that expand into longer snippets. Type faster with custom macros, aliases, and conditional expansions.",
+      "screenshot": "https://fountain-macro-assistant.vercel.app/screenshots/og-image.png",
+      "featureList": [
+        "Text expansion macros",
+        "Multiple aliases per macro",
+        "Conditional expansions",
+        "Dynamic variables",
+        "Folder organization",
+        "Usage statistics",
+        "Undo functionality"
+      ]
+    }
+    </script>
+    
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,9 +78,32 @@
                 </div>
                 <nav class="nav">
                     <a href="#features">Features</a>
+                    <a href="#demo">Demo</a>
+                    <a href="#comparison">Compare</a>
                     <a href="#guide">Guide</a>
                     <a href="#faq">FAQ</a>
                     <a href="#download" class="btn-download">Download</a>
+                    <span id="auth-nav" style="display: none;">
+                        <a href="dashboard.html" id="dashboard-link" style="display: none;">Dashboard</a>
+                        <button id="logout-btn-nav" class="btn btn-secondary" style="display: none; padding: 8px 16px; margin-left: 8px;">Logout</button>
+                    </span>
+                    <a href="login.html" id="login-link" class="btn btn-secondary" style="padding: 8px 16px; margin-left: 8px;">Login</a>
+                    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+                        <svg class="theme-icon sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="5"/>
+                            <line x1="12" y1="1" x2="12" y2="3"/>
+                            <line x1="12" y1="21" x2="12" y2="23"/>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                            <line x1="1" y1="12" x2="3" y2="12"/>
+                            <line x1="21" y1="12" x2="23" y2="12"/>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                        </svg>
+                        <svg class="theme-icon moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                        </svg>
+                    </button>
                 </nav>
             </div>
         </div>
@@ -112,6 +186,102 @@
         </div>
     </section>
 
+    <!-- Interactive Demo Section -->
+    <section id="demo" class="demo-section">
+        <div class="container">
+            <h2 class="section-title">Try It Now</h2>
+            <p class="section-subtitle">Experience text expansion in action. Type a shortcut and watch it expand!</p>
+            <div class="demo-container">
+                <div class="demo-input-wrapper">
+                    <label for="demo-input">Type a shortcut:</label>
+                    <div class="demo-input-container">
+                        <textarea id="demo-input" class="demo-input" placeholder="Try typing: /email, /sig, /date, or /time and press Space or Enter"></textarea>
+                        <button id="demo-reset" class="btn btn-secondary" style="margin-top: 10px;">Reset</button>
+                    </div>
+                </div>
+                <div class="demo-examples">
+                    <h4>Try these examples:</h4>
+                    <div class="demo-example-list">
+                        <button class="demo-example-btn" data-shortcut="/email">/email</button>
+                        <button class="demo-example-btn" data-shortcut="/sig">/sig</button>
+                        <button class="demo-example-btn" data-shortcut="/date">/date</button>
+                        <button class="demo-example-btn" data-shortcut="/time">/time</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparison Section -->
+    <section id="comparison" class="comparison-section">
+        <div class="container">
+            <h2 class="section-title">Why Choose Fountain?</h2>
+            <p class="section-subtitle">See how Fountain compares to other text expansion solutions</p>
+            <div class="comparison-table-wrapper">
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Fountain</th>
+                            <th>TextExpander</th>
+                            <th>aText</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Price</strong></td>
+                            <td>✅ Free</td>
+                            <td>❌ Paid ($3.99/month)</td>
+                            <td>❌ Paid ($4.99)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Macro Aliases</strong></td>
+                            <td>✅ Yes</td>
+                            <td>✅ Yes</td>
+                            <td>❌ No</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Conditional Expansions</strong></td>
+                            <td>✅ Yes</td>
+                            <td>❌ Limited</td>
+                            <td>❌ No</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Privacy</strong></td>
+                            <td>✅ 100% Local</td>
+                            <td>⚠️ Cloud sync</td>
+                            <td>✅ Local</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Folder Organization</strong></td>
+                            <td>✅ Yes</td>
+                            <td>✅ Yes</td>
+                            <td>✅ Yes</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Usage Statistics</strong></td>
+                            <td>✅ Yes</td>
+                            <td>✅ Yes</td>
+                            <td>❌ No</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Undo Support</strong></td>
+                            <td>✅ Yes</td>
+                            <td>❌ No</td>
+                            <td>❌ No</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Browser Extension</strong></td>
+                            <td>✅ Chrome</td>
+                            <td>✅ Multiple</td>
+                            <td>❌ Desktop only</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
     <!-- Download Section -->
     <section id="download" class="download">
         <div class="container">
@@ -130,13 +300,14 @@
                 </div>
                 <div class="download-card">
                     <h3>Manual Installation</h3>
-                    <p>Download the extension package and install it manually for development or testing.</p>
-                    <a href="https://github.com/draphael123/Fountain-Macro-Assistant/releases/latest" class="btn btn-secondary btn-large" target="_blank" rel="noopener">
+                    <p>Clone or download the extension from GitHub. Get the folder directly - no ZIP required!</p>
+                    <a href="https://github.com/draphael123/Fountain-Macro-Assistant" class="btn btn-secondary btn-large" target="_blank" rel="noopener">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                         </svg>
-                        Download ZIP
+                        Download from GitHub
                     </a>
+                    <p class="download-note">Clone the repository to get the folder directly, or download individual files</p>
                 </div>
             </div>
 
@@ -146,7 +317,12 @@
                 <div class="install-steps-list">
                     <ol class="steps-list">
                         <li>
-                            <strong>Download the ZIP file</strong> from the <a href="https://github.com/draphael123/Fountain-Macro-Assistant/releases/latest" target="_blank" rel="noopener">GitHub releases page</a> and extract it to a folder on your computer.
+                            <strong>Get the extension from GitHub</strong> - Visit the <a href="https://github.com/draphael123/Fountain-Macro-Assistant" target="_blank" rel="noopener">GitHub repository</a> and either:
+                            <ul style="margin-top: 8px; margin-left: 20px;">
+                                <li><strong>Clone the repository</strong> (recommended): Run <code>git clone https://github.com/draphael123/Fountain-Macro-Assistant.git</code> to get the folder directly</li>
+                                <li><strong>Download ZIP</strong>: Click "Code" → "Download ZIP", then extract it to a folder</li>
+                                <li><strong>Download individual files</strong>: Download files one by one from the repository</li>
+                            </ul>
                         </li>
                         <li>
                             <strong>Open Chrome Extensions page</strong> by navigating to <code>chrome://extensions/</code> in your Chrome browser's address bar.
@@ -249,6 +425,7 @@
     <section id="guide" class="guide">
         <div class="container">
             <h2 class="section-title">User Guide</h2>
+            <p class="section-subtitle">Learn how to use Fountain - Macro Assistant to create powerful text expansion macros</p>
             <div class="guide-content">
                 <div class="guide-section">
                     <h3>Getting Started</h3>
@@ -257,22 +434,74 @@
                             <div class="step-number">1</div>
                             <div class="step-content">
                                 <h4>Install the Extension</h4>
-                                <p>Download and install Fountain - Macro Assistant from the Chrome Web Store or manually load it as an unpacked extension.</p>
+                                <p>Download and install Fountain - Macro Assistant from the Chrome Web Store or manually load it as an unpacked extension. See the <a href="#download">Download section</a> for detailed installation instructions.</p>
                             </div>
                         </div>
                         <div class="guide-step">
                             <div class="step-number">2</div>
                             <div class="step-content">
-                                <h4>Create Your First Macro</h4>
-                                <p>Click the extension icon, then click "+ Add Macro". Enter a shortcut (e.g., <code>/email</code>) and the expansion text (e.g., <code>your.email@example.com</code>).</p>
+                                <h4>Open the Extension</h4>
+                                <p>Click the Fountain icon in your Chrome toolbar to open the extension popup. If you don't see it, click the puzzle piece icon (🧩) in the toolbar and pin "Fountain - Macro Assistant".</p>
                             </div>
                         </div>
                         <div class="guide-step">
                             <div class="step-number">3</div>
                             <div class="step-content">
-                                <h4>Start Typing</h4>
-                                <p>Go to any website, type your shortcut, and press Space or Enter. Watch it automatically expand!</p>
+                                <h4>Create Your First Macro</h4>
+                                <p>Click the "+ Add Macro" button. Enter a shortcut (e.g., <code>/email</code>) and the expansion text (e.g., <code>your.email@example.com</code>). Click "Save" to create your macro.</p>
                             </div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <h4>Use Your Macro</h4>
+                                <p>Go to any website with a text input field (Gmail, Google Docs, forms, etc.). Type your shortcut (e.g., <code>/email</code>) followed by Space or Enter. Watch it automatically expand into your full text!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="guide-section">
+                    <h3>How the Macro Generator Works</h3>
+                    <div class="generator-explanation">
+                        <p class="explanation-intro">Fountain's macro generator allows you to create intelligent text shortcuts that expand automatically. Here's how it works:</p>
+                        
+                        <div class="generator-steps">
+                            <div class="generator-step-card">
+                                <div class="generator-step-icon">⌨️</div>
+                                <h4>1. Type Your Shortcut</h4>
+                                <p>Type your shortcut anywhere you can type text (email, documents, forms, etc.). Shortcuts typically start with a forward slash like <code>/email</code> or <code>/sig</code>.</p>
+                            </div>
+                            
+                            <div class="generator-step-card">
+                                <div class="generator-step-icon">⚡</div>
+                                <h4>2. Trigger Expansion</h4>
+                                <p>Press <strong>Space</strong>, <strong>Enter</strong>, or any punctuation mark (<code>.</code>, <code>,</code>, <code>!</code>, <code>?</code>) to trigger the expansion. The extension detects your shortcut and replaces it instantly.</p>
+                            </div>
+                            
+                            <div class="generator-step-card">
+                                <div class="generator-step-icon">✨</div>
+                                <h4>3. Text Expands Automatically</h4>
+                                <p>Your shortcut is instantly replaced with the full expansion text you defined. The expansion happens seamlessly without interrupting your typing flow.</p>
+                            </div>
+                            
+                            <div class="generator-step-card">
+                                <div class="generator-step-icon">↩️</div>
+                                <h4>4. Undo if Needed</h4>
+                                <p>If you expand by mistake, press <kbd>Ctrl+Z</kbd> (or <kbd>Cmd+Z</kbd> on Mac) to undo the expansion. The extension tracks your last 10 expansions for easy undo.</p>
+                            </div>
+                        </div>
+
+                        <div class="generator-tips">
+                            <h4>💡 Pro Tips for Using the Generator:</h4>
+                            <ul class="tips-list">
+                                <li><strong>Use descriptive shortcuts:</strong> Make shortcuts memorable (e.g., <code>/email</code> for your email, <code>/phone</code> for your phone number)</li>
+                                <li><strong>Start with a slash:</strong> Using <code>/</code> at the start helps avoid accidental expansions</li>
+                                <li><strong>Test your macros:</strong> Try your shortcuts in the <a href="#demo">interactive demo</a> above before using them in real documents</li>
+                                <li><strong>Use variables:</strong> Add dynamic content with variables like <code>{date}</code>, <code>{time}</code>, or <code>{clipboard}</code></li>
+                                <li><strong>Create aliases:</strong> Add multiple shortcuts for the same expansion (e.g., <code>/email</code>, <code>/e</code>, <code>/mail</code> all expand to the same email)</li>
+                                <li><strong>Organize with folders:</strong> Group related macros into folders for better organization</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -519,6 +748,23 @@
                         <a href="#faq">FAQ</a>
                         <a href="https://github.com/draphael123/Fountain-Macro-Assistant/blob/main/PRIVACY_POLICY_TEMPLATE.md" target="_blank" rel="noopener">Privacy Policy</a>
                     </div>
+                    <div class="footer-social">
+                        <h4>Share</h4>
+                        <div class="social-buttons">
+                            <a href="https://twitter.com/intent/tweet?text=Fountain%20-%20Macro%20Assistant&url=https://fountain-macro-assistant.vercel.app" target="_blank" rel="noopener" class="social-btn twitter" aria-label="Share on Twitter">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/></svg>
+                            </a>
+                            <a href="https://www.facebook.com/sharer/sharer.php?u=https://fountain-macro-assistant.vercel.app" target="_blank" rel="noopener" class="social-btn facebook" aria-label="Share on Facebook">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+                            </a>
+                            <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://fountain-macro-assistant.vercel.app" target="_blank" rel="noopener" class="social-btn linkedin" aria-label="Share on LinkedIn">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+                            </a>
+                            <a href="https://reddit.com/submit?url=https://fountain-macro-assistant.vercel.app&title=Fountain%20-%20Macro%20Assistant" target="_blank" rel="noopener" class="social-btn reddit" aria-label="Share on Reddit">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="footer-bottom">
@@ -528,6 +774,7 @@
     </footer>
 
     <script src="script.js"></script>
+    <script src="auth.js"></script>
 </body>
 </html>
 

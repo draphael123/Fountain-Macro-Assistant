@@ -11,6 +11,7 @@
     <header>
       <h1>✨ Fountain - Macro Assistant</h1>
       <div class="header-actions">
+        <button id="themeToggle" class="btn btn-secondary btn-theme" title="Toggle Dark Mode">🌙</button>
         <button id="helpBtn" class="btn btn-secondary" title="Help & Documentation">❓</button>
         <button id="addFolderBtn" class="btn btn-secondary" title="Add Folder">📁</button>
         <button id="addMacroBtn" class="btn btn-primary">+ Add Macro</button>
@@ -395,6 +396,11 @@ Sent on 12/29/2024 at 3:45:30 PM</pre>
           <small>
             <strong>Available variables:</strong> {date}, {time}, {datetime}, {year}, {month}, {day}, {hour}, {minute}, {second}, {timestamp}, {clipboard}, {newline}, {tab}
           </small>
+        </div>
+        <div class="form-group">
+          <label for="tagsInput">Tags (optional):</label>
+          <input type="text" id="tagsInput" placeholder="e.g., work, email, personal (comma-separated)" maxlength="200">
+          <small>Add tags to organize and filter your macros</small>
         </div>
         <div class="form-group">
           <label for="folderSelect">Folder:</label>

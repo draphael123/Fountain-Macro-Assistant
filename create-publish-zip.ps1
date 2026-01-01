@@ -1,8 +1,10 @@
-# PowerShell script to create a clean ZIP file for Chrome Web Store submission
+# PowerShell script to create a clean extension folder for Chrome Web Store
+# Creates a folder instead of ZIP (you can ZIP it manually if needed)
 # This excludes all development files and documentation
 
 $extensionName = "fountain-macro-assistant"
-$zipName = "$extensionName-extension.zip"
+$folderName = "$extensionName-extension"
+$outputDir = Join-Path $PSScriptRoot $folderName
 $tempFolder = "temp-publish"
 
 Write-Host "Creating clean extension package for Chrome Web Store..." -ForegroundColor Green
@@ -33,20 +35,24 @@ Copy-Item "icons\icon16.png" -Destination "$tempFolder\icons\icon16.png" -ErrorA
 Copy-Item "icons\icon48.png" -Destination "$tempFolder\icons\icon48.png" -ErrorAction SilentlyContinue
 Copy-Item "icons\icon128.png" -Destination "$tempFolder\icons\icon128.png" -ErrorAction SilentlyContinue
 
-# Remove old ZIP if exists
-if (Test-Path $zipName) {
-    Remove-Item $zipName -Force
-    Write-Host "Removed old ZIP file" -ForegroundColor Yellow
+# Remove old folder if exists
+if (Test-Path $outputDir) {
+    Remove-Item $outputDir -Recurse -Force
+    Write-Host "Removed old folder" -ForegroundColor Yellow
 }
 
-# Create ZIP file
-Write-Host "Creating ZIP file..." -ForegroundColor Yellow
-Compress-Archive -Path "$tempFolder\*" -DestinationPath $zipName -Force
+# Create output folder (instead of ZIP)
+Write-Host "Creating extension folder..." -ForegroundColor Yellow
+New-Item -ItemType Directory -Path $outputDir | Out-Null
+Copy-Item "$tempFolder\*" -Destination $outputDir -Recurse -Force
 
 # Clean up
 Remove-Item $tempFolder -Recurse -Force
 
-Write-Host "`n✅ Package created successfully: $zipName" -ForegroundColor Green
+Write-Host "`n✅ Folder created successfully: $folderName" -ForegroundColor Green
+Write-Host "`nLocation: $outputDir" -ForegroundColor Cyan
+Write-Host "`nNote: For Chrome Web Store, ZIP this folder manually:" -ForegroundColor Yellow
+Write-Host "  Right-click folder → Send to → Compressed (zipped) folder" -ForegroundColor White
 Write-Host "`nFiles included:" -ForegroundColor Cyan
 Write-Host "  - manifest.json"
 Write-Host "  - popup.html, popup.css, popup.js"

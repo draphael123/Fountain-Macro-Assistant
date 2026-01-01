@@ -1,0 +1,70 @@
+========================================
+HOW TO LOAD THE EXTENSION - SIMPLE STEPS
+========================================
+
+STEP 1: Open Chrome Extensions
+-------------------------------
+1. Open Google Chrome
+2. Type in address bar: chrome://extensions/
+3. Press Enter
+
+STEP 2: Enable Developer Mode
+------------------------------
+1. Look at TOP-RIGHT corner of the page
+2. Find toggle switch: "Developer mode"
+3. Turn it ON (click it - should highlight/change color)
+4. After turning ON, you should see new buttons appear
+
+STEP 3: Click "Load unpacked"
+------------------------------
+1. Click the "Load unpacked" button (appears after Developer mode is ON)
+2. A file picker window will open
+
+STEP 4: Select the Extension Folder
+------------------------------------
+1. In the file picker, navigate to:
+   C:\Users\danie\OneDrive\Desktop\Cursor Projects\Fountain-Macro-Assistant
+
+2. You should see a folder named: fountain-macro-assistant-extension
+
+3. Click ONCE on that folder to select it
+   (Don't double-click! Don't open it! Just click once to highlight it)
+
+4. Click "Select Folder" button (bottom right of file picker)
+
+STEP 5: Check if Extension Appears
+------------------------------------
+After clicking "Select Folder":
+- Extension should appear in the list
+- Look for "Fountain - Macro Assistant"
+
+If it doesn't appear:
+- Look for RED error messages
+- Click "Errors" button if you see one
+- Copy the error message
+
+========================================
+COMMON MISTAKES TO AVOID
+========================================
+
+❌ DON'T select manifest.json file
+❌ DON'T select popup.html file  
+❌ DON'T select any individual file
+✅ DO select the FOLDER: fountain-macro-assistant-extension
+
+❌ DON'T select the ZIP file
+✅ DO extract ZIP first, then select the extracted FOLDER
+
+❌ DON'T forget to enable Developer mode
+✅ DO make sure Developer mode toggle is ON (highlighted)
+
+========================================
+YOUR EXTENSION FOLDER PATH
+========================================
+
+C:\Users\danie\OneDrive\Desktop\Cursor Projects\Fountain-Macro-Assistant\fountain-macro-assistant-extension
+
+Copy this path and paste it in the file picker address bar to navigate there quickly!
+
+========================================
+

@@ -1,11 +1,12 @@
 {
   "manifest_version": 3,
   "name": "Fountain - Macro Assistant",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Fountain - Macro Assistant: Create text shortcuts that expand into longer snippets. Type faster with custom macros, aliases, and conditional expansions.",
   "permissions": [
     "storage",
-    "activeTab"
+    "activeTab",
+    "contextMenus"
   ],
   "host_permissions": [
     "<all_urls>"
@@ -31,6 +32,9 @@
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
-  "options_page": "options.html"
+  "options_page": "options.html",
+  "background": {
+    "service_worker": "background.js"
+  }
 }
 

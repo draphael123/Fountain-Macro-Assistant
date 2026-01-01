@@ -441,6 +441,79 @@ function insertTextAtCursor(element, text) {
   }
 }
 
+// Perform the actual expansion (helper function)
+function performExpansion(element, matchedShortcut, processedExpansion, undoState, macro) {
+  try {
+    // Remove the shortcut and replace with expansion
+    if (element.tagName.toLowerCase() === 'input' || element.tagName.toLowerCase() === 'textarea') {
+      const currentValue = element.value;
+      // Find where the matched shortcut/alias ends in the current value
+      const shortcutEnd = currentValue.length;
+      const shortcutStart = shortcutEnd - matchedShortcut.length;
+      
+      // Replace the shortcut with processed expansion
+      const newValue = currentValue.substring(0, shortcutStart) + processedExpansion;
+      undoState.newValue = newValue;
+      element.value = newValue;
+      element.selectionStart = element.selectionEnd = newValue.length;
+      
+      // Save to history
+      expansionHistory.unshift(undoState);
+      if (expansionHistory.length > MAX_HISTORY) {
+        expansionHistory.pop();
+      }
+      
+      // Show undo notification
+      showUndoNotification(undoState);
+      
+      // Update usage statistics
+      updateUsageStats(macro.id);
+      
+      // Trigger events
+      element.dispatchEvent(new Event('input', { bubbles: true }));
+      element.dispatchEvent(new Event('change', { bubbles: true }));
+    } else if (element.isContentEditable || element.contentEditable === 'true') {
+      const selection = window.getSelection();
+      if (selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        const textNode = range.startContainer;
+        
+        if (textNode.nodeType === Node.TEXT_NODE) {
+          const textContent = textNode.textContent;
+          const caseSensitive = macro.caseSensitive || false;
+          const shortcutIndex = caseSensitive 
+            ? textContent.lastIndexOf(matchedShortcut)
+            : textContent.toLowerCase().lastIndexOf(matchedShortcut.toLowerCase());
+          
+          if (shortcutIndex !== -1 && shortcutIndex + matchedShortcut.length === textContent.length) {
+            const newText = textContent.substring(0, shortcutIndex) + processedExpansion;
+            textNode.textContent = newText;
+            
+            // Set cursor to end
+            const newRange = document.createRange();
+            newRange.setStart(textNode, newText.length);
+            newRange.setEnd(textNode, newText.length);
+            selection.removeAllRanges();
+            selection.addRange(newRange);
+            
+            element.dispatchEvent(new Event('input', { bubbles: true }));
+          }
+        }
+      }
+    }
+
+    // Show notification if enabled
+    if (settings.enableNotifications) {
+      showNotification(`Expanded: ${macro.shortcut} → ${macro.expansion.substring(0, 30)}${macro.expansion.length > 30 ? '...' : ''}`);
+    }
+
+    isExpanding = false;
+  } catch (error) {
+    console.error('Fountain - Macro Assistant: Error performing expansion:', error);
+    isExpanding = false;
+  }
+}
+
 // Find and expand macro
 function expandMacro(element, text, requireTrigger = false) {
   if (isExpanding || !text) {
@@ -514,13 +587,14 @@ function expandMacro(element, text, requireTrigger = false) {
         console.log('Fountain - Macro Assistant: Expanding', matchedShortcut, '→', finalExpansion);
         isExpanding = true;
         
-        // Process macro variables
+        // Process macro variables (synchronous)
         let processedExpansion = processMacroVariables(finalExpansion);
         
-        // Handle clipboard variable asynchronously
-        (async () => {
-          processedExpansion = await processClipboardVariable(processedExpansion);
-          
+        // Check if clipboard variable is needed
+        const needsClipboard = processedExpansion.includes('{clipboard}');
+        
+        // Perform expansion synchronously (clipboard will be handled separately if needed)
+        try {
           // Get current cursor position and save state for undo
           let startPos, endPos, oldValue;
           if (element.tagName.toLowerCase() === 'input' || element.tagName.toLowerCase() === 'textarea') {
@@ -549,69 +623,21 @@ function expandMacro(element, text, requireTrigger = false) {
             timestamp: Date.now()
           };
 
-          // Remove the shortcut and replace with expansion
-          if (element.tagName.toLowerCase() === 'input' || element.tagName.toLowerCase() === 'textarea') {
-            const currentValue = element.value;
-            // Find where the matched shortcut/alias ends in the current value
-            const shortcutEnd = currentValue.length;
-            const shortcutStart = shortcutEnd - matchedShortcut.length;
-            
-            // Replace the shortcut with processed expansion
-            const newValue = currentValue.substring(0, shortcutStart) + processedExpansion;
-            undoState.newValue = newValue;
-            element.value = newValue;
-            element.selectionStart = element.selectionEnd = newValue.length;
-            
-            // Save to history
-            expansionHistory.unshift(undoState);
-            if (expansionHistory.length > MAX_HISTORY) {
-              expansionHistory.pop();
-            }
-            
-            // Show undo notification
-            showUndoNotification(undoState);
-            
-            // Update usage statistics
-            updateUsageStats(macro.id);
-            
-            // Trigger events
-            element.dispatchEvent(new Event('input', { bubbles: true }));
-            element.dispatchEvent(new Event('change', { bubbles: true }));
-        } else if (element.isContentEditable || element.contentEditable === 'true') {
-          const selection = window.getSelection();
-          if (selection.rangeCount > 0) {
-            const range = selection.getRangeAt(0);
-            const textNode = range.startContainer;
-            
-            if (textNode.nodeType === Node.TEXT_NODE) {
-              const textContent = textNode.textContent;
-              const shortcutIndex = caseSensitive 
-                ? textContent.lastIndexOf(matchedShortcut)
-                : textContent.toLowerCase().lastIndexOf(matchedShortcut.toLowerCase());
-              
-              if (shortcutIndex !== -1 && shortcutIndex + matchedShortcut.length === textContent.length) {
-                const newText = textContent.substring(0, shortcutIndex) + processedExpansion;
-                textNode.textContent = newText;
-                
-                // Set cursor to end
-                const newRange = document.createRange();
-                newRange.setStart(textNode, newText.length);
-                newRange.setEnd(textNode, newText.length);
-                selection.removeAllRanges();
-                selection.addRange(newRange);
-                
-                element.dispatchEvent(new Event('input', { bubbles: true }));
-              }
-            }
+          // Handle clipboard asynchronously if needed, otherwise expand immediately
+          if (needsClipboard) {
+            // Process clipboard asynchronously
+            processClipboardVariable(processedExpansion).then((finalExpansion) => {
+              performExpansion(element, matchedShortcut, finalExpansion, undoState, macro);
+            });
+          } else {
+            // Expand immediately (synchronous)
+            performExpansion(element, matchedShortcut, processedExpansion, undoState, macro);
           }
+        } catch (error) {
+          console.error('Fountain - Macro Assistant: Error during expansion:', error);
+          isExpanding = false;
         }
-
-        // Show notification if enabled
-        if (settings.enableNotifications) {
-          showNotification(`Expanded: ${shortcut} → ${expansion.substring(0, 30)}${expansion.length > 30 ? '...' : ''}`);
-        }
-
-        isExpanding = false;
+        
         return true;
       }
     }
