@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fountain - Macro Assistant</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1><img src="icons/logo.png" alt="Fountain" class="logo-img"> Fountain</h1>
+      <div class="header-actions">
+        <button id="quickCreateBtn" class="btn btn-icon" title="Quick Create from Clipboard" aria-label="Quick create macro from clipboard">📋</button>
+        <button id="themeToggle" class="btn btn-icon" title="Toggle Theme" aria-label="Toggle dark/light theme">🌙</button>
+        <button id="dashboardBtn" class="btn btn-icon" title="Dashboard" aria-label="Open dashboard">📊</button>
+        <button id="packagesBtn" class="btn btn-icon" title="Packages" aria-label="View snippet packages">📦</button>
+        <button id="templatesBtn" class="btn btn-icon" title="Templates" aria-label="View macro templates">📋</button>
+        <button id="addFolderBtn" class="btn btn-icon" title="New Folder" aria-label="Create new folder">📁</button>
+        <button id="helpBtn" class="btn btn-icon" title="Help" aria-label="Open help guide">❓</button>
+        <button id="addMacroBtn" class="btn btn-primary" aria-label="Create new macro">✨ New</button>
+      </div>
+    </header>
+
+    <!-- Quick Stats -->
+    <div class="quick-stats">
+      <div class="stat-item">
+        <div class="stat-icon">📝</div>
+        <div class="stat-value" id="totalMacros">0</div>
+        <div class="stat-label">Macros</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon">⚡</div>
+        <div class="stat-value" id="totalExpansions">0</div>
+        <div class="stat-label">Expansions</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon">⏱️</div>
+        <div class="stat-value" id="timeSaved">0m</div>
+        <div class="stat-label">Saved</div>
+      </div>
+    </div>
+
+    <!-- Favorites Section -->
+    <div class="favorites-section" id="favoritesSection" style="display: none;">
+      <div class="section-header">
+        <span class="section-title"><span class="icon">⭐</span> Favorites</span>
+      </div>
+      <div class="recent-macros" id="favoritesMacros"></div>
+    </div>
+
+    <!-- Recent Macros -->
+    <div class="recent-section" id="recentSection" style="display: none;">
+      <div class="section-header">
+        <span class="section-title"><span class="icon">🕐</span> Recent</span>
+        <button id="clearRecentBtn" class="btn btn-sm btn-secondary" style="display: none;">Clear</button>
+      </div>
+      <div class="recent-macros" id="recentMacros"></div>
+    </div>
+    
+    <!-- Domain Suggestions -->
+    <div class="domain-suggestions-section" id="domainSuggestionsSection" style="display: none;">
+      <div class="section-header">
+        <span class="section-title"><span class="icon">🌐</span> Suggested for <span id="currentDomainName"></span></span>
+      </div>
+      <div class="suggested-macros" id="suggestedMacros"></div>
+    </div>
+
+    <!-- Search & Filter -->
+    <div class="controls-row">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search macros... (Press / to focus)" autocomplete="off" aria-label="Search macros" aria-describedby="search-help">
+        <span id="search-help" class="sr-only">Type to search macros. Press / to focus, use :sig for signatures, :fav for favorites</span>
+        <div id="searchSuggestions" class="search-suggestions" style="display: none;"></div>
+      </div>
+      <div class="filter-buttons">
+        <button id="filterFavoritesBtn" class="filter-btn" data-filter="favorites" title="Show favorites only">⭐</button>
+        <button id="filterRecentBtn" class="filter-btn" data-filter="recent" title="Show recent">🕐</button>
+        <button id="filterTagsBtn" class="filter-btn" data-filter="tags" title="Filter by tags">🏷️</button>
+      </div>
+      <select id="folderFilter" class="filter-select" aria-label="Filter by folder">
+        <option value="all">All Folders</option>
+      </select>
+      <select id="sortSelect" class="filter-select" aria-label="Sort macros">
+        <option value="name">A-Z</option>
+        <option value="usage">Most Used</option>
+        <option value="recent">Recent</option>
+        <option value="created">Newest</option>
+      </select>
+      <div class="view-toggle">
+        <button id="viewListBtn" class="view-btn active" data-view="list" title="List view" aria-label="List view">☰</button>
+        <button id="viewGridBtn" class="view-btn" data-view="grid" title="Grid view" aria-label="Grid view">⊞</button>
+        <button id="viewCompactBtn" class="view-btn" data-view="compact" title="Compact view" aria-label="Compact view">▸</button>
+      </div>
+    </div>
+    
+    <!-- Active Filters Display -->
+    <div id="activeFilters" class="active-filters" style="display: none;">
+      <span class="active-filter-label">Active filters:</span>
+      <div id="activeFiltersList" class="active-filters-list"></div>
+      <button id="clearFiltersBtn" class="btn btn-sm btn-secondary">Clear All</button>
+    </div>
+
+    <!-- Bulk Actions -->
+    <div class="bulk-actions" id="bulkActions">
+      <span class="bulk-count"><span id="selectedCount">0</span> selected</span>
+      <div class="bulk-buttons">
+        <button id="bulkFavoriteBtn" class="btn btn-sm">⭐</button>
+        <button id="bulkMoveBtn" class="btn btn-sm">📁 Move</button>
+        <button id="bulkExportBtn" class="btn btn-sm">📤</button>
+        <button id="bulkDeleteBtn" class="btn btn-sm">🗑️</button>
+        <button id="bulkCancelBtn" class="btn btn-sm">✕</button>
+      </div>
+    </div>
+
+    <!-- Macros List -->
+    <div id="macrosList" class="macros-list" role="list" aria-label="Macros list"></div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="empty-state hidden">
+      <div class="empty-state-icon">💧</div>
+      <h3>No macros yet!</h3>
+      <p>Create your first shortcut and start typing faster</p>
+      <div class="empty-state-actions">
+        <button id="emptyAddBtn" class="btn btn-primary">✨ Create Macro</button>
+        <button id="emptyTemplateBtn" class="btn btn-secondary">📋 Use Template</button>
+        <button id="emptySampleBtn" class="btn btn-secondary">🎯 Add Samples</button>
+      </div>
+      <div class="empty-state-tips">
+        <p><strong>💡 Quick Tips:</strong></p>
+        <ul>
+          <li>Press <kbd>/</kbd> to quickly search</li>
+          <li>Use <kbd>Ctrl+N</kbd> to create a new macro</li>
+          <li>Try templates for common use cases</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Onboarding Overlay -->
+  <div id="onboardingOverlay" class="onboarding-overlay" style="display: none;">
+    <div class="onboarding-content">
+      <img src="icons/logo.png" alt="Fountain" class="onboarding-logo">
+      <h2 class="onboarding-title">Welcome to Fountain!</h2>
+      <p class="onboarding-text" id="onboardingText">Type shortcuts that magically expand into longer text. Save time, type less, do more!</p>
+      <div class="onboarding-steps">
+        <div class="onboarding-step active" data-step="0"></div>
+        <div class="onboarding-step" data-step="1"></div>
+        <div class="onboarding-step" data-step="2"></div>
+        <div class="onboarding-step" data-step="3"></div>
+      </div>
+      <div class="onboarding-buttons">
+        <button id="onboardingSkip" class="btn btn-secondary">Skip</button>
+        <button id="onboardingNext" class="btn btn-primary">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Help Modal -->
+  <div id="helpModal" class="modal">
+    <div class="modal-content help-modal-content">
+      <div class="modal-header">
+        <h2>📖 User Guide</h2>
+        <button class="close-btn" id="closeHelpModal">&times;</button>
+      </div>
+      <div class="modal-body help-body">
+        <div class="help-nav">
+          <button class="help-nav-btn active" data-section="getting-started">🚀 Start</button>
+          <button class="help-nav-btn" data-section="variables">🔤 Variables</button>
+          <button class="help-nav-btn" data-section="advanced">⚡ Advanced</button>
+          <button class="help-nav-btn" data-section="regex">🎯 Regex</button>
+          <button class="help-nav-btn" data-section="javascript">💻 JavaScript</button>
+          <button class="help-nav-btn" data-section="tips">💡 Tips</button>
+        </div>
+        
+        <div class="help-content">
+          <!-- Getting Started -->
+          <div class="help-section active" id="section-getting-started">
+            <h3>🚀 Getting Started</h3>
+            <p>Welcome to Fountain! Create text shortcuts that expand into longer snippets.</p>
+            
+            <h4>Quick Start</h4>
+            <ol>
+              <li>Click <strong>"✨ New"</strong> to create a macro</li>
+              <li>Enter a shortcut (e.g., <code>/email</code>)</li>
+              <li>Enter the expansion text</li>
+              <li>Type your shortcut + Space anywhere!</li>
+            </ol>
+            
+            <h4>Keyboard Shortcuts</h4>
+            <ul>
+              <li><kbd class="kbd">Ctrl+Shift+M</kbd> - Open Fountain</li>
+              <li><kbd class="kbd">Ctrl+Shift+N</kbd> - Quick create</li>
+              <li><kbd class="kbd">Ctrl+Z</kbd> - Undo expansion</li>
+            </ul>
+          </div>
+          
+          <!-- Variables -->
+          <div class="help-section" id="section-variables">
+            <h3>🔤 Variables</h3>
+            
+            <h4>Date & Time</h4>
+            <table class="help-table">
+              <tr><td><code>{date}</code></td><td>Current date</td></tr>
+              <tr><td><code>{time}</code></td><td>Current time</td></tr>
+              <tr><td><code>{date:YYYY-MM-DD}</code></td><td>Custom format</td></tr>
+              <tr><td><code>{datetime}</code></td><td>Date and time</td></tr>
+            </table>
+            
+            <h4>Special</h4>
+            <table class="help-table">
+              <tr><td><code>{cursor}</code></td><td>Place cursor here after expansion</td></tr>
+              <tr><td><code>{input:Label}</code></td><td>Prompt for input</td></tr>
+              <tr><td><code>{clipboard}</code></td><td>Paste clipboard content</td></tr>
+              <tr><td><code>{counter:name}</code></td><td>Auto-incrementing counter</td></tr>
+              <tr><td><code>{random:a|b|c}</code></td><td>Random selection</td></tr>
+              <tr><td><code>{macro:/other}</code></td><td>Nest another macro</td></tr>
+            </table>
+            
+            <div class="help-example">
+              <p><strong>Example:</strong></p>
+              <pre>Invoice #{counter:invoice}
+Date: {date:YYYY-MM-DD}
+Client: {input:Client Name}
+{cursor}</pre>
+            </div>
+          </div>
+          
+          <!-- Advanced -->
+          <div class="help-section" id="section-advanced">
+            <h3>⚡ Advanced Features</h3>
+            
+            <h4>Conditional Expansions</h4>
+            <p>Different text based on time or day:</p>
+            <div class="help-example">
+              <pre>Morning (0-12): "Good morning!"
+Afternoon (12-18): "Good afternoon!"
+Evening (18-24): "Good evening!"</pre>
+            </div>
+            
+            <h4>Domain Filtering</h4>
+            <p>Restrict macros to specific websites:</p>
+            <ul>
+              <li>Email signatures only on Gmail</li>
+              <li>Code snippets only on GitHub</li>
+            </ul>
+            
+            <h4>Typewriter Effect</h4>
+            <p>Enable animated typing for expansions in settings.</p>
+          </div>
+          
+          <!-- Regex -->
+          <div class="help-section" id="section-regex">
+            <h3>🎯 Regex Patterns</h3>
+            <p>Use regular expressions for dynamic triggers:</p>
+            
+            <div class="help-example">
+              <p><strong>Pattern:</strong> <code>/issue-(\d+)</code></p>
+              <p><strong>Expansion:</strong> <code>https://github.com/org/repo/issues/$1</code></p>
+              <p><strong>Type:</strong> <code>/issue-123</code></p>
+              <p><strong>Result:</strong> <code>https://github.com/org/repo/issues/123</code></p>
+            </div>
+            
+            <h4>Capture Groups</h4>
+            <ul>
+              <li><code>$1</code> - First capture group</li>
+              <li><code>$2</code> - Second capture group</li>
+              <li><code>$&</code> - Entire match</li>
+            </ul>
+          </div>
+          
+          <!-- JavaScript -->
+          <div class="help-section" id="section-javascript">
+            <h3>💻 JavaScript Snippets</h3>
+            <p>Execute JavaScript in your expansions:</p>
+            
+            <div class="help-example">
+              <p><strong>Example:</strong></p>
+              <pre>{js:new Date().toLocaleDateString('en-US', {weekday: 'long'})}
+// Output: "Thursday"
+
+{js:Math.floor(Math.random() * 100)}
+// Output: Random number 0-99</pre>
+            </div>
+            
+            <h4>Available Context</h4>
+            <ul>
+              <li><code>Date</code>, <code>Math</code>, <code>String</code></li>
+              <li><code>encodeURIComponent()</code></li>
+              <li><code>JSON.stringify()</code></li>
+            </ul>
+            
+            <p style="color: var(--color-yellow);">⚠️ JavaScript runs in a sandboxed environment for security.</p>
+          </div>
+          
+          <!-- Tips -->
+          <div class="help-section" id="section-tips">
+            <h3>💡 Pro Tips</h3>
+            
+            <h4>Naming Shortcuts</h4>
+            <ul>
+              <li>Start with <code>/</code> or <code>.</code> to avoid conflicts</li>
+              <li>Keep them short but memorable</li>
+              <li>Use consistent prefixes (<code>/email</code>, <code>/sig</code>)</li>
+            </ul>
+            
+            <h4>Organization</h4>
+            <ul>
+              <li>Use folders for categories (Work, Personal)</li>
+              <li>Star frequently used macros</li>
+              <li>Add tags for easy filtering</li>
+            </ul>
+            
+            <h4>Power User</h4>
+            <ul>
+              <li>Combine variables: <code>{input:Name} on {date}</code></li>
+              <li>Nest macros for complex templates</li>
+              <li>Use regex for dynamic patterns</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="modal-footer-right">
+          <button id="closeHelpBtn" class="btn btn-primary">Got it! 🎉</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add/Edit Macro Modal -->
+  <div id="macroModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">✨ New Macro</h2>
+        <button class="close-btn" id="closeModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="shortcutInput">Shortcut</label>
+          <input type="text" id="shortcutInput" placeholder="e.g., /email, .sig, @hello">
+          <small>What you'll type to trigger the expansion</small>
+        </div>
+        
+        <div class="form-group">
+          <label for="aliasesInput">Aliases <span style="color: var(--text-muted);">(optional)</span></label>
+          <input type="text" id="aliasesInput" placeholder="e.g., /e, /mail (comma-separated)">
+        </div>
+        
+        <div class="form-group">
+          <label for="expansionInput">Expansion</label>
+          <textarea id="expansionInput" placeholder="Enter the text that will replace the shortcut...&#10;&#10;Variables: {date}, {cursor}, {input:Name}, {random:Hi|Hello}" rows="5"></textarea>
+          <small>
+            <code>{cursor}</code> <code>{input:Label}</code> <code>{date:FORMAT}</code> <code>{counter:name}</code> <code>{random:a|b}</code> <code>{macro:/other}</code> <code>{js:code}</code>
+          </small>
+        </div>
+        
+        <!-- Test Sandbox -->
+        <div class="test-sandbox">
+          <div class="test-sandbox-header">
+            <span class="test-sandbox-title">🧪 Test Preview</span>
+            <button type="button" id="testExpansionBtn" class="btn btn-sm btn-secondary">Run Test</button>
+          </div>
+          <div class="test-sandbox-output" id="testOutput">Click "Run Test" to preview your expansion</div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="folderSelect">Folder</label>
+            <select id="folderSelect">
+              <option value="">No Folder</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="tagsInput">Tags</label>
+            <input type="text" id="tagsInput" placeholder="work, email">
+          </div>
+        </div>
+        
+        <!-- Domain Filter -->
+        <div class="form-group">
+          <label>Domain Filter <span style="color: var(--text-muted);">(leave empty for everywhere)</span></label>
+          <div class="domain-input-group">
+            <input type="text" id="domainInput" placeholder="gmail.com">
+            <button type="button" id="addDomainBtn" class="btn btn-secondary btn-sm">Add</button>
+          </div>
+          <div class="domain-tags" id="domainTags"></div>
+        </div>
+        
+        <!-- Blacklist -->
+        <div class="form-group">
+          <div class="checkbox-group">
+            <label>
+              <input type="checkbox" id="showBlacklistCheck">
+              Site blacklist (never expand on these sites)
+            </label>
+          </div>
+          <div class="blacklist-section" id="blacklistSection" style="display: none;">
+            <h4>🚫 Blacklisted Sites</h4>
+            <div class="domain-input-group">
+              <input type="text" id="blacklistInput" placeholder="example.com">
+              <button type="button" id="addBlacklistBtn" class="btn btn-secondary btn-sm">Add</button>
+            </div>
+            <div class="domain-tags" id="blacklistTags"></div>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <div class="checkbox-group">
+              <label>
+                <input type="checkbox" id="caseSensitiveCheck">
+                Case sensitive
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="checkbox-group">
+              <label>
+                <input type="checkbox" id="isRegexCheck">
+                Regex pattern
+              </label>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <div class="checkbox-group">
+            <label>
+              <input type="checkbox" id="typewriterCheck">
+              Typewriter effect (animate typing)
+            </label>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <div class="checkbox-group">
+            <label>
+              <input type="checkbox" id="enableConditionsCheck">
+              Conditional expansion (time/day based)
+            </label>
+          </div>
+          <div id="conditionsPanel" class="conditions-panel" style="display: none;">
+            <h4>⚡ Conditions</h4>
+            <div class="form-group">
+              <label>Time Range (hours 0-23)</label>
+              <div class="time-range-inputs">
+                <input type="number" id="timeStart" placeholder="Start" min="0" max="23">
+                <span>to</span>
+                <input type="number" id="timeEnd" placeholder="End" min="0" max="23">
+              </div>
+            </div>
+            <div class="checkbox-group" style="margin-bottom: 12px;">
+              <label>
+                <input type="checkbox" id="weekdayOnlyCheck">
+                Weekdays only (Mon-Fri)
+              </label>
+            </div>
+            <div id="conditionalExpansions"></div>
+            <button type="button" id="addConditionalBtn" class="btn btn-secondary btn-sm">+ Add Conditional</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="modal-footer-left">
+          <button id="duplicateMacroBtn" class="btn btn-secondary" style="display: none;">📋 Duplicate</button>
+          <button id="deleteMacroBtn" class="btn btn-danger" style="display: none;">🗑️ Delete</button>
+        </div>
+        <div class="modal-footer-right">
+          <button id="cancelBtn" class="btn btn-secondary">Cancel</button>
+          <button id="saveMacroBtn" class="btn btn-primary">💾 Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Folder Modal -->
+  <div id="folderModal" class="modal">
+    <div class="modal-content" style="max-width: 400px;">
+      <div class="modal-header">
+        <h2>📁 New Folder</h2>
+        <button class="close-btn" id="closeFolderModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="folderNameInput">Folder Name</label>
+          <input type="text" id="folderNameInput" placeholder="e.g., Work, Personal" maxlength="30">
+        </div>
+        <div class="form-group">
+          <label>Color</label>
+          <div class="folder-color-picker" id="folderColorPicker">
+            <div class="color-option selected" data-color="#00b3b3" style="background: #00b3b3;"></div>
+            <div class="color-option" data-color="#3b82f6" style="background: #3b82f6;"></div>
+            <div class="color-option" data-color="#8b5cf6" style="background: #8b5cf6;"></div>
+            <div class="color-option" data-color="#ec4899" style="background: #ec4899;"></div>
+            <div class="color-option" data-color="#f59e0b" style="background: #f59e0b;"></div>
+            <div class="color-option" data-color="#10b981" style="background: #10b981;"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="modal-footer-right">
+          <button id="cancelFolderBtn" class="btn btn-secondary">Cancel</button>
+          <button id="saveFolderBtn" class="btn btn-primary">Create</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Templates Modal -->
+  <div id="templatesModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>📋 Templates</h2>
+        <button class="close-btn" id="closeTemplatesModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="color: var(--text-secondary); margin-bottom: 16px;">Click a template to add it:</p>
+        <div class="templates-grid" id="templatesGrid"></div>
+      </div>
+      <div class="modal-footer">
+        <div class="modal-footer-right">
+          <button id="closeTemplatesBtn" class="btn btn-secondary">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Packages Modal -->
+  <div id="packagesModal" class="modal">
+    <div class="modal-content" style="max-width: 520px;">
+      <div class="modal-header">
+        <h2>📦 Snippet Packages</h2>
+        <button class="close-btn" id="closePackagesModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="packages-section">
+          <div class="packages-section-title">🔥 Popular Packages</div>
+          <div id="packagesGrid"></div>
+        </div>
+        <div class="packages-section">
+          <div class="packages-section-title">📤 Share Your Macros</div>
+          <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 12px;">Export your macros as a shareable package</p>
+          <button id="createPackageBtn" class="btn btn-secondary">Create Package</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="modal-footer-right">
+          <button id="closePackagesBtn" class="btn btn-secondary">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard Modal -->
+  <div id="dashboardModal" class="modal">
+    <div class="modal-content" style="max-width: 600px;">
+      <div class="modal-header">
+        <h2>📊 Dashboard</h2>
+        <button class="close-btn" id="closeDashboardModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="dashboard-grid">
+          <div class="dashboard-card">
+            <div class="dashboard-card-title">Total Macros</div>
+            <div class="dashboard-card-value" id="dashTotalMacros">0</div>
+          </div>
+          <div class="dashboard-card">
+            <div class="dashboard-card-title">Total Expansions</div>
+            <div class="dashboard-card-value" id="dashTotalExpansions">0</div>
+          </div>
+          <div class="dashboard-card">
+            <div class="dashboard-card-title">Characters Saved</div>
+            <div class="dashboard-card-value" id="dashCharsSaved">0</div>
+            <div class="dashboard-card-subtitle" id="dashTimeSaved">~0 min saved</div>
+          </div>
+          <div class="dashboard-card">
+            <div class="dashboard-card-title">Most Active</div>
+            <div class="dashboard-card-value" id="dashMostActiveDay">-</div>
+          </div>
+        </div>
+        
+        <!-- Heatmap -->
+        <div class="heatmap-container">
+          <div class="heatmap-title">📅 Activity (Last 4 Weeks)</div>
+          <div class="heatmap-grid" id="heatmapGrid">
+            <div class="heatmap-day-label">S</div>
+            <div class="heatmap-day-label">M</div>
+            <div class="heatmap-day-label">T</div>
+            <div class="heatmap-day-label">W</div>
+            <div class="heatmap-day-label">T</div>
+            <div class="heatmap-day-label">F</div>
+            <div class="heatmap-day-label">S</div>
+            <!-- Cells will be generated by JS -->
+          </div>
+          <div class="heatmap-legend">
+            Less
+            <div class="heatmap-legend-cell level-0"></div>
+            <div class="heatmap-legend-cell level-1"></div>
+            <div class="heatmap-legend-cell level-2"></div>
+            <div class="heatmap-legend-cell level-3"></div>
+            <div class="heatmap-legend-cell level-4"></div>
+            <div class="heatmap-legend-cell level-5"></div>
+            More
+          </div>
+        </div>
+        
+        <div class="chart-container">
+          <div class="chart-title">🏆 Top 5 Macros</div>
+          <div class="bar-chart" id="topMacrosChart"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="modal-footer-left">
+          <button id="resetStatsBtn" class="btn btn-danger btn-sm">Reset Stats</button>
+        </div>
+        <div class="modal-footer-right">
+          <button id="closeDashboardBtn" class="btn btn-primary">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bulk Move Modal -->
+  <div id="bulkMoveModal" class="modal">
+    <div class="modal-content" style="max-width: 380px;">
+      <div class="modal-header">
+        <h2>📁 Move to Folder</h2>
+        <button class="close-btn" id="closeBulkMoveModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="bulkFolderSelect">Select Folder</label>
+          <select id="bulkFolderSelect">
+            <option value="">No Folder</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="modal-footer-right">
+          <button id="cancelBulkMoveBtn" class="btn btn-secondary">Cancel</button>
+          <button id="confirmBulkMoveBtn" class="btn btn-primary">Move</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Create Modal -->
+  <div id="quickCreateModal" class="modal">
+    <div class="modal-content" style="max-width: 400px;">
+      <div class="modal-header">
+        <h2>⚡ Quick Create</h2>
+        <button class="close-btn" id="closeQuickCreateModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="quickShortcutInput">Shortcut</label>
+          <input type="text" id="quickShortcutInput" placeholder="/shortcut" autofocus>
+        </div>
+        <div class="form-group">
+          <label for="quickExpansionInput">Expansion</label>
+          <textarea id="quickExpansionInput" rows="3" placeholder="Expansion text..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="modal-footer-right">
+          <button id="cancelQuickCreateBtn" class="btn btn-secondary">Cancel</button>
+          <button id="saveQuickCreateBtn" class="btn btn-primary">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Context Menu -->
+  <div id="contextMenu" class="context-menu" style="display: none;" role="menu" aria-label="Macro context menu">
+    <button class="context-menu-item" data-action="edit" role="menuitem">
+      <span>✏️ Edit</span>
+      <kbd>Enter</kbd>
+    </button>
+    <button class="context-menu-item" data-action="duplicate" role="menuitem">
+      <span>📋 Duplicate</span>
+    </button>
+    <button class="context-menu-item" data-action="favorite" role="menuitem">
+      <span>⭐ Favorite</span>
+    </button>
+    <button class="context-menu-item" data-action="copy-shortcut" role="menuitem">
+      <span>📝 Copy Shortcut</span>
+    </button>
+    <button class="context-menu-item" data-action="copy-expansion" role="menuitem">
+      <span>📄 Copy Expansion</span>
+    </button>
+    <hr class="context-menu-divider">
+    <button class="context-menu-item danger" data-action="delete" role="menuitem">
+      <span>🗑️ Delete</span>
+      <kbd>Del</kbd>
+    </button>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
