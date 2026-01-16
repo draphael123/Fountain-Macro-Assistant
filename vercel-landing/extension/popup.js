@@ -1098,9 +1098,14 @@ function openPackages() {
           <span>👤 ${p.author}</span>
         </div>
       </div>
-      <button class="btn btn-sm btn-primary install-package-btn" data-index="${i}" style="margin-top: 8px;">
-        ⬇️ Install
-      </button>
+      <div class="package-actions" style="display: flex; gap: 6px; margin-top: 8px;">
+        <button class="btn btn-sm btn-primary install-package-btn" data-index="${i}" style="flex: 1;">
+          ⬇️ Install
+        </button>
+        <button class="btn btn-sm btn-secondary download-package-btn" data-index="${i}" title="Download as JSON">
+          💾
+        </button>
+      </div>
     </div>
   `).join('');
   
@@ -1109,6 +1114,14 @@ function openPackages() {
       e.stopPropagation();
       const index = parseInt(btn.dataset.index);
       await installPackage(index);
+    });
+  });
+  
+  grid.querySelectorAll('.download-package-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const index = parseInt(btn.dataset.index);
+      downloadPackage(index);
     });
   });
   
@@ -1128,7 +1141,7 @@ function previewPackage(index) {
     <div style="padding: 16px;">
       <h3 style="margin-bottom: 12px;">${pkg.icon} ${pkg.name}</h3>
       <p style="color: var(--text-secondary); margin-bottom: 16px;">${pkg.desc}</p>
-      <div style="max-height: 300px; overflow-y: auto;">
+      <div style="max-height: 250px; overflow-y: auto;">
         ${pkg.macros.map(m => `
           <div style="background: var(--bg-secondary); padding: 10px 12px; border-radius: 8px; margin-bottom: 8px;">
             <code style="color: var(--primary); font-weight: 600;">${escapeHtml(m.shortcut)}</code>
@@ -1138,9 +1151,14 @@ function previewPackage(index) {
           </div>
         `).join('')}
       </div>
-      <button class="btn btn-primary" style="width: 100%; margin-top: 16px;" onclick="installPackage(${index}); closeModal('packagesModal');">
-        ⬇️ Install ${pkg.macros.length} Macros
-      </button>
+      <div style="display: flex; gap: 8px; margin-top: 16px;">
+        <button class="btn btn-primary" style="flex: 1;" onclick="installPackage(${index}); document.getElementById('packagePreviewModal')?.remove();">
+          ⬇️ Install
+        </button>
+        <button class="btn btn-secondary" style="flex: 1;" onclick="downloadPackage(${index});">
+          💾 Download
+        </button>
+      </div>
     </div>
   `;
   
@@ -1163,6 +1181,38 @@ function previewPackage(index) {
   modal.addEventListener('click', (e) => {
     if (e.target === modal) modal.remove();
   });
+}
+
+function downloadPackage(index) {
+  const pkg = PACKAGES[index];
+  
+  // Format macros for export
+  const exportData = {
+    name: pkg.name,
+    description: pkg.desc,
+    author: pkg.author,
+    icon: pkg.icon,
+    exportedAt: new Date().toISOString(),
+    macros: pkg.macros.map(m => ({
+      shortcut: m.shortcut,
+      expansion: m.expansion,
+      folder: pkg.name,
+      aliases: [],
+      createdAt: new Date().toISOString()
+    }))
+  };
+  
+  const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `fountain-package-${pkg.name.toLowerCase().replace(/\s+/g, '-')}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  
+  showToast(`📦 Downloaded ${pkg.name} package!`, 'success');
 }
 
 async function installPackage(index) {
