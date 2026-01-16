@@ -1033,8 +1033,193 @@ function openDashboard() {
 }
 
 function openSharedMacros() {
-  // Open the shared macros library on the website
-  chrome.tabs.create({ url: 'https://fountain-macro-assistant.vercel.app/shared.html' });
+  showModal('sharedModal');
+  loadSharedMacros();
+}
+
+async function loadSharedMacros() {
+  const listEl = document.getElementById('sharedMacrosList');
+  const emptyEl = document.getElementById('sharedEmpty');
+  
+  listEl.innerHTML = `
+    <div class="shared-loading" style="text-align: center; padding: 40px; color: var(--text-secondary);">
+      <div style="font-size: 32px; margin-bottom: 8px;">🔄</div>
+      <p>Loading shared macros...</p>
+    </div>
+  `;
+  
+  try {
+    const response = await fetch('https://fountain-macro-assistant.vercel.app/api/shared-macros/list');
+    const result = await response.json();
+    
+    if (result.success && result.macros && result.macros.length > 0) {
+      window.sharedMacrosData = result.macros;
+      renderSharedMacros(result.macros);
+      emptyEl.style.display = 'none';
+    } else {
+      // Show sample macros if API returns empty
+      const sampleMacros = getSampleSharedMacros();
+      window.sharedMacrosData = sampleMacros;
+      renderSharedMacros(sampleMacros);
+      emptyEl.style.display = 'none';
+    }
+  } catch (e) {
+    console.error('Error loading shared macros:', e);
+    // Show sample macros on error
+    const sampleMacros = getSampleSharedMacros();
+    window.sharedMacrosData = sampleMacros;
+    renderSharedMacros(sampleMacros);
+    emptyEl.style.display = 'none';
+  }
+}
+
+function getSampleSharedMacros() {
+  return [
+    {
+      id: 'sig-pro',
+      shortcut: '/sig',
+      expansion: 'Best regards,\\n{input:Your Name}\\n{input:Title} | {input:Company}\\n📧 {input:Email}',
+      description: 'Professional email signature with dynamic fields',
+      category: 'professional',
+      author: 'Fountain Team',
+      downloads: 1250
+    },
+    {
+      id: 'date-today',
+      shortcut: '/today',
+      expansion: '{date:MMMM D, YYYY}',
+      description: 'Insert today\'s date in a nice format',
+      category: 'personal',
+      author: 'Fountain Team',
+      downloads: 890
+    },
+    {
+      id: 'email-followup',
+      shortcut: '/followup',
+      expansion: 'Hi {input:Name},\\n\\nJust following up on my previous email. Please let me know if you have any questions.\\n\\nBest regards',
+      description: 'Quick follow-up email template',
+      category: 'professional',
+      author: 'Fountain Team',
+      downloads: 756
+    },
+    {
+      id: 'code-console',
+      shortcut: '/clog',
+      expansion: 'console.log(\'{cursor}\');',
+      description: 'Quick console.log with cursor placement',
+      category: 'developer',
+      author: 'Fountain Team',
+      downloads: 2100
+    },
+    {
+      id: 'meeting-notes',
+      shortcut: '/meeting',
+      expansion: '## Meeting Notes - {date:MMM D}\\n\\n**Attendees:** {input:Attendees}\\n**Topic:** {input:Topic}\\n\\n### Discussion\\n{cursor}\\n\\n### Action Items\\n- ',
+      description: 'Meeting notes template with date',
+      category: 'professional',
+      author: 'Fountain Team',
+      downloads: 543
+    },
+    {
+      id: 'thank-you',
+      shortcut: '/thanks',
+      expansion: 'Thank you so much for {input:reason}! I really appreciate it.',
+      description: 'Quick thank you message',
+      category: 'personal',
+      author: 'Fountain Team',
+      downloads: 421
+    }
+  ];
+}
+
+function renderSharedMacros(macrosList, filter = 'all', search = '') {
+  const listEl = document.getElementById('sharedMacrosList');
+  
+  let filtered = macrosList;
+  
+  if (filter !== 'all') {
+    filtered = filtered.filter(m => m.category === filter);
+  }
+  
+  if (search) {
+    const searchLower = search.toLowerCase();
+    filtered = filtered.filter(m => 
+      m.shortcut.toLowerCase().includes(searchLower) ||
+      m.description?.toLowerCase().includes(searchLower) ||
+      m.expansion.toLowerCase().includes(searchLower)
+    );
+  }
+  
+  if (filtered.length === 0) {
+    listEl.innerHTML = `
+      <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+        <div style="font-size: 32px; margin-bottom: 8px;">🔍</div>
+        <p>No macros found</p>
+      </div>
+    `;
+    return;
+  }
+  
+  listEl.innerHTML = filtered.map(macro => `
+    <div class="shared-macro-item" style="background: var(--bg-secondary); border-radius: 12px; padding: 16px; border: 1px solid var(--border);">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+        <div>
+          <code style="background: var(--primary); color: white; padding: 4px 8px; border-radius: 4px; font-weight: 600;">${escapeHtml(macro.shortcut)}</code>
+          <span style="font-size: 11px; color: var(--text-secondary); margin-left: 8px;">${macro.downloads || 0} imports</span>
+        </div>
+        <button class="btn btn-sm btn-primary import-shared-btn" data-id="${macro.id}" style="padding: 6px 12px; font-size: 12px;">
+          ⬇️ Import
+        </button>
+      </div>
+      <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 8px;">${escapeHtml(macro.description || '')}</p>
+      <div style="background: var(--bg); padding: 8px 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: var(--text); white-space: pre-wrap; max-height: 60px; overflow: hidden;">${escapeHtml(macro.expansion.replace(/\\n/g, '\n'))}</div>
+    </div>
+  `).join('');
+  
+  // Add click handlers for import buttons
+  listEl.querySelectorAll('.import-shared-btn').forEach(btn => {
+    btn.addEventListener('click', () => importSharedMacro(btn.dataset.id));
+  });
+}
+
+async function importSharedMacro(macroId) {
+  const macro = window.sharedMacrosData?.find(m => m.id === macroId);
+  if (!macro) return;
+  
+  // Check if shortcut already exists
+  const exists = macros.some(m => m.shortcut === macro.shortcut);
+  if (exists) {
+    if (!confirm(`A macro with shortcut "${macro.shortcut}" already exists. Import anyway with a modified shortcut?`)) {
+      return;
+    }
+    macro.shortcut = macro.shortcut + '_imported';
+  }
+  
+  // Create new macro from shared
+  const newMacro = {
+    id: Date.now().toString(),
+    shortcut: macro.shortcut,
+    expansion: macro.expansion.replace(/\\n/g, '\n'),
+    description: macro.description || '',
+    folder: '',
+    aliases: [],
+    createdAt: Date.now(),
+    usageCount: 0
+  };
+  
+  macros.push(newMacro);
+  await saveMacros();
+  renderMacros();
+  
+  showToast(`Imported "${macro.shortcut}" successfully! 🎉`, 'success');
+  
+  // Update button to show imported
+  const btn = document.querySelector(`.import-shared-btn[data-id="${macroId}"]`);
+  if (btn) {
+    btn.textContent = '✓ Imported';
+    btn.disabled = true;
+    btn.style.opacity = '0.6';
+  }
 }
 
 function updateDashboard() {
@@ -1219,6 +1404,29 @@ function setupEventListeners() {
   document.getElementById('packagesBtn')?.addEventListener('click', openPackages);
   document.getElementById('dashboardBtn')?.addEventListener('click', openDashboard);
   document.getElementById('sharedBtn')?.addEventListener('click', openSharedMacros);
+  
+  // Shared Macros Modal
+  document.getElementById('closeSharedModal')?.addEventListener('click', () => closeModal('sharedModal'));
+  document.getElementById('closeSharedBtn')?.addEventListener('click', () => closeModal('sharedModal'));
+  document.getElementById('sharedSearchInput')?.addEventListener('input', (e) => {
+    const search = e.target.value;
+    const activeCategory = document.querySelector('.shared-category.active')?.dataset.category || 'all';
+    renderSharedMacros(window.sharedMacrosData || [], activeCategory, search);
+  });
+  document.querySelectorAll('.shared-category').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.shared-category').forEach(b => {
+        b.classList.remove('active');
+        b.style.background = 'var(--bg-secondary)';
+        b.style.color = 'inherit';
+      });
+      btn.classList.add('active');
+      btn.style.background = 'var(--primary)';
+      btn.style.color = 'white';
+      const search = document.getElementById('sharedSearchInput')?.value || '';
+      renderSharedMacros(window.sharedMacrosData || [], btn.dataset.category, search);
+    });
+  });
   
   // Search & filters
   document.getElementById('searchInput')?.addEventListener('input', e => renderMacros(e.target.value));
