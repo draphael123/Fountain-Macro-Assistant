@@ -1032,6 +1032,11 @@ function openDashboard() {
   showModal('dashboardModal');
 }
 
+function openSharedMacros() {
+  // Open the shared macros library on the website
+  chrome.tabs.create({ url: 'https://fountain-macro-assistant.vercel.app/shared.html' });
+}
+
 function updateDashboard() {
   let totalExpansions = 0;
   let totalChars = 0;
@@ -1213,6 +1218,7 @@ function setupEventListeners() {
   document.getElementById('templatesBtn')?.addEventListener('click', openTemplates);
   document.getElementById('packagesBtn')?.addEventListener('click', openPackages);
   document.getElementById('dashboardBtn')?.addEventListener('click', openDashboard);
+  document.getElementById('sharedBtn')?.addEventListener('click', openSharedMacros);
   
   // Search & filters
   document.getElementById('searchInput')?.addEventListener('input', e => renderMacros(e.target.value));
