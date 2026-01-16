@@ -1,9 +1,30 @@
-// FAQ Toggle Functionality
+// Main initialization
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize all features
+    initFAQ();
+    initSmoothScrolling();
+    initHeaderScroll();
+    initDarkMode();
+    initMobileMenu();
+    initSignatureDemo();
+    initHeroDemo();
+    initSavingsCalculator();
+    initPackagesGrid();
+    initGuideSearch();
+    initMacroBuilder();
+});
+
+// ========================================
+// FAQ TOGGLE
+// ========================================
+
+function initFAQ() {
     const faqItems = document.querySelectorAll('.faq-item');
     
     faqItems.forEach(item => {
         const question = item.querySelector('.faq-question');
+        if (!question) return;
+        
         question.addEventListener('click', () => {
             const isActive = item.classList.contains('active');
             
@@ -15,20 +36,30 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             
             // Toggle current item
-            if (isActive) {
-                item.classList.remove('active');
-            } else {
-                item.classList.add('active');
-            }
+            item.classList.toggle('active', !isActive);
         });
     });
+}
 
-    // Smooth scrolling for anchor links
+// ========================================
+// SMOOTH SCROLLING
+// ========================================
+
+function initSmoothScrolling() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
+            const href = this.getAttribute('href');
+            if (href === '#') return;
+            
             e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
+            const target = document.querySelector(href);
             if (target) {
+                // Close mobile menu if open
+                const nav = document.getElementById('mainNav');
+                const menuBtn = document.getElementById('mobileMenuBtn');
+                if (nav) nav.classList.remove('active');
+                if (menuBtn) menuBtn.classList.remove('active');
+                
                 target.scrollIntoView({
                     behavior: 'smooth',
                     block: 'start'
@@ -36,35 +67,246 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+}
 
-    // Add scroll effect to header
-    let lastScroll = 0;
+// ========================================
+// HEADER SCROLL EFFECT
+// ========================================
+
+function initHeaderScroll() {
     const header = document.querySelector('.header');
+    if (!header) return;
     
     window.addEventListener('scroll', () => {
-        const currentScroll = window.pageYOffset;
-        
-        if (currentScroll > 100) {
+        if (window.pageYOffset > 100) {
             header.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
         } else {
             header.style.boxShadow = 'none';
         }
-        
-        lastScroll = currentScroll;
     });
+}
 
-    // Signature Demo Animation
-    initSignatureDemo();
+// ========================================
+// DARK MODE
+// ========================================
+
+function initDarkMode() {
+    const toggle = document.getElementById('themeToggle');
+    if (!toggle) return;
     
-    // Initialize Hero Demo
-    initHeroDemo();
+    // Get initial theme
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     
-    // Initialize Savings Calculator
-    initSavingsCalculator();
+    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+    }
     
-    // Initialize Packages Grid
-    initPackagesGrid();
-});
+    toggle.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+    });
+    
+    // Listen for system theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        if (!localStorage.getItem('theme')) {
+            document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+        }
+    });
+}
+
+// ========================================
+// MOBILE MENU
+// ========================================
+
+function initMobileMenu() {
+    const menuBtn = document.getElementById('mobileMenuBtn');
+    const nav = document.getElementById('mainNav');
+    
+    if (!menuBtn || !nav) return;
+    
+    menuBtn.addEventListener('click', () => {
+        const isActive = nav.classList.contains('active');
+        nav.classList.toggle('active', !isActive);
+        menuBtn.classList.toggle('active', !isActive);
+        menuBtn.setAttribute('aria-expanded', !isActive);
+        
+        // Prevent body scroll when menu is open
+        document.body.style.overflow = isActive ? '' : 'hidden';
+    });
+    
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!nav.contains(e.target) && !menuBtn.contains(e.target) && nav.classList.contains('active')) {
+            nav.classList.remove('active');
+            menuBtn.classList.remove('active');
+            menuBtn.setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = '';
+        }
+    });
+}
+
+// ========================================
+// GUIDE SEARCH
+// ========================================
+
+function initGuideSearch() {
+    const searchInput = document.getElementById('guideSearch');
+    const searchClear = document.getElementById('searchClear');
+    const searchResults = document.getElementById('searchResults');
+    const guideContent = document.getElementById('guideContent');
+    
+    if (!searchInput || !guideContent) return;
+    
+    // Build search index from guide content
+    const searchIndex = [];
+    const sections = guideContent.querySelectorAll('.guide-section, .tip-card, .faq-item');
+    
+    sections.forEach((section, index) => {
+        const title = section.querySelector('h3, h4')?.textContent || '';
+        const content = section.textContent || '';
+        searchIndex.push({
+            id: index,
+            title: title,
+            content: content.substring(0, 200),
+            element: section
+        });
+    });
+    
+    let debounceTimer;
+    
+    searchInput.addEventListener('input', () => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            const query = searchInput.value.toLowerCase().trim();
+            
+            if (searchClear) {
+                searchClear.style.display = query ? 'block' : 'none';
+            }
+            
+            if (!query) {
+                if (searchResults) searchResults.style.display = 'none';
+                return;
+            }
+            
+            const results = searchIndex.filter(item => 
+                item.title.toLowerCase().includes(query) || 
+                item.content.toLowerCase().includes(query)
+            ).slice(0, 5);
+            
+            if (results.length > 0 && searchResults) {
+                searchResults.innerHTML = results.map(r => `
+                    <div class="search-result-item" data-id="${r.id}">
+                        <h5>${highlightMatch(r.title, query)}</h5>
+                        <p>${highlightMatch(r.content.substring(0, 100), query)}...</p>
+                    </div>
+                `).join('');
+                searchResults.style.display = 'block';
+                
+                // Add click handlers
+                searchResults.querySelectorAll('.search-result-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        const id = parseInt(item.dataset.id);
+                        const targetSection = searchIndex[id]?.element;
+                        if (targetSection) {
+                            targetSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            targetSection.style.outline = '3px solid var(--primary-blue)';
+                            setTimeout(() => targetSection.style.outline = '', 2000);
+                        }
+                        searchResults.style.display = 'none';
+                        searchInput.value = '';
+                        if (searchClear) searchClear.style.display = 'none';
+                    });
+                });
+            } else if (searchResults) {
+                searchResults.innerHTML = '<div class="search-result-item"><p>No results found</p></div>';
+                searchResults.style.display = 'block';
+            }
+        }, 300);
+    });
+    
+    if (searchClear) {
+        searchClear.addEventListener('click', () => {
+            searchInput.value = '';
+            searchClear.style.display = 'none';
+            if (searchResults) searchResults.style.display = 'none';
+        });
+    }
+    
+    // Close results when clicking outside
+    document.addEventListener('click', (e) => {
+        if (searchResults && !searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+            searchResults.style.display = 'none';
+        }
+    });
+}
+
+function highlightMatch(text, query) {
+    if (!query) return text;
+    const regex = new RegExp(`(${query})`, 'gi');
+    return text.replace(regex, '<mark>$1</mark>');
+}
+
+// ========================================
+// MACRO BUILDER
+// ========================================
+
+function initMacroBuilder() {
+    const shortcutInput = document.getElementById('builderShortcut');
+    const expansionInput = document.getElementById('builderExpansion');
+    const previewShortcut = document.getElementById('previewShortcut');
+    const previewOutput = document.getElementById('previewOutput');
+    const varButtons = document.querySelectorAll('.var-btn');
+    
+    if (!shortcutInput || !expansionInput) return;
+    
+    function updatePreview() {
+        if (previewShortcut) {
+            previewShortcut.textContent = shortcutInput.value || '/example';
+        }
+        
+        if (previewOutput) {
+            let expansion = expansionInput.value || 'Your expansion will appear here...';
+            
+            // Replace variables with visual indicators
+            expansion = expansion
+                .replace(/\{date\}/g, '<span class="preview-input-field">[Today\'s Date]</span>')
+                .replace(/\{time\}/g, '<span class="preview-input-field">[Current Time]</span>')
+                .replace(/\{cursor\}/g, '<span class="preview-input-field">|</span>')
+                .replace(/\{clipboard\}/g, '<span class="preview-input-field">[Clipboard]</span>')
+                .replace(/\{input:([^}]+)\}/g, '<span class="preview-input-field">[$1]</span>')
+                .replace(/\n/g, '<br>');
+            
+            previewOutput.innerHTML = expansion;
+        }
+    }
+    
+    shortcutInput.addEventListener('input', updatePreview);
+    expansionInput.addEventListener('input', updatePreview);
+    
+    // Variable buttons
+    varButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const variable = btn.dataset.var;
+            if (variable && expansionInput) {
+                const start = expansionInput.selectionStart;
+                const end = expansionInput.selectionEnd;
+                const text = expansionInput.value;
+                
+                expansionInput.value = text.substring(0, start) + variable + text.substring(end);
+                expansionInput.focus();
+                expansionInput.setSelectionRange(start + variable.length, start + variable.length);
+                updatePreview();
+            }
+        });
+    });
+    
+    // Initial preview
+    updatePreview();
+}
 
 // ========================================
 // HERO INTERACTIVE DEMO

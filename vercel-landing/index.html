@@ -8,6 +8,11 @@
     <meta name="keywords" content="text expansion, macro, Chrome extension, productivity, text shortcuts, auto-complete, typing assistant, customer support, developer tools">
     <meta name="author" content="Fountain">
     <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#0066FF">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 4L20 12L16 20L12 12L16 4Z' fill='%230066FF'/%3E%3Cpath d='M12 12L8 16L12 20L16 16L12 12Z' fill='%2300B8FF'/%3E%3Cpath d='M20 12L24 16L20 20L16 16L20 12Z' fill='%2300B8FF'/%3E%3Cpath d='M16 20L12 24L16 28L20 24L16 20Z' fill='%230066FF'/%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 4L20 12L16 20L12 12L16 4Z' fill='%230066FF'/%3E%3Cpath d='M12 12L8 16L12 20L16 16L12 12Z' fill='%2300B8FF'/%3E%3Cpath d='M20 12L24 16L20 20L16 16L20 12Z' fill='%2300B8FF'/%3E%3Cpath d='M16 20L12 24L16 28L20 24L16 20Z' fill='%230066FF'/%3E%3C/svg%3E">
     
     <!-- Open Graph / Social Media -->
     <meta property="og:type" content="website">
@@ -50,28 +55,50 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Dark mode detection -->
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
 </head>
 <body>
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
     <!-- Header -->
-    <header class="header">
+    <header class="header" role="banner">
         <div class="container">
             <div class="header-content">
-                <div class="logo">
-                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Fountain logo inspired design -->
+                <a href="/" class="logo" aria-label="Fountain Home">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                         <path d="M16 4L20 12L16 20L12 12L16 4Z" fill="#0066FF"/>
                         <path d="M12 12L8 16L12 20L16 16L12 12Z" fill="#00B8FF"/>
                         <path d="M20 12L24 16L20 20L16 16L20 12Z" fill="#00B8FF"/>
                         <path d="M16 20L12 24L16 28L20 24L16 20Z" fill="#0066FF"/>
                     </svg>
                     <span class="logo-text">Fountain</span>
-                </div>
-                <nav class="nav">
+                </a>
+                
+                <!-- Mobile menu button -->
+                <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle navigation menu" aria-expanded="false">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+                
+                <nav class="nav" id="mainNav" role="navigation" aria-label="Main navigation">
                     <a href="#features">Features</a>
                     <a href="#use-cases">Use Cases</a>
                     <a href="#packages">Packages</a>
                     <a href="#pricing">Pricing</a>
                     <a href="#guide">Guide</a>
+                    <a href="changelog.html">Changelog</a>
+                    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+                        <span class="theme-icon-light">☀️</span>
+                        <span class="theme-icon-dark">🌙</span>
+                    </button>
                     <a href="#download" class="btn-download">Download</a>
                 </nav>
             </div>
@@ -79,6 +106,7 @@
     </header>
 
     <!-- Hero Section -->
+    <main id="main-content">
     <section class="hero">
         <div class="container">
             <div class="hero-content">
@@ -500,6 +528,134 @@
         </div>
     </section>
 
+    <!-- Keyboard Shortcuts Section -->
+    <section id="shortcuts" class="shortcuts-section">
+        <div class="container">
+            <h2 class="section-title">⌨️ Keyboard Shortcuts</h2>
+            <p class="section-subtitle">Master Fountain with these powerful shortcuts</p>
+            
+            <div class="shortcuts-grid">
+                <div class="shortcut-card">
+                    <div class="shortcut-keys">
+                        <kbd>Ctrl</kbd><span class="plus">+</span><kbd>Shift</kbd><span class="plus">+</span><kbd>M</kbd>
+                    </div>
+                    <div class="shortcut-desc">
+                        <h4>Open Extension</h4>
+                        <p>Quickly open the Fountain popup from anywhere</p>
+                    </div>
+                </div>
+                
+                <div class="shortcut-card">
+                    <div class="shortcut-keys">
+                        <kbd>Ctrl</kbd><span class="plus">+</span><kbd>Shift</kbd><span class="plus">+</span><kbd>N</kbd>
+                    </div>
+                    <div class="shortcut-desc">
+                        <h4>Quick Create Macro</h4>
+                        <p>Create a new macro without opening the popup</p>
+                    </div>
+                </div>
+                
+                <div class="shortcut-card">
+                    <div class="shortcut-keys">
+                        <kbd>Ctrl</kbd><span class="plus">+</span><kbd>Z</kbd>
+                    </div>
+                    <div class="shortcut-desc">
+                        <h4>Undo Expansion</h4>
+                        <p>Revert the last macro expansion instantly</p>
+                    </div>
+                </div>
+                
+                <div class="shortcut-card">
+                    <div class="shortcut-keys">
+                        <kbd>Tab</kbd>
+                    </div>
+                    <div class="shortcut-desc">
+                        <h4>Accept Suggestion</h4>
+                        <p>Accept the auto-suggest popup recommendation</p>
+                    </div>
+                </div>
+                
+                <div class="shortcut-card">
+                    <div class="shortcut-keys">
+                        <kbd>Esc</kbd>
+                    </div>
+                    <div class="shortcut-desc">
+                        <h4>Dismiss Suggestion</h4>
+                        <p>Close the auto-suggest popup without expanding</p>
+                    </div>
+                </div>
+                
+                <div class="shortcut-card">
+                    <div class="shortcut-keys">
+                        <kbd>↑</kbd><span class="plus">/</span><kbd>↓</kbd>
+                    </div>
+                    <div class="shortcut-desc">
+                        <h4>Navigate Suggestions</h4>
+                        <p>Move through multiple macro suggestions</p>
+                    </div>
+                </div>
+            </div>
+            
+            <p class="shortcuts-note">
+                💡 <strong>Tip:</strong> On Mac, use <kbd>Cmd</kbd> instead of <kbd>Ctrl</kbd>
+            </p>
+        </div>
+    </section>
+
+    <!-- Interactive Macro Builder -->
+    <section id="macro-builder" class="macro-builder-section">
+        <div class="container">
+            <h2 class="section-title">🔧 Try the Macro Builder</h2>
+            <p class="section-subtitle">See how easy it is to create powerful macros</p>
+            
+            <div class="builder-container">
+                <div class="builder-form">
+                    <div class="builder-field">
+                        <label for="builderShortcut">Shortcut</label>
+                        <input type="text" id="builderShortcut" placeholder="/mysig" value="/mysig">
+                        <span class="field-hint">What you'll type to trigger the macro</span>
+                    </div>
+                    
+                    <div class="builder-field">
+                        <label for="builderExpansion">Expansion</label>
+                        <textarea id="builderExpansion" rows="4" placeholder="Enter what the shortcut expands to...">Best regards,
+{input:Your Name}
+{input:Your Title}
+📧 {input:Email}</textarea>
+                        <span class="field-hint">What the shortcut expands into</span>
+                    </div>
+                    
+                    <div class="builder-variables">
+                        <span class="var-label">Quick insert:</span>
+                        <button class="var-btn" data-var="{date}">📅 Date</button>
+                        <button class="var-btn" data-var="{time}">⏰ Time</button>
+                        <button class="var-btn" data-var="{cursor}">📍 Cursor</button>
+                        <button class="var-btn" data-var="{input:Name}">💬 Input</button>
+                        <button class="var-btn" data-var="{clipboard}">📋 Clipboard</button>
+                    </div>
+                </div>
+                
+                <div class="builder-preview">
+                    <h4>Live Preview</h4>
+                    <div class="preview-demo">
+                        <div class="preview-input">
+                            <span class="preview-shortcut" id="previewShortcut">/mysig</span>
+                            <span class="preview-space">⎵</span>
+                        </div>
+                        <div class="preview-arrow">→</div>
+                        <div class="preview-output" id="previewOutput">
+                            Best regards,<br>
+                            <span class="preview-input-field">[Your Name]</span><br>
+                            <span class="preview-input-field">[Your Title]</span><br>
+                            📧 <span class="preview-input-field">[Email]</span>
+                        </div>
+                    </div>
+                    <a href="#download" class="btn btn-primary builder-cta">Download to Create This Macro</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Download Section -->
     <section id="download" class="download">
         <div class="container">
@@ -565,8 +721,22 @@
     <section id="guide" class="guide">
         <div class="container">
             <h2 class="section-title">User Guide</h2>
-            <div class="guide-content">
-                <div class="guide-section">
+            
+            <!-- Guide Search -->
+            <div class="guide-search">
+                <div class="search-wrapper">
+                    <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" id="guideSearch" class="search-input" placeholder="Search the guide..." aria-label="Search user guide">
+                    <button class="search-clear" id="searchClear" aria-label="Clear search" style="display: none;">×</button>
+                </div>
+                <div id="searchResults" class="search-results" style="display: none;"></div>
+            </div>
+            
+            <div class="guide-content" id="guideContent">
+                <div class="guide-section" data-searchable>
                     <h3>Getting Started</h3>
                     <div class="guide-steps">
                         <div class="guide-step">
@@ -902,13 +1072,15 @@ Sent on {date} at {time}</pre>
         </div>
     </section>
 
+    </main>
+
     <!-- Footer -->
-    <footer class="footer">
+    <footer class="footer" role="contentinfo">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-brand">
                     <div class="logo">
-                        <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                             <path d="M16 4L20 12L16 20L12 12L16 4Z" fill="#0066FF"/>
                             <path d="M12 12L8 16L12 20L16 16L12 12Z" fill="#00B8FF"/>
                             <path d="M20 12L24 16L20 20L16 16L20 12Z" fill="#00B8FF"/>
@@ -917,24 +1089,42 @@ Sent on {date} at {time}</pre>
                         <span class="logo-text">Fountain</span>
                     </div>
                     <p>Type faster with intelligent text expansion.</p>
+                    <div class="footer-social">
+                        <a href="https://github.com/draphael123/Fountain-Macro-Assistant" target="_blank" rel="noopener" aria-label="GitHub" class="social-link">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                        </a>
+                    </div>
                 </div>
                 <div class="footer-links">
                     <div class="footer-column">
                         <h4>Product</h4>
                         <a href="#features">Features</a>
-                        <a href="#guide">User Guide</a>
+                        <a href="#shortcuts">Shortcuts</a>
+                        <a href="#packages">Packages</a>
                         <a href="#download">Download</a>
                     </div>
                     <div class="footer-column">
                         <h4>Resources</h4>
-                        <a href="https://github.com/draphael123/Fountain-Macro-Assistant" target="_blank" rel="noopener">GitHub</a>
+                        <a href="#guide">User Guide</a>
                         <a href="#faq">FAQ</a>
-                        <a href="https://github.com/draphael123/Fountain-Macro-Assistant/blob/main/PRIVACY_POLICY_TEMPLATE.md" target="_blank" rel="noopener">Privacy Policy</a>
+                        <a href="changelog.html">Changelog</a>
+                        <a href="#macro-builder">Macro Builder</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <a href="privacy.html">Privacy Policy</a>
+                        <a href="terms.html">Terms of Service</a>
+                        <a href="https://github.com/draphael123/Fountain-Macro-Assistant" target="_blank" rel="noopener">GitHub</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Support</h4>
+                        <a href="https://github.com/draphael123/Fountain-Macro-Assistant/issues" target="_blank" rel="noopener">Report Issue</a>
+                        <a href="mailto:support@fountain.dev">Contact Us</a>
                     </div>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 Fountain. All rights reserved.</p>
+                <p>&copy; 2026 Fountain. All rights reserved. Made with 💧 for productivity.</p>
             </div>
         </div>
     </footer>
