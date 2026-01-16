@@ -46,6 +46,39 @@
     </section>
 
     <section class="settings-section">
+      <h2>Cloud Backup & Account</h2>
+      
+      <div id="accountSection" class="setting-item" style="display: none;">
+        <div class="account-status-setting">
+          <p><strong>Logged in as:</strong> <span id="accountEmailDisplay"></span></p>
+          <div style="display: flex; gap: 12px; margin-top: 12px;">
+            <button id="backupNowSettingsBtn" class="btn btn-primary">Backup to Cloud</button>
+            <button id="restoreFromCloudBtn" class="btn btn-secondary">Restore from Cloud</button>
+            <button id="logoutSettingsBtn" class="btn btn-secondary">Logout</button>
+          </div>
+          <p id="lastBackupTime" class="setting-description" style="margin-top: 8px;"></p>
+        </div>
+      </div>
+
+      <div id="loginSection" class="setting-item">
+        <p><strong>Link your account</strong> to enable cloud backup</p>
+        <p class="setting-description">Your macros will be automatically backed up and can be restored even if you uninstall the extension.</p>
+        <div style="display: flex; gap: 12px; margin-top: 12px;">
+          <button id="loginSettingsBtn" class="btn btn-primary">Login / Sign Up</button>
+          <a href="https://fountain-macro-assistant.vercel.app/register.html" target="_blank" class="btn btn-secondary">Create Account</a>
+        </div>
+      </div>
+
+      <div class="setting-item" style="margin-top: 24px;">
+        <label>
+          <input type="checkbox" id="autoBackupCheck">
+          Enable automatic backup
+        </label>
+        <p class="setting-description">Automatically backup your macros to the cloud when changes are made.</p>
+      </div>
+    </section>
+
+    <section class="settings-section">
       <h2>Data Management</h2>
       
       <div class="setting-item">
@@ -76,6 +109,7 @@
     </section>
   </div>
 
+  <script src="extension-auth.js"></script>
   <script src="options.js"></script>
 </body>
 </html>

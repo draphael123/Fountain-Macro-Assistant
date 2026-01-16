@@ -24,7 +24,7 @@
     <meta property="twitter:description" content="Create text shortcuts that expand into longer snippets. Type faster with custom macros, aliases, and conditional expansions.">
     <meta property="twitter:image" content="https://fountain-macro-assistant.vercel.app/screenshots/og-image.png">
     
-    <!-- Structured Data (JSON-LD) -->
+    <!-- Structured Data (JSON-LD) - Software Application -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -56,36 +56,111 @@
     }
     </script>
     
-    <link rel="stylesheet" href="styles.css">
+    <!-- Structured Data (JSON-LD) - FAQ Page -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How does Fountain - Macro Assistant work?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Fountain - Macro Assistant monitors text input fields on web pages. When you type a shortcut (like /email) followed by Space or Enter, it automatically replaces the shortcut with your predefined expansion text. All processing happens locally in your browser."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is my data private and secure?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes! All your macros are stored locally in your browser using Chrome's secure sync storage. We don't collect, transmit, or store any personal data on external servers. Your data stays completely private."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it work outside of Chrome?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Fountain - Macro Assistant is a Chrome extension and works within the Chrome browser on all websites. Chrome extensions cannot work in other desktop applications outside of the browser due to browser security restrictions."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I use multiple shortcuts for the same expansion?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes! This is called aliases. When creating or editing a macro, you can add aliases in the Aliases field (comma-separated). For example, if your shortcut is /email, you can add aliases like /e, /mail and all three will trigger the same expansion."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How many macros can I create?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "There's no hard limit! You can create as many macros as you need. Chrome's sync storage has a limit of about 100KB per item, but with typical macro sizes, you can easily have hundreds or even thousands of macros."
+          }
+        }
+      ]
+    }
+    </script>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#1e40af">
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Google Analytics (Replace G-XXXXXXXXXX with your tracking ID) -->
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-XXXXXXXXXX');
+    </script> -->
 </head>
 <body>
+    <!-- Skip to content link for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
     <!-- Header -->
     <header class="header">
         <div class="container">
             <div class="header-content">
                 <div class="logo">
-                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Fountain logo inspired design -->
-                        <path d="M16 4L20 12L16 20L12 12L16 4Z" fill="#0066FF"/>
-                        <path d="M12 12L8 16L12 20L16 16L12 12Z" fill="#00B8FF"/>
-                        <path d="M20 12L24 16L20 20L16 16L20 12Z" fill="#00B8FF"/>
-                        <path d="M16 20L12 24L16 28L20 24L16 20Z" fill="#0066FF"/>
+                    <svg class="logo-img" width="36" height="36" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="50" fill="#64748b"/>
+                        <ellipse cx="38" cy="50" rx="8" ry="20" fill="white" transform="rotate(-10 38 50)"/>
+                        <ellipse cx="50" cy="50" rx="6" ry="18" fill="#3b82f6"/>
+                        <ellipse cx="62" cy="50" rx="8" ry="20" fill="white" transform="rotate(10 62 50)"/>
                     </svg>
                     <span class="logo-text">Fountain</span>
                 </div>
-                <nav class="nav">
+                <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu" aria-expanded="false">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+                <nav class="nav" id="main-nav">
                     <a href="#features">Features</a>
                     <a href="#demo">Demo</a>
-                    <a href="#comparison">Compare</a>
-                    <a href="#guide">Guide</a>
+                    <a href="packages.html" class="nav-new">Packages <span class="new-badge">NEW</span></a>
                     <a href="#faq">FAQ</a>
+                    <a href="shared.html">Shared Macros</a>
+                    <a href="forum.html">Forum</a>
+                    <span id="user-menu-nav" style="display: none; align-items: center; gap: 12px;">
+                        <a href="dashboard.html">Dashboard</a>
+                        <a href="settings.html">Settings</a>
+                        <button id="logout-btn-nav" class="btn btn-secondary" style="padding: 6px 12px; font-size: 14px;">Logout</button>
+                    </span>
                     <a href="#download" class="btn-download">Download</a>
                     <span id="auth-nav" style="display: none;">
                         <a href="dashboard.html" id="dashboard-link" style="display: none;">Dashboard</a>
-                        <button id="logout-btn-nav" class="btn btn-secondary" style="display: none; padding: 8px 16px; margin-left: 8px;">Logout</button>
+                        <button id="logout-btn-nav-old" class="btn btn-secondary" style="display: none; padding: 8px 16px; margin-left: 8px;">Logout</button>
                     </span>
                     <a href="login.html" id="login-link" class="btn btn-secondary" style="padding: 8px 16px; margin-left: 8px;">Login</a>
                     <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
@@ -109,15 +184,80 @@
         </div>
     </header>
 
+    <!-- Announcement Banner -->
+    <div class="announcement-banner">
+        <div class="container">
+            <span class="announcement-icon">🎉</span>
+            <span class="announcement-text"><strong>NEW!</strong> Download pre-built macro packages to get started instantly</span>
+            <a href="packages.html" class="announcement-link">Browse Packages →</a>
+        </div>
+    </div>
+
     <!-- Hero Section -->
-    <section class="hero">
+    <section class="hero" id="main-content">
         <div class="container">
             <div class="hero-content">
-                <h1 class="hero-title">Fountain - Macro Assistant</h1>
+                <div class="hero-visual">
+                    <div class="hero-icon-container">
+                        <div class="icon-glow"></div>
+                        <svg width="140" height="140" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" class="hero-icon">
+                            <circle cx="60" cy="60" r="60" fill="rgba(255,255,255,0.2)"/>
+                            <!-- Fountain logo - large version -->
+                            <path d="M35 75C35 75 22 55 35 35C48 55 35 75 35 75Z" fill="white" opacity="0.95"/>
+                            <path d="M55 85C55 85 38 60 55 32C72 60 55 85 55 85Z" fill="white" opacity="0.95"/>
+                            <path d="M78 70C78 70 62 52 78 28C94 52 78 70 78 70Z" fill="#3b82f6"/>
+                        </svg>
+                    </div>
+                </div>
+                <h1 class="hero-title">
+                    <span class="hero-title-main">Fountain</span>
+                    <span class="hero-title-sub">Macro Assistant</span>
+                </h1>
                 <p class="hero-subtitle">Type faster with intelligent text expansion. Create shortcuts that automatically expand into longer snippets.</p>
+                <div class="hero-badge">
+                    <span class="badge-icon">⚡</span>
+                    <span>Free Chrome Extension</span>
+                </div>
                 <div class="hero-buttons">
-                    <a href="#download" class="btn btn-primary">Download for Chrome</a>
-                    <a href="#guide" class="btn btn-secondary">View Guide</a>
+                    <a href="#download" class="btn btn-primary btn-large">Download for Chrome</a>
+                    <a href="#demo-video" class="btn btn-secondary btn-large">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 6px;">
+                            <polygon points="5,3 19,12 5,21"/>
+                        </svg>
+                        Watch Demo
+                    </a>
+                </div>
+                
+                <!-- Video Demo Section -->
+                <div class="hero-demo-video" id="demo-video">
+                    <div class="video-container">
+                        <div class="video-placeholder" id="video-placeholder">
+                            <div class="video-mock">
+                                <div class="typing-demo">
+                                    <span class="demo-label">Type:</span>
+                                    <div class="typing-animation">
+                                        <span class="typed-text" id="typed-text"></span>
+                                        <span class="cursor-blink">|</span>
+                                    </div>
+                                </div>
+                                <div class="expansion-arrow">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 5v14M19 12l-7 7-7-7"/>
+                                    </svg>
+                                </div>
+                                <div class="expanded-result">
+                                    <span class="demo-label">Result:</span>
+                                    <div class="expanded-text" id="expanded-text"></div>
+                                </div>
+                            </div>
+                            <button class="play-demo-btn" id="play-demo-btn">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                                    <polygon points="5,3 19,12 5,21"/>
+                                </svg>
+                                <span>See it in action</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <div class="hero-stats">
                     <div class="stat">
@@ -131,6 +271,168 @@
                     <div class="stat">
                         <div class="stat-number">🔒</div>
                         <div class="stat-label">100% Private</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Start Section -->
+    <section id="quick-start" class="quick-start-section">
+        <div class="container">
+            <div class="quick-start-header">
+                <h2 class="section-title">Get Started in 5 Minutes</h2>
+                <p class="section-subtitle">Follow these simple steps to start using Fountain - Macro Assistant right away</p>
+            </div>
+            <div class="quick-start-steps">
+                <div class="quick-start-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Download & Install</h3>
+                        <p>Download the extension ZIP file and extract it to a folder on your computer.</p>
+                        <a href="#download" class="step-link">Download Extension <span>→</span></a>
+                    </div>
+                </div>
+                <div class="quick-start-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Load in Chrome</h3>
+                        <p>Open <code>chrome://extensions/</code>, enable Developer mode, and click "Load unpacked" to select the extension folder.</p>
+                    </div>
+                </div>
+                <div class="quick-start-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Pin the Extension</h3>
+                        <p>Click the puzzle piece icon (🧩) in Chrome's toolbar, then pin "Fountain - Macro Assistant" for easy access.</p>
+                    </div>
+                </div>
+                <div class="quick-start-step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Create Your First Macro</h3>
+                        <p>Click the extension icon, then "+ Add Macro". Try creating <code>/email</code> → <code>your.email@example.com</code></p>
+                    </div>
+                </div>
+                <div class="quick-start-step">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <h3>Start Typing!</h3>
+                        <p>Go to any website (Gmail, Docs, etc.) and type your shortcut followed by Space or Enter to see it expand!</p>
+                        <a href="#demo" class="step-link">Try the Demo <span>→</span></a>
+                    </div>
+                </div>
+            </div>
+            <div class="quick-start-cta">
+                <a href="#download" class="btn btn-primary btn-large">Download Now</a>
+                <a href="#guide" class="btn btn-secondary btn-large">View Detailed Guide</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screenshots Section -->
+    <section id="screenshots" class="screenshots-section">
+        <div class="container">
+            <h2 class="section-title">See It In Action</h2>
+            <p class="section-subtitle">A clean, intuitive interface designed for productivity</p>
+            <div class="screenshots-grid">
+                <!-- Main Screenshot - Macro List -->
+                <div class="screenshot-card main-screenshot">
+                    <div class="mock-extension">
+                        <div class="mock-header">
+                            <div class="mock-logo">💧 Fountain</div>
+                            <button class="mock-btn-add">+ New</button>
+                        </div>
+                        <div class="mock-search">
+                            <span>🔍</span> Search macros...
+                        </div>
+                        <div class="mock-macros">
+                            <div class="mock-macro">
+                                <div class="mock-macro-shortcut">/email</div>
+                                <div class="mock-macro-preview">john.doe@example.com</div>
+                            </div>
+                            <div class="mock-macro">
+                                <div class="mock-macro-shortcut">/sig</div>
+                                <div class="mock-macro-preview">Best regards, John Doe...</div>
+                            </div>
+                            <div class="mock-macro">
+                                <div class="mock-macro-shortcut">/meeting</div>
+                                <div class="mock-macro-preview">Let's schedule a meeting...</div>
+                            </div>
+                            <div class="mock-macro">
+                                <div class="mock-macro-shortcut">/thanks</div>
+                                <div class="mock-macro-preview">Thank you for your time...</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="screenshot-label">
+                        <h4>Macro Dashboard</h4>
+                        <p>View and manage all your macros in one place</p>
+                    </div>
+                </div>
+                
+                <!-- Add Macro -->
+                <div class="screenshot-card">
+                    <div class="mock-extension mock-small">
+                        <div class="mock-modal-header">Add New Macro</div>
+                        <div class="mock-form">
+                            <div class="mock-input-group">
+                                <label>Shortcut</label>
+                                <div class="mock-input">/hello</div>
+                            </div>
+                            <div class="mock-input-group">
+                                <label>Expands to</label>
+                                <div class="mock-input mock-textarea">Hello! How can I help you today?</div>
+                            </div>
+                        </div>
+                        <div class="mock-modal-footer">
+                            <button class="mock-btn-save">Save</button>
+                        </div>
+                    </div>
+                    <div class="screenshot-label">
+                        <h4>Create Macros</h4>
+                        <p>Simple form to add shortcuts</p>
+                    </div>
+                </div>
+                
+                <!-- Expansion Demo -->
+                <div class="screenshot-card">
+                    <div class="mock-expansion">
+                        <div class="mock-typing">
+                            <span class="mock-typed">/email</span>
+                            <span class="mock-cursor">|</span>
+                        </div>
+                        <div class="mock-arrow">↓</div>
+                        <div class="mock-expanded">john.doe@example.com</div>
+                    </div>
+                    <div class="screenshot-label">
+                        <h4>Instant Expansion</h4>
+                        <p>Type shortcut, get full text</p>
+                    </div>
+                </div>
+                
+                <!-- Variables -->
+                <div class="screenshot-card">
+                    <div class="mock-extension mock-small">
+                        <div class="mock-variables-title">Dynamic Variables</div>
+                        <div class="mock-variable-list">
+                            <div class="mock-variable">
+                                <code>{date}</code>
+                                <span>→ Jan 9, 2026</span>
+                            </div>
+                            <div class="mock-variable">
+                                <code>{time}</code>
+                                <span>→ 3:45 PM</span>
+                            </div>
+                            <div class="mock-variable">
+                                <code>{clipboard}</code>
+                                <span>→ Paste content</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="screenshot-label">
+                        <h4>Smart Variables</h4>
+                        <p>Dynamic content in your macros</p>
                     </div>
                 </div>
             </div>
@@ -186,27 +488,196 @@
         </div>
     </section>
 
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonials-section">
+        <div class="container">
+            <h2 class="section-title">What Users Are Saying</h2>
+            <p class="section-subtitle">Join thousands of users who've transformed their typing workflow</p>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"Fountain has saved me hours every week. I used to type the same emails over and over - now it's just /email and done!"</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar avatar-gradient-1">AM</div>
+                        <div class="testimonial-info">
+                            <div class="testimonial-name">Alex M.</div>
+                            <div class="testimonial-role">Sales Manager</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"The {cursor} and {input:} variables are game-changers. My code snippets are so much more useful now. Best free text expander I've found."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar avatar-gradient-2">SK</div>
+                        <div class="testimonial-info">
+                            <div class="testimonial-name">Sarah K.</div>
+                            <div class="testimonial-role">Software Developer</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"I handle 100+ support tickets daily. Fountain's macros cut my response time in half. The folder organization is perfect."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar avatar-gradient-3">JR</div>
+                        <div class="testimonial-info">
+                            <div class="testimonial-name">James R.</div>
+                            <div class="testimonial-role">Customer Support Lead</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"Finally a text expander that works everywhere - Gmail, Notion, Slack. The regex patterns are incredibly powerful for dynamic content."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar avatar-gradient-4">EL</div>
+                        <div class="testimonial-info">
+                            <div class="testimonial-name">Emma L.</div>
+                            <div class="testimonial-role">Content Creator</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Interactive Demo Section -->
     <section id="demo" class="demo-section">
         <div class="container">
             <h2 class="section-title">Try It Now</h2>
             <p class="section-subtitle">Experience text expansion in action. Type a shortcut and watch it expand!</p>
             <div class="demo-container">
-                <div class="demo-input-wrapper">
-                    <label for="demo-input">Type a shortcut:</label>
-                    <div class="demo-input-container">
-                        <textarea id="demo-input" class="demo-input" placeholder="Try typing: /email, /sig, /date, or /time and press Space or Enter"></textarea>
-                        <button id="demo-reset" class="btn btn-secondary" style="margin-top: 10px;">Reset</button>
+                <div class="demo-tabs">
+                    <button class="demo-tab active" data-tab="typing">✍️ Type Test</button>
+                    <button class="demo-tab" data-tab="scenarios">📧 Email Scenario</button>
+                    <button class="demo-tab" data-tab="code">💻 Code Snippets</button>
+                </div>
+                
+                <div class="demo-tab-content active" id="tab-typing">
+                    <div class="demo-input-wrapper">
+                        <label for="demo-input">Type a shortcut:</label>
+                        <div class="demo-input-container">
+                            <textarea id="demo-input" class="demo-input" placeholder="Try typing: /email, /sig, /date, /time, /thanks, or /meeting and press Space or Enter"></textarea>
+                            <div class="demo-controls">
+                                <button id="demo-reset" class="btn btn-secondary">Reset</button>
+                                <span class="demo-hint">💡 Type a shortcut then press Space</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="demo-examples">
+                        <h4>Try these examples:</h4>
+                        <div class="demo-example-list">
+                            <button class="demo-example-btn" data-shortcut="/email">/email</button>
+                            <button class="demo-example-btn" data-shortcut="/sig">/sig</button>
+                            <button class="demo-example-btn" data-shortcut="/date">/date</button>
+                            <button class="demo-example-btn" data-shortcut="/time">/time</button>
+                            <button class="demo-example-btn" data-shortcut="/thanks">/thanks</button>
+                            <button class="demo-example-btn" data-shortcut="/meeting">/meeting</button>
+                        </div>
                     </div>
                 </div>
-                <div class="demo-examples">
-                    <h4>Try these examples:</h4>
-                    <div class="demo-example-list">
-                        <button class="demo-example-btn" data-shortcut="/email">/email</button>
-                        <button class="demo-example-btn" data-shortcut="/sig">/sig</button>
-                        <button class="demo-example-btn" data-shortcut="/date">/date</button>
-                        <button class="demo-example-btn" data-shortcut="/time">/time</button>
+                
+                <div class="demo-tab-content" id="tab-scenarios">
+                    <div class="scenario-demo">
+                        <div class="scenario-header">
+                            <span class="scenario-icon">📧</span>
+                            <h4>Compose an Email Reply</h4>
+                        </div>
+                        <div class="scenario-email">
+                            <div class="email-to">To: customer@example.com</div>
+                            <div class="email-subject">Re: Product Inquiry</div>
+                            <textarea id="scenario-input" class="demo-input scenario-textarea" placeholder="Start with /thanks to greet, then /meeting to suggest a call..."></textarea>
+                        </div>
+                        <div class="scenario-shortcuts">
+                            <span class="shortcut-chip" data-shortcut="/thanks">/thanks</span>
+                            <span class="shortcut-chip" data-shortcut="/meeting">/meeting</span>
+                            <span class="shortcut-chip" data-shortcut="/sig">/sig</span>
+                        </div>
                     </div>
+                </div>
+                
+                <div class="demo-tab-content" id="tab-code">
+                    <div class="code-demo">
+                        <div class="code-header">
+                            <span class="code-filename">app.js</span>
+                            <div class="code-dots">
+                                <span></span><span></span><span></span>
+                            </div>
+                        </div>
+                        <textarea id="code-input" class="demo-input code-textarea" placeholder="Try /func to insert a function template, /log for console.log, or /fetch for an API call..."></textarea>
+                        <div class="code-shortcuts">
+                            <span class="shortcut-chip" data-shortcut="/func">/func</span>
+                            <span class="shortcut-chip" data-shortcut="/log">/log</span>
+                            <span class="shortcut-chip" data-shortcut="/fetch">/fetch</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Expansion Toast -->
+                <div class="expansion-toast" id="expansion-toast">
+                    <span class="toast-icon">✨</span>
+                    <span class="toast-text">Macro expanded!</span>
+                    <button class="toast-undo">Undo</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Time Saved Calculator -->
+    <section id="calculator" class="calculator-section">
+        <div class="container">
+            <h2 class="section-title">Calculate Your Time Savings</h2>
+            <p class="section-subtitle">See how much time Fountain could save you every day</p>
+            <div class="calculator-container">
+                <div class="calculator-inputs">
+                    <div class="calc-input-group">
+                        <label for="phrases-per-day">How many repetitive phrases do you type daily?</label>
+                        <div class="range-input-wrapper">
+                            <input type="range" id="phrases-per-day" min="5" max="200" value="30">
+                            <span class="range-value" id="phrases-value">30</span>
+                        </div>
+                    </div>
+                    <div class="calc-input-group">
+                        <label for="avg-phrase-length">Average characters per phrase</label>
+                        <div class="range-input-wrapper">
+                            <input type="range" id="avg-phrase-length" min="10" max="500" value="100">
+                            <span class="range-value" id="length-value">100</span>
+                        </div>
+                    </div>
+                    <div class="calc-input-group">
+                        <label for="shortcut-length">Average shortcut length (e.g., /email = 6)</label>
+                        <div class="range-input-wrapper">
+                            <input type="range" id="shortcut-length" min="3" max="15" value="6">
+                            <span class="range-value" id="shortcut-value">6</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="calculator-results">
+                    <div class="result-card primary-result">
+                        <div class="result-icon">⏱️</div>
+                        <div class="result-value" id="time-saved-daily">0</div>
+                        <div class="result-label">Minutes saved per day</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-icon">📅</div>
+                        <div class="result-value" id="time-saved-weekly">0</div>
+                        <div class="result-label">Hours saved per week</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-icon">📆</div>
+                        <div class="result-value" id="time-saved-yearly">0</div>
+                        <div class="result-label">Hours saved per year</div>
+                    </div>
+                    <div class="result-card highlight">
+                        <div class="result-icon">⌨️</div>
+                        <div class="result-value" id="keystrokes-saved">0</div>
+                        <div class="result-label">Keystrokes saved daily</div>
+                    </div>
+                </div>
+                <div class="calculator-cta">
+                    <p>Start saving time today!</p>
+                    <a href="#download" class="btn btn-primary btn-large">Download Fountain Free</a>
                 </div>
             </div>
         </div>
@@ -282,33 +753,62 @@
         </div>
     </section>
 
+    <!-- Shared Macros Section -->
+    <section id="shared-macros" class="shared-macros-section" style="padding: var(--section-padding) 0; background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(236, 72, 153, 0.05) 100%);">
+        <div class="container">
+            <h2 class="section-title">Community Shared Macros</h2>
+            <p class="section-subtitle">Discover macros shared by the Fountain community. Import them instantly!</p>
+            <div id="home-shared-macros-grid" class="shared-macros-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--spacing-lg); margin-top: var(--spacing-2xl);">
+                <!-- Shared macros will be loaded here -->
+            </div>
+            <div style="text-align: center; margin-top: var(--spacing-2xl);">
+                <a href="shared.html" class="btn btn-primary btn-large">Browse All Shared Macros</a>
+            </div>
+        </div>
+    </section>
+
     <!-- Download Section -->
     <section id="download" class="download">
         <div class="container">
             <h2 class="section-title">Download & Install</h2>
-            <div class="download-content">
-                <div class="download-card">
-                    <h3>Install from Chrome Web Store</h3>
-                    <p>Get the official version from the Chrome Web Store for automatic updates and security.</p>
-                    <a href="https://chrome.google.com/webstore" class="btn btn-primary btn-large" target="_blank" rel="noopener">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            <p class="section-subtitle">Get started in under 2 minutes. Free forever, no account required.</p>
+            
+            <!-- Primary Download CTA -->
+            <div class="download-hero">
+                <div class="download-main-card">
+                    <div class="download-icon">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
                         </svg>
-                        Install from Chrome Web Store
-                    </a>
-                    <p class="download-note">Coming soon to Chrome Web Store</p>
-                </div>
-                <div class="download-card">
-                    <h3>Manual Installation</h3>
-                    <p>Clone or download the extension from GitHub. Get the folder directly - no ZIP required!</p>
-                    <a href="https://github.com/draphael123/Fountain-Macro-Assistant" class="btn btn-secondary btn-large" target="_blank" rel="noopener">
+                    </div>
+                    <h3>Download Fountain Extension</h3>
+                    <p>One-click download. Extract and load in Chrome.</p>
+                    <a href="/extension.zip" class="btn btn-primary btn-large download-main-btn" download="fountain-macro-assistant-extension.zip" id="download-extension-btn">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
                         </svg>
-                        Download from GitHub
+                        <span id="download-btn-text">Download Extension ZIP</span>
                     </a>
-                    <p class="download-note">Clone the repository to get the folder directly, or download individual files</p>
+                    <div class="download-meta">
+                        <span>📦 <span id="extension-size">~500 KB</span></span>
+                        <span>•</span>
+                        <span>✓ Latest Version</span>
+                        <span>•</span>
+                        <span>🔒 No Account Needed</span>
+                    </div>
                 </div>
+            </div>
+            
+            <!-- Secondary Options -->
+            <div class="download-alternatives">
+                <a href="https://github.com/draphael123/Fountain-Macro-Assistant" class="download-alt-link" target="_blank" rel="noopener">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                    View on GitHub
+                </a>
+                <span class="download-alt-divider">|</span>
+                <span class="download-alt-note">Chrome Web Store coming soon</span>
             </div>
 
             <!-- Installation Guide -->
@@ -317,11 +817,11 @@
                 <div class="install-steps-list">
                     <ol class="steps-list">
                         <li>
-                            <strong>Get the extension from GitHub</strong> - Visit the <a href="https://github.com/draphael123/Fountain-Macro-Assistant" target="_blank" rel="noopener">GitHub repository</a> and either:
+                            <strong>Download the extension</strong> - Choose one of these methods:
                             <ul style="margin-top: 8px; margin-left: 20px;">
-                                <li><strong>Clone the repository</strong> (recommended): Run <code>git clone https://github.com/draphael123/Fountain-Macro-Assistant.git</code> to get the folder directly</li>
-                                <li><strong>Download ZIP</strong>: Click "Code" → "Download ZIP", then extract it to a folder</li>
-                                <li><strong>Download individual files</strong>: Download files one by one from the repository</li>
+                                <li><strong>Direct Download (Recommended)</strong>: Click the "Download Extension ZIP" button above to download all extension files in a single ZIP file. Extract the ZIP and load the folder in Chrome - it's that simple!</li>
+                                <li><strong>From GitHub</strong>: Visit the <a href="https://github.com/draphael123/Fountain-Macro-Assistant/tree/main/fountain-macro-assistant-extension" target="_blank" rel="noopener">extension folder on GitHub</a> and click "Code" → "Download ZIP"</li>
+                                <li><strong>Clone Repository</strong>: Run <code>git clone https://github.com/draphael123/Fountain-Macro-Assistant.git</code>, then navigate to the <code>fountain-macro-assistant-extension</code> folder</li>
                             </ul>
                         </li>
                         <li>
@@ -346,77 +846,150 @@
                 </div>
             </div>
 
-            <!-- Extension in Use Screenshots -->
-            <div class="usage-showcase">
-                <h3 class="subsection-title">See It In Action</h3>
-                <div class="usage-grid">
-                    <div class="usage-item">
-                        <div class="usage-image-container">
-                            <img src="screenshots/usage-1-popup.png" alt="Extension popup showing macros" class="usage-screenshot" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                            <div class="screenshot-placeholder">
-                                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                                    <circle cx="8.5" cy="8.5" r="1.5"/>
-                                    <polyline points="21 15 16 10 5 21"/>
-                                </svg>
-                                <span>Add screenshot: usage-1-popup.png</span>
-                            </div>
-                        </div>
-                        <h4>Extension Popup</h4>
-                        <p>View and manage all your macros from the extension popup. Search, organize by folders, and see usage statistics.</p>
-                    </div>
+        </div>
+    </section>
 
-                    <div class="usage-item">
-                        <div class="usage-image-container">
-                            <img src="screenshots/usage-2-creating-macro.png" alt="Creating a new macro" class="usage-screenshot" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                            <div class="screenshot-placeholder">
-                                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                                    <circle cx="8.5" cy="8.5" r="1.5"/>
-                                    <polyline points="21 15 16 10 5 21"/>
-                                </svg>
-                                <span>Add screenshot: usage-2-creating-macro.png</span>
-                            </div>
+    <!-- Import Guide Section -->
+    <section id="import-guide" class="import-guide-section">
+        <div class="container">
+            <h2 class="section-title">How to Import Macros</h2>
+            <p class="section-subtitle">Learn how to import macros from files, shared library, or backups. Follow these simple steps to get started.</p>
+            
+            <div class="import-methods-grid">
+                <div class="import-method-card">
+                    <div class="import-method-icon">📁</div>
+                    <h3>Import from JSON File</h3>
+                    <p class="method-description">Import macros from a previously exported JSON file. Perfect for backups or transferring macros between devices.</p>
+                    <div class="method-steps">
+                        <div class="step-item">
+                            <span class="step-number">1</span>
+                            <span class="step-text">Right-click the Fountain extension icon in your Chrome toolbar and select <strong>"Options"</strong></span>
                         </div>
-                        <h4>Creating Macros</h4>
-                        <p>Easily create new macros with shortcuts, expansions, aliases, and conditional logic. Simple and intuitive interface.</p>
+                        <div class="step-item">
+                            <span class="step-number">2</span>
+                            <span class="step-text">Scroll down to the <strong>"Data Management"</strong> section</span>
+                        </div>
+                        <div class="step-item">
+                            <span class="step-number">3</span>
+                            <span class="step-text">Click the <strong>"Import Macros"</strong> button</span>
+                        </div>
+                        <div class="step-item">
+                            <span class="step-number">4</span>
+                            <span class="step-text">Select your JSON file from your computer</span>
+                        </div>
+                        <div class="step-item">
+                            <span class="step-number">5</span>
+                            <span class="step-text">Macros will be imported automatically! Duplicate shortcuts will be skipped.</span>
+                        </div>
                     </div>
-
-                    <div class="usage-item">
-                        <div class="usage-image-container">
-                            <img src="screenshots/usage-3-text-expansion.png" alt="Text expansion in action" class="usage-screenshot" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                            <div class="screenshot-placeholder">
-                                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                                    <circle cx="8.5" cy="8.5" r="1.5"/>
-                                    <polyline points="21 15 16 10 5 21"/>
-                                </svg>
-                                <span>Add screenshot: usage-3-text-expansion.png</span>
-                            </div>
-                        </div>
-                        <h4>Text Expansion</h4>
-                        <p>Type your shortcut and watch it automatically expand. Works seamlessly on any website with text input fields.</p>
-                    </div>
-
-                    <div class="usage-item">
-                        <div class="usage-image-container">
-                            <img src="screenshots/usage-4-settings.png" alt="Extension settings page" class="usage-screenshot" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                            <div class="screenshot-placeholder">
-                                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                                    <circle cx="8.5" cy="8.5" r="1.5"/>
-                                    <polyline points="21 15 16 10 5 21"/>
-                                </svg>
-                                <span>Add screenshot: usage-4-settings.png</span>
-                            </div>
-                        </div>
-                        <h4>Settings & Export</h4>
-                        <p>Manage your extension settings, export macros for backup, and import macros from other devices.</p>
+                    <div class="method-tip">
+                        <strong>💡 Pro Tip:</strong> Export your current macros first as a backup before importing new ones.
                     </div>
                 </div>
-                <div class="screenshot-notice">
-                    <p><strong>Note:</strong> To add screenshots, place image files in the <code>screenshots/</code> folder with the filenames shown above. The images will automatically appear once added.</p>
+
+                <div class="import-method-card">
+                    <div class="import-method-icon">🌐</div>
+                    <h3>Import Shared Macros</h3>
+                    <p class="method-description">Browse and import macros shared by other users from our community library.</p>
+                    <div class="method-steps">
+                        <div class="step-item">
+                            <span class="step-number">1</span>
+                            <span class="step-text">Visit the <a href="shared.html" class="inline-link">Shared Macros Library</a></span>
+                        </div>
+                        <div class="step-item">
+                            <span class="step-number">2</span>
+                            <span class="step-text">Browse or search for macros you want to import</span>
+                        </div>
+                        <div class="step-item">
+                            <span class="step-number">3</span>
+                            <span class="step-text">Click <strong>"Import Macros"</strong> on any shared macro card</span>
+                        </div>
+                        <div class="step-item">
+                            <span class="step-number">4</span>
+                            <span class="step-text">Return to extension Options (right-click icon → Options)</span>
+                        </div>
+                        <div class="step-item">
+                            <span class="step-number">5</span>
+                            <span class="step-text">Click <strong>"Import Shared Macros"</strong> button in the Data Management section</span>
+                        </div>
+                    </div>
+                    <div class="method-tip">
+                        <strong>💡 Alternative:</strong> Use a 6-character share code in the "Import by Code" tab on the Shared Macros page.
+                    </div>
                 </div>
+
+                <div class="import-method-card">
+                    <div class="import-method-icon">☁️</div>
+                    <h3>Import from Cloud Backup</h3>
+                    <p class="method-description">Restore your macros from a cloud backup if you've synced them to your account.</p>
+                    <div class="method-steps">
+                        <div class="step-item">
+                            <span class="step-number">1</span>
+                            <span class="step-text">Open extension Options (right-click icon → Options)</span>
+                        </div>
+                        <div class="step-item">
+                            <span class="step-number">2</span>
+                            <span class="step-text">Log in to your account in the <strong>"Cloud Sync"</strong> section</span>
+                        </div>
+                        <div class="step-item">
+                            <span class="step-number">3</span>
+                            <span class="step-text">Click <strong>"Restore from Cloud"</strong> button</span>
+                        </div>
+                        <div class="step-item">
+                            <span class="step-number">4</span>
+                            <span class="step-text">Confirm the restore (this will replace your current macros)</span>
+                        </div>
+                        <div class="step-item">
+                            <span class="step-number">5</span>
+                            <span class="step-text">Reload the extension popup to see your restored macros</span>
+                        </div>
+                    </div>
+                    <div class="method-tip">
+                        <strong>⚠️ Note:</strong> This restores your own backed-up macros from your account. Make sure you've backed up your macros first!
+                    </div>
+                </div>
+            </div>
+
+            <div class="import-json-format">
+                <h3>JSON File Format</h3>
+                <p>Your JSON file should contain an array of macro objects. Here's an example:</p>
+                <pre class="code-example"><code>[
+  {
+    "id": "1",
+    "shortcut": "/email",
+    "expansion": "your.email@example.com"
+  },
+  {
+    "id": "2",
+    "shortcut": "/sig",
+    "expansion": "Best regards,\nYour Name"
+  }
+]</code></pre>
+                <p class="format-note"><strong>Required fields:</strong> <code>id</code>, <code>shortcut</code>, <code>expansion</code></p>
+                <p class="format-note"><strong>Optional fields:</strong> <code>aliases</code>, <code>tags</code>, <code>caseSensitive</code>, <code>folderId</code>, <code>conditions</code></p>
+            </div>
+
+            <div class="import-troubleshooting">
+                <h3>Troubleshooting</h3>
+                <div class="troubleshooting-list">
+                    <div class="trouble-item">
+                        <strong>Q: Import button not working?</strong>
+                        <p>Make sure you're using a valid JSON file. Check the file format in a text editor.</p>
+                    </div>
+                    <div class="trouble-item">
+                        <strong>Q: "No valid macros found" error?</strong>
+                        <p>Ensure your JSON file is valid and contains an array of objects with <code>id</code>, <code>shortcut</code>, and <code>expansion</code> fields.</p>
+                    </div>
+                    <div class="trouble-item">
+                        <strong>Q: Macros not appearing after import?</strong>
+                        <p>If you have duplicate shortcuts, the import succeeded but duplicates were skipped. Check the import confirmation message.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="import-actions">
+                <a href="#download" class="btn btn-primary btn-large">Get the Extension</a>
+                <a href="shared.html" class="btn btn-secondary btn-large">Browse Shared Macros</a>
             </div>
         </div>
     </section>
@@ -648,6 +1221,46 @@
 
                 <div class="faq-item">
                     <div class="faq-question">
+                        <h3>Can I import macros from other text expanders?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Currently, Fountain supports importing macros from JSON format. If you have macros from other tools, you may need to convert them to our JSON format. We're working on adding direct import support for popular text expanders.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>What happens if I uninstall the extension?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>If you uninstall the extension, your macros are stored in Chrome's sync storage. If you reinstall the extension and are signed into the same Google account with Chrome sync enabled, your macros should restore automatically. However, we recommend exporting your macros as a backup before uninstalling.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Is there a limit on expansion length?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>There's no hard limit on the length of expansions. However, very long expansions (several thousand characters) may take longer to process. For best performance, we recommend keeping expansions under 10,000 characters.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Can I use special characters in shortcuts?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes! You can use letters, numbers, and most special characters in shortcuts. However, shortcuts should start with a letter or special character (like <code>/</code> or <code>!</code>). We recommend using a prefix like <code>/</code> to avoid accidentally triggering expansions in normal typing.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
                         <h3>Can I use multiple shortcuts for the same expansion?</h3>
                         <span class="faq-toggle">+</span>
                     </div>
@@ -725,11 +1338,11 @@
             <div class="footer-content">
                 <div class="footer-brand">
                     <div class="logo">
-                        <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M16 4L20 12L16 20L12 12L16 4Z" fill="#0066FF"/>
-                            <path d="M12 12L8 16L12 20L16 16L12 12Z" fill="#00B8FF"/>
-                            <path d="M20 12L24 16L20 20L16 16L20 12Z" fill="#00B8FF"/>
-                            <path d="M16 20L12 24L16 28L20 24L16 20Z" fill="#0066FF"/>
+                        <svg class="logo-img" width="28" height="28" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="50" fill="#64748b"/>
+                            <ellipse cx="38" cy="50" rx="8" ry="20" fill="white" transform="rotate(-10 38 50)"/>
+                            <ellipse cx="50" cy="50" rx="6" ry="18" fill="#3b82f6"/>
+                            <ellipse cx="62" cy="50" rx="8" ry="20" fill="white" transform="rotate(10 62 50)"/>
                         </svg>
                         <span class="logo-text">Fountain</span>
                     </div>
@@ -741,11 +1354,20 @@
                         <a href="#features">Features</a>
                         <a href="#guide">User Guide</a>
                         <a href="#download">Download</a>
+                        <a href="packages.html">Macro Packages</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Use Cases</h4>
+                        <a href="use-cases/developers.html">For Developers</a>
+                        <a href="use-cases/customer-support.html">For Support Teams</a>
+                        <a href="use-cases/writers.html">For Writers</a>
+                        <a href="use-cases/sales.html">For Sales</a>
                     </div>
                     <div class="footer-column">
                         <h4>Resources</h4>
                         <a href="https://github.com/draphael123/Fountain-Macro-Assistant" target="_blank" rel="noopener">GitHub</a>
                         <a href="#faq">FAQ</a>
+                        <a href="roadmap.html">Roadmap</a>
                         <a href="https://github.com/draphael123/Fountain-Macro-Assistant/blob/main/PRIVACY_POLICY_TEMPLATE.md" target="_blank" rel="noopener">Privacy Policy</a>
                     </div>
                     <div class="footer-social">
@@ -767,14 +1389,184 @@
                     </div>
                 </div>
             </div>
+            <div class="newsletter">
+                <h3>Stay Updated</h3>
+                <p>Get the latest updates, tips, and new features delivered to your inbox</p>
+                <form class="newsletter-form" id="newsletter-form">
+                    <input type="email" id="newsletter-email" placeholder="Enter your email" required aria-label="Email address">
+                    <button type="submit" id="newsletter-submit">
+                        <span class="btn-text">Subscribe</span>
+                        <span class="btn-loading" style="display: none;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin">
+                                <circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-dashoffset="32"/>
+                            </svg>
+                        </span>
+                    </button>
+                </form>
+                <p class="newsletter-success" id="newsletter-success" style="display: none; color: #3b82f6; margin-top: 12px;">
+                    ✓ Thanks for subscribing! Check your inbox for confirmation.
+                </p>
+            </div>
             <div class="footer-bottom">
                 <p>&copy; 2025 Fountain. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
-    <script src="script.js"></script>
-    <script src="auth.js"></script>
+    <!-- Exit Intent Popup -->
+    <div class="exit-popup-overlay" id="exit-popup" style="display: none;">
+        <div class="exit-popup">
+            <button class="exit-popup-close" id="exit-popup-close">&times;</button>
+            <div class="exit-popup-content">
+                <div class="exit-popup-icon">💧</div>
+                <h3>Wait! Before you go...</h3>
+                <p>Get productivity tips and new feature updates delivered to your inbox.</p>
+                <form class="exit-popup-form" id="exit-popup-form">
+                    <input type="email" placeholder="Enter your email" required id="exit-email">
+                    <button type="submit" class="btn btn-primary">Get Updates</button>
+                </form>
+                <p class="exit-popup-note">No spam, unsubscribe anytime. We respect your privacy.</p>
+                <a href="#download" class="exit-popup-link" id="exit-download-link">Or download Fountain now →</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js" defer></script>
+    <script src="auth.js" defer></script>
+    <script src="fun-enhancements.js" defer></script>
+    <script src="shared-macros.js" defer></script>
+    <script>
+        // Load and display shared macros on home page
+        function loadHomeSharedMacros() {
+            const grid = document.getElementById('home-shared-macros-grid');
+            if (!grid) return;
+            
+            try {
+                const popularMacros = sharedMacros.getPopularMacros(6);
+                
+                if (popularMacros.length === 0) {
+                    grid.innerHTML = `
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-gray);">
+                            <p>No shared macros yet. Be the first to share!</p>
+                            <a href="shared.html" class="btn btn-primary" style="margin-top: 16px;">Share Your Macros</a>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                grid.innerHTML = popularMacros.map(macro => {
+                    const date = new Date(macro.metadata.createdAt).toLocaleDateString();
+                    const views = macro.metadata.views || 0;
+                    const imports = macro.metadata.imports || 0;
+                    const folder = macro.metadata.folderId ? sharedMacros.getFolder(macro.metadata.folderId) : null;
+                    
+                    return `
+                        <div class="shared-macro-card" style="
+                            background: var(--gradient-card);
+                            border: 1px solid var(--border-color);
+                            border-radius: var(--radius-md);
+                            padding: var(--spacing-lg);
+                            box-shadow: var(--shadow-md);
+                            transition: all var(--transition-base);
+                            cursor: pointer;
+                        " data-share-code="${macro.shareCode}">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                                <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: var(--text-dark);">${escapeHtml(macro.metadata.title)}</h3>
+                                <span style="font-size: 12px; color: var(--text-gray); font-weight: 600; background: var(--bg-light); padding: 4px 8px; border-radius: 4px;">${macro.shareCode}</span>
+                            </div>
+                            <p style="margin: 0 0 12px 0; color: var(--text-gray); font-size: 14px; line-height: 1.5;">${escapeHtml(macro.metadata.description || 'No description')}</p>
+                            <div style="display: flex; gap: 12px; font-size: 12px; color: var(--text-light); margin-bottom: 16px; flex-wrap: wrap;">
+                                <span>By ${escapeHtml(macro.metadata.author)}</span>
+                                <span>•</span>
+                                <span>${date}</span>
+                                <span>•</span>
+                                <span>${macro.macros.length} macro${macro.macros.length > 1 ? 's' : ''}</span>
+                                ${folder ? `<span>•</span><span style="color: var(--accent-purple);">📁 ${escapeHtml(folder.name)}</span>` : ''}
+                            </div>
+                            <div style="display: flex; gap: 16px; font-size: 12px; color: var(--text-light); margin-bottom: 16px;">
+                                <span>👁️ ${views} views</span>
+                                <span>📥 ${imports} imports</span>
+                            </div>
+                            <button class="btn btn-primary" style="width: 100%;" data-share-code="${macro.shareCode}">Import Macros</button>
+                        </div>
+                    `;
+                }).join('');
+                
+                // Add click handlers
+                grid.querySelectorAll('.shared-macro-card').forEach(card => {
+                    card.addEventListener('click', (e) => {
+                        if (!e.target.classList.contains('btn') && !e.target.closest('.btn')) {
+                            const code = card.dataset.shareCode;
+                            importSharedMacro(code);
+                        }
+                    });
+                });
+                
+                grid.querySelectorAll('.btn[data-share-code]').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const code = btn.dataset.shareCode;
+                        importSharedMacro(code);
+                    });
+                });
+            } catch (error) {
+                console.error('Error loading shared macros:', error);
+                grid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-gray);">
+                        <p>Unable to load shared macros. <a href="shared.html">Visit the Shared Macros page</a></p>
+                    </div>
+                `;
+            }
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function importSharedMacro(shareCode) {
+            const result = sharedMacros.importSharedMacro(shareCode);
+            
+            if (result.success) {
+                const importData = {
+                    macros: result.macros,
+                    metadata: result.metadata,
+                    shareCode: shareCode,
+                    importedAt: new Date().toISOString()
+                };
+                
+                localStorage.setItem('fountain_import_shared', JSON.stringify(importData));
+                
+                alert(`Successfully imported ${result.macros.length} macro(s)! Open the extension and click "Import Shared Macros" to add them.`);
+                
+                sharedMacros.incrementViews(shareCode);
+                loadHomeSharedMacros();
+            } else {
+                alert('Error: ' + result.error);
+            }
+        }
+        
+        // Load shared macros when page loads
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadHomeSharedMacros);
+        } else {
+            loadHomeSharedMacros();
+        }
+        
+        // Register Service Worker for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((registration) => {
+                        console.log('SW registered:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.log('SW registration failed:', error);
+                    });
+            });
+        }
+    </script>
 </body>
 </html>
 

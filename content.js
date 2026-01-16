@@ -373,12 +373,13 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-// Check if element is editable
+// Check if element is editable (enhanced for all websites including Slack)
 function isEditable(element) {
   if (!element) return false;
   
   const tagName = element.tagName.toLowerCase();
-  // Support more input types
+  
+  // Support all input types that accept text
   const isInput = tagName === 'input' && (
     element.type === 'text' || 
     element.type === 'email' || 
@@ -386,46 +387,111 @@ function isEditable(element) {
     element.type === 'url' || 
     element.type === 'password' ||
     element.type === 'tel' ||
-    !element.type
+    element.type === 'number' ||
+    element.type === 'datetime-local' ||
+    element.type === 'date' ||
+    element.type === 'time' ||
+    element.type === 'month' ||
+    element.type === 'week' ||
+    !element.type || // Default type is text
+    element.type === '' // Empty string also defaults to text
   );
-  const isTextarea = tagName === 'textarea';
-  const isContentEditable = element.contentEditable === 'true' || element.isContentEditable;
   
-  return isInput || isTextarea || isContentEditable;
+  const isTextarea = tagName === 'textarea';
+  
+  // Enhanced contentEditable detection
+  const isContentEditable = 
+    element.contentEditable === 'true' || 
+    element.contentEditable === true ||
+    element.isContentEditable === true ||
+    (element.getAttribute && element.getAttribute('contenteditable') === 'true');
+  
+  // Check for role-based editable elements (used by some frameworks)
+  const hasEditableRole = element.getAttribute && (
+    element.getAttribute('role') === 'textbox' ||
+    element.getAttribute('role') === 'combobox'
+  );
+  
+  // Check if element is disabled or readonly
+  const isDisabled = element.disabled || element.readOnly || 
+    (element.getAttribute && (
+      element.getAttribute('disabled') !== null ||
+      element.getAttribute('readonly') !== null
+    ));
+  
+  if (isDisabled) return false;
+  
+  return isInput || isTextarea || isContentEditable || hasEditableRole;
 }
 
-// Get the current input element
+// Get the current input element (enhanced for shadow DOM and complex sites)
 function getInputElement() {
-  const activeElement = document.activeElement;
+  let activeElement = document.activeElement;
+  
+  // Handle shadow DOM (used by Slack and other modern apps)
+  while (activeElement && activeElement.shadowRoot) {
+    const shadowActive = activeElement.shadowRoot.activeElement;
+    if (shadowActive) {
+      activeElement = shadowActive;
+    } else {
+      break;
+    }
+  }
+  
   if (isEditable(activeElement)) {
     return activeElement;
   }
+  
+  // Fallback: Check if active element is inside an editable container
+  // (useful for complex editors like Slack, Discord, Notion, etc.)
+  let parent = activeElement;
+  for (let i = 0; i < 5 && parent; i++) { // Check up to 5 levels up
+    if (isEditable(parent)) {
+      return parent;
+    }
+    parent = parent.parentElement;
+    
+    // Check shadow DOM parent
+    if (parent && parent.shadowRoot) {
+      const shadowParent = parent.shadowRoot.activeElement || parent.shadowRoot.querySelector('[contenteditable="true"]');
+      if (shadowParent && isEditable(shadowParent)) {
+        return shadowParent;
+      }
+    }
+  }
+  
   return null;
 }
 
-// Insert text at cursor position
+// Insert text at cursor position (enhanced for all input types)
 function insertTextAtCursor(element, text) {
-  if (element.tagName.toLowerCase() === 'input') {
-    const start = element.selectionStart;
-    const end = element.selectionEnd;
-    const value = element.value;
+  const tagName = element.tagName.toLowerCase();
+  
+  if (tagName === 'input') {
+    const start = element.selectionStart || 0;
+    const end = element.selectionEnd || 0;
+    const value = element.value || '';
     element.value = value.substring(0, start) + text + value.substring(end);
     element.selectionStart = element.selectionEnd = start + text.length;
     
-    // Trigger input event
-    element.dispatchEvent(new Event('input', { bubbles: true }));
-  } else if (element.tagName.toLowerCase() === 'textarea') {
-    const start = element.selectionStart;
-    const end = element.selectionEnd;
-    const value = element.value;
+    // Trigger multiple events for better compatibility
+    element.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }));
+    element.dispatchEvent(new Event('change', { bubbles: true }));
+    element.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true }));
+  } else if (tagName === 'textarea') {
+    const start = element.selectionStart || 0;
+    const end = element.selectionEnd || 0;
+    const value = element.value || '';
     element.value = value.substring(0, start) + text + value.substring(end);
     element.selectionStart = element.selectionEnd = start + text.length;
     
-    // Trigger input event
-    element.dispatchEvent(new Event('input', { bubbles: true }));
-  } else if (element.isContentEditable || element.contentEditable === 'true') {
+    // Trigger multiple events for better compatibility
+    element.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }));
+    element.dispatchEvent(new Event('change', { bubbles: true }));
+  } else if (element.isContentEditable || element.contentEditable === 'true' || 
+             element.getAttribute('contenteditable') === 'true') {
     const selection = window.getSelection();
-    if (selection.rangeCount > 0) {
+    if (selection && selection.rangeCount > 0) {
       const range = selection.getRangeAt(0);
       range.deleteContents();
       const textNode = document.createTextNode(text);
@@ -435,8 +501,14 @@ function insertTextAtCursor(element, text) {
       selection.removeAllRanges();
       selection.addRange(range);
       
-      // Trigger input event
-      element.dispatchEvent(new Event('input', { bubbles: true }));
+      // Trigger multiple events for better compatibility with frameworks
+      element.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }));
+      element.dispatchEvent(new Event('change', { bubbles: true }));
+      element.dispatchEvent(new CompositionEvent('compositionend', { bubbles: true }));
+    } else {
+      // Fallback: append text if no selection
+      element.textContent = (element.textContent || '') + text;
+      element.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }));
     }
   }
 }

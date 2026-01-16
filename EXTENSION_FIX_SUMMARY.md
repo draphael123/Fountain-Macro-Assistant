@@ -84,3 +84,8 @@ The extension wasn't expanding text when you typed shortcuts. This was caused by
 
 The fix ensures that when you type a shortcut and press Space or Enter, the expansion happens immediately and reliably!
 
+
+
+
+
+

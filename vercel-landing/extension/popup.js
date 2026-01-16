@@ -5,6 +5,8 @@ let macros = [];
 let folders = [];
 let macroStats = {};
 let counters = {};
+let trash = []; // Recently deleted macros
+let autoCorrections = {}; // Auto-correct typo mappings
 let currentEditingId = null;
 let selectedFolderId = 'all';
 let sortBy = 'name';
@@ -15,6 +17,7 @@ let draggedItem = null;
 let lightMode = false;
 let isFirstRun = false;
 let onboardingStep = 0;
+const TRASH_RETENTION_DAYS = 30;
 
 // Templates
 const TEMPLATES = [
@@ -92,17 +95,25 @@ async function checkPendingMacro() {
 // Load all data
 async function loadData() {
   try {
-    const result = await chrome.storage.sync.get(['macros', 'folders', 'macroStats', 'counters', 'lightMode', 'hasOnboarded']);
+    const result = await chrome.storage.sync.get(['macros', 'folders', 'macroStats', 'counters', 'lightMode', 'hasOnboarded', 'autoCorrections']);
+    const localResult = await chrome.storage.local.get(['trash']);
+    
     macros = result.macros || [];
     folders = result.folders || [];
     macroStats = result.macroStats || {};
     counters = result.counters || {};
     lightMode = result.lightMode || false;
     isFirstRun = !result.hasOnboarded;
+    autoCorrections = result.autoCorrections || {};
+    trash = localResult.trash || [];
+    
+    // Clean up old trash items
+    cleanupTrash();
     
     applyTheme();
     updateFolderSelects();
     updateQuickStats();
+    renderPinnedMacros();
     renderFavorites();
     renderRecentMacros();
     renderDomainSuggestions();
@@ -117,6 +128,7 @@ async function loadData() {
 async function saveMacros() {
   await chrome.storage.sync.set({ macros });
   updateQuickStats();
+  renderPinnedMacros();
   renderFavorites();
   renderRecentMacros();
   renderMacros();
@@ -219,6 +231,64 @@ function updateQuickStats() {
   
   const mins = Math.round(totalCharsSaved / 200);
   document.getElementById('timeSaved').textContent = mins >= 60 ? `${Math.round(mins/60)}h` : `${mins}m`;
+}
+
+// Pinned macros
+const MAX_PINNED = 5;
+
+function renderPinnedMacros() {
+  const container = document.getElementById('pinnedMacros');
+  const section = document.getElementById('pinnedSection');
+  const countEl = document.getElementById('pinnedCount');
+  
+  const pinned = macros.filter(m => m.pinned);
+  
+  if (countEl) {
+    countEl.textContent = `${pinned.length}/${MAX_PINNED}`;
+  }
+  
+  if (pinned.length === 0) {
+    section.style.display = 'none';
+    return;
+  }
+  
+  section.style.display = 'block';
+  container.innerHTML = pinned.map(m => {
+    const stats = macroStats[m.id] || { count: 0 };
+    const preview = m.expansion.substring(0, 40) + (m.expansion.length > 40 ? '...' : '');
+    return `
+      <div class="pinned-macro-card" data-id="${m.id}" title="${escapeHtml(m.expansion.substring(0, 100))}">
+        <div class="pinned-macro-header">
+          <span class="pinned-icon">📌</span>
+          <span class="pinned-shortcut">${escapeHtml(m.shortcut)}</span>
+          <button class="unpin-btn" data-id="${m.id}" title="Unpin">✕</button>
+        </div>
+        <div class="pinned-macro-preview">${escapeHtml(preview)}</div>
+        ${stats.count > 0 ? `<div class="pinned-macro-stats">⚡ ${stats.count}x</div>` : ''}
+      </div>
+    `;
+  }).join('');
+  
+  // Click to edit
+  container.querySelectorAll('.pinned-macro-card').forEach(el => {
+    el.addEventListener('click', (e) => {
+      if (e.target.classList.contains('unpin-btn')) return;
+      editMacro(el.dataset.id);
+    });
+  });
+  
+  // Unpin button
+  container.querySelectorAll('.unpin-btn').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const macro = macros.find(m => m.id === btn.dataset.id);
+      if (macro) {
+        macro.pinned = false;
+        await saveMacros();
+        showToast('Macro unpinned', 'success');
+      }
+    });
+  });
 }
 
 // Favorites
@@ -370,6 +440,7 @@ function renderMacros(filter = '') {
     // Apply active filters
     let matchesFilters = true;
     activeFilters.forEach(f => {
+      if (f === 'pinned' && !m.pinned) matchesFilters = false;
       if (f === 'favorites' && !m.favorited) matchesFilters = false;
       if (f === 'recent' && (!macroStats[m.id] || !macroStats[m.id].lastUsed)) matchesFilters = false;
       if (f.startsWith('tag:') && !(m.tags || []).includes(f.replace('tag:', ''))) matchesFilters = false;
@@ -486,6 +557,16 @@ function showContextMenu(x, y, macroId) {
   if (favBtn && macro) {
     favBtn.querySelector('span').textContent = macro.favorited ? '⭐ Unfavorite' : '⭐ Favorite';
   }
+  
+  // Update pin button state
+  const pinBtn = menu.querySelector('[data-action="pin"]');
+  if (pinBtn && macro) {
+    const pinnedCount = macros.filter(m => m.pinned).length;
+    const canPin = macro.pinned || pinnedCount < MAX_PINNED;
+    pinBtn.querySelector('span').textContent = macro.pinned ? '📌 Unpin' : '📌 Pin to Top';
+    pinBtn.disabled = !canPin && !macro.pinned;
+    pinBtn.title = !canPin && !macro.pinned ? `Max ${MAX_PINNED} pinned macros` : '';
+  }
 }
 
 function hideContextMenu() {
@@ -510,6 +591,20 @@ async function handleContextAction(action) {
       macro.favorited = !macro.favorited;
       await saveMacros();
       showToast(macro.favorited ? 'Added to favorites' : 'Removed from favorites', 'success');
+      break;
+    case 'pin':
+      const pinnedCount = macros.filter(m => m.pinned).length;
+      if (macro.pinned) {
+        macro.pinned = false;
+        await saveMacros();
+        showToast('Macro unpinned', 'success');
+      } else if (pinnedCount < MAX_PINNED) {
+        macro.pinned = true;
+        await saveMacros();
+        showToast('Macro pinned to top!', 'success');
+      } else {
+        showToast(`Max ${MAX_PINNED} pinned macros allowed`, 'warning');
+      }
       break;
     case 'copy-shortcut':
       navigator.clipboard.writeText(macro.shortcut);
@@ -559,12 +654,14 @@ function renderMacroItem(macro, filter = '') {
   const isSelected = selectedMacros.has(macro.id);
   const isEnabled = macro.enabled !== false;
   const isFavorite = macro.favorited;
+  const isPinned = macro.pinned;
   const isRecent = stats.lastUsed && (Date.now() - stats.lastUsed < 86400000); // Last 24h
   
   const shortcutDisplay = filter ? highlight(macro.shortcut, filter) : escapeHtml(macro.shortcut);
   const preview = macro.expansion.substring(0, 80) + (macro.expansion.length > 80 ? '...' : '');
   
   const indicators = [];
+  if (macro.pinned) indicators.push('<span class="indicator pinned" title="Pinned">📌</span>');
   if (macro.aliases?.length) indicators.push('<span class="indicator alias" title="Has aliases">🔗</span>');
   if (macro.conditions && Object.keys(macro.conditions).length) indicators.push('<span class="indicator condition" title="Conditional">⚡</span>');
   if (macro.domains?.length) indicators.push('<span class="indicator domain" title="Domain filter">🌐</span>');
@@ -575,11 +672,12 @@ function renderMacroItem(macro, filter = '') {
   
   if (currentViewMode === 'grid') {
     return `
-      <div class="${viewClass} ${isSelected ? 'selected' : ''} ${!isEnabled ? 'disabled' : ''} ${isFavorite ? 'favorited' : ''} ${isRecent ? 'recent' : ''}" 
+      <div class="${viewClass} ${isSelected ? 'selected' : ''} ${!isEnabled ? 'disabled' : ''} ${isFavorite ? 'favorited' : ''} ${isPinned ? 'pinned' : ''} ${isRecent ? 'recent' : ''}" 
            data-macro-id="${macro.id}" data-id="${macro.id}" draggable="true" role="listitem"
            aria-label="Macro ${escapeHtml(macro.shortcut)}">
         <div class="macro-card-header">
           <input type="checkbox" class="macro-checkbox" ${isSelected ? 'checked' : ''} data-id="${macro.id}" aria-label="Select macro">
+          ${isPinned ? '<span class="pin-indicator" title="Pinned">📌</span>' : ''}
           <button class="favorite-btn ${isFavorite ? 'active' : ''}" data-id="${macro.id}" title="${isFavorite ? 'Unfavorite' : 'Favorite'}" aria-label="${isFavorite ? 'Unfavorite' : 'Favorite'}">⭐</button>
         </div>
         <div class="macro-card-shortcut">${shortcutDisplay}</div>
@@ -596,9 +694,10 @@ function renderMacroItem(macro, filter = '') {
   
   if (currentViewMode === 'compact') {
     return `
-      <div class="${viewClass} ${isSelected ? 'selected' : ''} ${!isEnabled ? 'disabled' : ''} ${isFavorite ? 'favorited' : ''}" 
+      <div class="${viewClass} ${isSelected ? 'selected' : ''} ${!isEnabled ? 'disabled' : ''} ${isFavorite ? 'favorited' : ''} ${isPinned ? 'pinned' : ''}" 
            data-macro-id="${macro.id}" data-id="${macro.id}" draggable="true" role="listitem">
         <input type="checkbox" class="macro-checkbox" ${isSelected ? 'checked' : ''} data-id="${macro.id}">
+        ${isPinned ? '<span class="pin-indicator-compact">📌</span>' : ''}
         <span class="macro-shortcut-compact">${shortcutDisplay}</span>
         <span class="macro-preview-compact">${escapeHtml(preview)}</span>
         ${isFavorite ? '<span class="favorite-indicator">⭐</span>' : ''}
@@ -608,7 +707,7 @@ function renderMacroItem(macro, filter = '') {
   }
   
   return `
-    <div class="${viewClass} ${isSelected ? 'selected' : ''} ${!isEnabled ? 'disabled' : ''} ${isFavorite ? 'favorited' : ''} ${isRecent ? 'recent' : ''}" 
+    <div class="${viewClass} ${isSelected ? 'selected' : ''} ${!isEnabled ? 'disabled' : ''} ${isFavorite ? 'favorited' : ''} ${isPinned ? 'pinned' : ''} ${isRecent ? 'recent' : ''}" 
          data-macro-id="${macro.id}" data-id="${macro.id}" draggable="true" role="listitem"
          aria-label="Macro ${escapeHtml(macro.shortcut)}">
       <div class="macro-header">
@@ -616,6 +715,7 @@ function renderMacroItem(macro, filter = '') {
           <input type="checkbox" class="macro-checkbox" ${isSelected ? 'checked' : ''} data-id="${macro.id}">
           <span class="drag-handle">⠿</span>
           <div class="macro-shortcut">
+            ${isPinned ? '<span class="pin-badge">📌</span>' : ''}
             ${shortcutDisplay}
             <div class="macro-indicators">${indicators.join('')}</div>
           </div>
@@ -810,6 +910,25 @@ async function bulkFavorite() {
   clearSelection();
   await saveMacros();
   showToast('Added to favorites ⭐', 'success');
+}
+
+async function bulkPin() {
+  const currentPinnedCount = macros.filter(m => m.pinned).length;
+  const selectedCount = selectedMacros.size;
+  const alreadyPinnedSelected = macros.filter(m => selectedMacros.has(m.id) && m.pinned).length;
+  const newPinsNeeded = selectedCount - alreadyPinnedSelected;
+  
+  if (currentPinnedCount + newPinsNeeded > MAX_PINNED) {
+    showToast(`Can only pin ${MAX_PINNED} macros. ${MAX_PINNED - currentPinnedCount} slots available.`, 'warning');
+    return;
+  }
+  
+  macros.forEach(m => {
+    if (selectedMacros.has(m.id)) m.pinned = true;
+  });
+  clearSelection();
+  await saveMacros();
+  showToast('Pinned selected macros 📌', 'success');
 }
 
 async function bulkMove(folderId) {
@@ -1060,12 +1179,263 @@ async function duplicateMacro() {
 // Delete macro
 async function deleteMacro() {
   if (!currentEditingId) return;
-  if (confirm('Delete this macro?')) {
+  if (confirm('Move this macro to trash? You can restore it within 30 days.')) {
+    const macro = macros.find(m => m.id === currentEditingId);
+    if (macro) {
+      // Move to trash with deletion timestamp
+      trash.push({ ...macro, deletedAt: Date.now() });
+      await chrome.storage.local.set({ trash });
+    }
     macros = macros.filter(m => m.id !== currentEditingId);
     await saveMacros();
     closeModal('macroModal');
-    showToast('Macro deleted', 'success');
+    showToast('Moved to trash. Can restore within 30 days.', 'success');
   }
+}
+
+// Trash management functions
+async function cleanupTrash() {
+  const cutoff = Date.now() - (TRASH_RETENTION_DAYS * 24 * 60 * 60 * 1000);
+  const before = trash.length;
+  trash = trash.filter(m => m.deletedAt > cutoff);
+  if (trash.length !== before) {
+    await chrome.storage.local.set({ trash });
+  }
+}
+
+async function restoreFromTrash(macroId) {
+  const idx = trash.findIndex(m => m.id === macroId);
+  if (idx === -1) return;
+  
+  const macro = trash[idx];
+  delete macro.deletedAt;
+  macros.push(macro);
+  trash.splice(idx, 1);
+  
+  await chrome.storage.local.set({ trash });
+  await saveMacros();
+  showToast('Macro restored! 🎉', 'success');
+}
+
+async function permanentDelete(macroId) {
+  if (!confirm('Permanently delete this macro? This cannot be undone.')) return;
+  
+  trash = trash.filter(m => m.id !== macroId);
+  await chrome.storage.local.set({ trash });
+  showToast('Permanently deleted', 'success');
+  renderTrash();
+}
+
+async function emptyTrash() {
+  if (!confirm(`Permanently delete all ${trash.length} items in trash? This cannot be undone.`)) return;
+  
+  trash = [];
+  await chrome.storage.local.set({ trash });
+  showToast('Trash emptied', 'success');
+  closeModal('trashModal');
+}
+
+function renderTrash() {
+  const container = document.getElementById('trashList');
+  const countEl = document.getElementById('trashCount');
+  
+  if (countEl) countEl.textContent = trash.length;
+  if (!container) return;
+  
+  if (trash.length === 0) {
+    container.innerHTML = '<div class="empty-trash">🗑️ Trash is empty</div>';
+    return;
+  }
+  
+  container.innerHTML = trash.map(m => {
+    const daysAgo = Math.floor((Date.now() - m.deletedAt) / (24 * 60 * 60 * 1000));
+    const daysLeft = TRASH_RETENTION_DAYS - daysAgo;
+    return `
+      <div class="trash-item" data-id="${m.id}">
+        <div class="trash-item-info">
+          <span class="trash-shortcut">${escapeHtml(m.shortcut)}</span>
+          <span class="trash-preview">${escapeHtml(m.expansion.substring(0, 50))}...</span>
+          <span class="trash-meta">${daysLeft} days left</span>
+        </div>
+        <div class="trash-actions">
+          <button class="btn btn-sm btn-primary restore-btn" data-id="${m.id}">↩️ Restore</button>
+          <button class="btn btn-sm btn-danger delete-btn" data-id="${m.id}">🗑️</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+  
+  // Event listeners
+  container.querySelectorAll('.restore-btn').forEach(btn => {
+    btn.addEventListener('click', () => restoreFromTrash(btn.dataset.id));
+  });
+  container.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', () => permanentDelete(btn.dataset.id));
+  });
+}
+
+function openTrash() {
+  renderTrash();
+  showModal('trashModal');
+}
+
+// === IMPORT FUNCTIONALITY ===
+let currentImportType = 'fountain';
+
+function openImport() {
+  showModal('importModal');
+}
+
+function triggerImport(type) {
+  currentImportType = type;
+  const input = document.getElementById('importFileInput');
+  input.accept = type === 'fountain' ? '.json' : '.csv';
+  input.click();
+}
+
+async function handleImportFile(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  
+  try {
+    const text = await file.text();
+    let imported = [];
+    
+    if (currentImportType === 'fountain') {
+      imported = importFountainJSON(text);
+    } else if (currentImportType === 'textexpander') {
+      imported = importTextExpanderCSV(text);
+    } else if (currentImportType === 'atext') {
+      imported = importATextCSV(text);
+    }
+    
+    if (imported.length > 0) {
+      macros.push(...imported);
+      await saveMacros();
+      closeModal('importModal');
+      showToast(`Imported ${imported.length} macros! 🎉`, 'success');
+    } else {
+      showToast('No macros found in file', 'error');
+    }
+  } catch (err) {
+    console.error('Import error:', err);
+    showToast('Error importing file: ' + err.message, 'error');
+  }
+  
+  e.target.value = ''; // Reset input
+}
+
+function importFountainJSON(text) {
+  const data = JSON.parse(text);
+  const items = data.macros || data;
+  
+  return (Array.isArray(items) ? items : []).map(m => ({
+    ...m,
+    id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+    createdAt: new Date().toISOString()
+  }));
+}
+
+function importTextExpanderCSV(text) {
+  // TextExpander CSV format: abbreviation,plaintext content
+  const lines = parseCSV(text);
+  const imported = [];
+  
+  for (let i = 1; i < lines.length; i++) { // Skip header
+    const row = lines[i];
+    if (row.length >= 2) {
+      const shortcut = row[0]?.trim();
+      const expansion = row[1]?.trim() || row[2]?.trim(); // Some formats have content in column 2 or 3
+      
+      if (shortcut && expansion) {
+        imported.push({
+          id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+          shortcut: shortcut.startsWith('/') ? shortcut : '/' + shortcut,
+          expansion: expansion.replace(/\\n/g, '\n'),
+          createdAt: new Date().toISOString(),
+          tags: ['imported', 'textexpander']
+        });
+      }
+    }
+  }
+  
+  return imported;
+}
+
+function importATextCSV(text) {
+  // aText CSV format: abbreviation,content
+  const lines = parseCSV(text);
+  const imported = [];
+  
+  for (let i = 1; i < lines.length; i++) {
+    const row = lines[i];
+    if (row.length >= 2) {
+      const shortcut = row[0]?.trim();
+      const expansion = row[1]?.trim();
+      
+      if (shortcut && expansion) {
+        imported.push({
+          id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+          shortcut: shortcut.startsWith('/') ? shortcut : '/' + shortcut,
+          expansion: expansion.replace(/\\n/g, '\n'),
+          createdAt: new Date().toISOString(),
+          tags: ['imported', 'atext']
+        });
+      }
+    }
+  }
+  
+  return imported;
+}
+
+function parseCSV(text) {
+  const lines = [];
+  const rows = text.split(/\r?\n/);
+  
+  for (const row of rows) {
+    if (!row.trim()) continue;
+    
+    const cells = [];
+    let current = '';
+    let inQuotes = false;
+    
+    for (let i = 0; i < row.length; i++) {
+      const char = row[i];
+      
+      if (char === '"') {
+        if (inQuotes && row[i + 1] === '"') {
+          current += '"';
+          i++;
+        } else {
+          inQuotes = !inQuotes;
+        }
+      } else if (char === ',' && !inQuotes) {
+        cells.push(current);
+        current = '';
+      } else {
+        current += char;
+      }
+    }
+    cells.push(current);
+    lines.push(cells);
+  }
+  
+  return lines;
+}
+
+// === AUTO-CORRECT MODE ===
+async function saveAutoCorrections() {
+  await chrome.storage.sync.set({ autoCorrections });
+}
+
+function addAutoCorrection(typo, correction) {
+  autoCorrections[typo.toLowerCase()] = correction;
+  saveAutoCorrections();
+}
+
+function removeAutoCorrection(typo) {
+  delete autoCorrections[typo.toLowerCase()];
+  saveAutoCorrections();
 }
 
 // Conditional rows
@@ -1350,6 +1720,127 @@ function updateDashboard() {
       </div>
     `).join('');
   }
+  
+  // Render usage insights
+  renderUsageInsights();
+}
+
+function renderUsageInsights() {
+  const container = document.getElementById('usageInsights');
+  if (!container) return;
+  
+  // Find never-used macros
+  const neverUsed = macros.filter(m => !macroStats[m.id] || macroStats[m.id].count === 0);
+  
+  // Find macros not used in 30+ days
+  const stale = macros.filter(m => {
+    const stat = macroStats[m.id];
+    if (!stat?.lastUsed) return false;
+    const daysSince = (Date.now() - stat.lastUsed) / (1000 * 60 * 60 * 24);
+    return daysSince > 30 && stat.count > 0;
+  });
+  
+  // Find similar shortcuts that might be confusing
+  const similar = findSimilarShortcuts();
+  
+  let html = '';
+  
+  if (neverUsed.length > 0) {
+    html += `
+      <div class="insights-card">
+        <div class="insights-card-title">⚠️ Never Used (${neverUsed.length})</div>
+        <div class="insights-list">
+          ${neverUsed.slice(0, 5).map(m => `
+            <div class="insights-item">
+              <span class="insights-item-shortcut">${escapeHtml(m.shortcut)}</span>
+              <span class="insights-item-action" data-action="delete" data-id="${m.id}">🗑️ Delete</span>
+            </div>
+          `).join('')}
+          ${neverUsed.length > 5 ? `<div style="text-align:center;font-size:11px;color:var(--text-muted);">+${neverUsed.length - 5} more</div>` : ''}
+        </div>
+      </div>
+    `;
+  }
+  
+  if (stale.length > 0) {
+    html += `
+      <div class="insights-card">
+        <div class="insights-card-title">💤 Not Used in 30+ Days (${stale.length})</div>
+        <div class="insights-list">
+          ${stale.slice(0, 5).map(m => `
+            <div class="insights-item">
+              <span class="insights-item-shortcut">${escapeHtml(m.shortcut)}</span>
+              <span class="insights-item-action" data-action="delete" data-id="${m.id}">🗑️ Delete</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+  
+  if (similar.length > 0) {
+    html += `
+      <div class="insights-card">
+        <div class="insights-card-title">🔀 Similar Shortcuts (may cause confusion)</div>
+        <div class="insights-list">
+          ${similar.slice(0, 5).map(pair => `
+            <div class="insights-item">
+              <span>
+                <span class="insights-item-shortcut">${escapeHtml(pair[0])}</span>
+                <span style="color:var(--text-muted);margin:0 4px;">≈</span>
+                <span class="insights-item-shortcut">${escapeHtml(pair[1])}</span>
+              </span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+  
+  if (!html) {
+    html = '<div style="text-align:center;color:var(--text-muted);padding:20px;">✨ All macros are being used effectively!</div>';
+  }
+  
+  container.innerHTML = html;
+  
+  // Add event listeners for delete actions
+  container.querySelectorAll('[data-action="delete"]').forEach(el => {
+    el.addEventListener('click', async () => {
+      const id = el.dataset.id;
+      const macro = macros.find(m => m.id === id);
+      if (macro && confirm(`Delete "${macro.shortcut}"?`)) {
+        // Move to trash
+        trash.push({ ...macro, deletedAt: Date.now() });
+        await chrome.storage.local.set({ trash });
+        macros = macros.filter(m => m.id !== id);
+        await saveMacros();
+        renderUsageInsights();
+        showToast('Moved to trash', 'success');
+      }
+    });
+  });
+}
+
+function findSimilarShortcuts() {
+  const pairs = [];
+  
+  for (let i = 0; i < macros.length; i++) {
+    for (let j = i + 1; j < macros.length; j++) {
+      const a = macros[i].shortcut.toLowerCase();
+      const b = macros[j].shortcut.toLowerCase();
+      
+      // Check if very similar (edit distance <= 2)
+      if (levenshteinDistance(a, b) <= 2 && a !== b) {
+        pairs.push([macros[i].shortcut, macros[j].shortcut]);
+      }
+      // Or one is prefix of another
+      else if ((a.startsWith(b) || b.startsWith(a)) && a !== b && Math.abs(a.length - b.length) <= 2) {
+        pairs.push([macros[i].shortcut, macros[j].shortcut]);
+      }
+    }
+  }
+  
+  return pairs;
 }
 
 function generateHeatmap() {
@@ -1481,6 +1972,22 @@ function setupEventListeners() {
   // Theme
   document.getElementById('themeToggle')?.addEventListener('click', toggleTheme);
   
+  // More dropdown
+  const moreBtn = document.getElementById('moreBtn');
+  const moreDropdown = document.getElementById('moreDropdown');
+  if (moreBtn && moreDropdown) {
+    moreBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      moreDropdown.style.display = moreDropdown.style.display === 'none' ? 'block' : 'none';
+    });
+    document.addEventListener('click', () => {
+      moreDropdown.style.display = 'none';
+    });
+    moreDropdown.addEventListener('click', () => {
+      moreDropdown.style.display = 'none';
+    });
+  }
+  
   // Main buttons
   document.getElementById('addMacroBtn')?.addEventListener('click', openAddMacro);
   document.getElementById('emptyAddBtn')?.addEventListener('click', openAddMacro);
@@ -1489,9 +1996,25 @@ function setupEventListeners() {
   document.getElementById('clearRecentBtn')?.addEventListener('click', clearRecentStats);
   document.getElementById('addFolderBtn')?.addEventListener('click', openAddFolder);
   document.getElementById('helpBtn')?.addEventListener('click', () => showModal('helpModal'));
+  document.getElementById('settingsBtn')?.addEventListener('click', () => chrome.runtime.openOptionsPage());
   document.getElementById('templatesBtn')?.addEventListener('click', openTemplates);
   document.getElementById('packagesBtn')?.addEventListener('click', openPackages);
   document.getElementById('dashboardBtn')?.addEventListener('click', openDashboard);
+  document.getElementById('trashBtn')?.addEventListener('click', openTrash);
+  document.getElementById('importBtn')?.addEventListener('click', openImport);
+  
+  // Trash modal
+  document.getElementById('closeTrashModal')?.addEventListener('click', () => closeModal('trashModal'));
+  document.getElementById('closeTrashBtn')?.addEventListener('click', () => closeModal('trashModal'));
+  document.getElementById('emptyTrashBtn')?.addEventListener('click', emptyTrash);
+  
+  // Import modal
+  document.getElementById('closeImportModal')?.addEventListener('click', () => closeModal('importModal'));
+  document.getElementById('closeImportBtn')?.addEventListener('click', () => closeModal('importModal'));
+  document.getElementById('importFountainBtn')?.addEventListener('click', () => triggerImport('fountain'));
+  document.getElementById('importTextExpanderBtn')?.addEventListener('click', () => triggerImport('textexpander'));
+  document.getElementById('importATextBtn')?.addEventListener('click', () => triggerImport('atext'));
+  document.getElementById('importFileInput')?.addEventListener('change', handleImportFile);
   
   // Search & filters
   document.getElementById('searchInput')?.addEventListener('input', e => renderMacros(e.target.value));
@@ -1508,6 +2031,7 @@ function setupEventListeners() {
   document.getElementById('bulkDeleteBtn')?.addEventListener('click', bulkDelete);
   document.getElementById('bulkExportBtn')?.addEventListener('click', bulkExport);
   document.getElementById('bulkFavoriteBtn')?.addEventListener('click', bulkFavorite);
+  document.getElementById('bulkPinBtn')?.addEventListener('click', bulkPin);
   document.getElementById('bulkMoveBtn')?.addEventListener('click', () => showModal('bulkMoveModal'));
   document.getElementById('bulkCancelBtn')?.addEventListener('click', clearSelection);
   document.getElementById('confirmBulkMoveBtn')?.addEventListener('click', () => bulkMove(document.getElementById('bulkFolderSelect')?.value));
@@ -1518,6 +2042,7 @@ function setupEventListeners() {
   document.getElementById('closeModal')?.addEventListener('click', () => closeModal('macroModal'));
   document.getElementById('cancelBtn')?.addEventListener('click', () => closeModal('macroModal'));
   document.getElementById('saveMacroBtn')?.addEventListener('click', saveMacro);
+  setupConflictChecker();
   document.getElementById('deleteMacroBtn')?.addEventListener('click', deleteMacro);
   document.getElementById('duplicateMacroBtn')?.addEventListener('click', duplicateMacro);
   document.getElementById('testExpansionBtn')?.addEventListener('click', testExpansion);
@@ -1607,6 +2132,7 @@ function setupEventListeners() {
   document.getElementById('viewCompactBtn')?.addEventListener('click', () => setViewMode('compact'));
   
   // Filter buttons
+  document.getElementById('filterPinnedBtn')?.addEventListener('click', () => toggleFilter('pinned'));
   document.getElementById('filterFavoritesBtn')?.addEventListener('click', () => toggleFilter('favorites'));
   document.getElementById('filterRecentBtn')?.addEventListener('click', () => toggleFilter('recent'));
   document.getElementById('filterTagsBtn')?.addEventListener('click', () => showTagFilter());
@@ -1862,10 +2388,12 @@ function showTagFilter() {
 }
 
 function handleSearchShortcut(query) {
-  // Handle :sig, :fav, etc.
+  // Handle :sig, :fav, :pin, etc.
   const shortcuts = {
     ':sig': () => { activeFilters.add('tag:signature'); updateActiveFilters(); renderMacros(''); },
     ':fav': () => { activeFilters.add('favorites'); updateActiveFilters(); renderMacros(''); },
+    ':pin': () => { activeFilters.add('pinned'); updateActiveFilters(); renderMacros(''); },
+    ':pinned': () => { activeFilters.add('pinned'); updateActiveFilters(); renderMacros(''); },
     ':recent': () => { activeFilters.add('recent'); updateActiveFilters(); renderMacros(''); }
   };
   
@@ -1991,17 +2519,79 @@ function setupDragAndDrop() {
 
 // Conflict Detection
 function checkConflicts(shortcut, excludeId = null) {
-  const conflicts = macros.filter(m => 
+  const lower = shortcut.toLowerCase();
+  
+  // Exact match
+  const exact = macros.filter(m => 
     m.id !== excludeId && 
-    (m.shortcut.toLowerCase() === shortcut.toLowerCase() ||
-     (m.aliases || []).some(a => a.toLowerCase() === shortcut.toLowerCase()))
+    (m.shortcut.toLowerCase() === lower ||
+     (m.aliases || []).some(a => a.toLowerCase() === lower))
   );
   
-  if (conflicts.length > 0) {
+  if (exact.length > 0) {
     showToast(`Warning: Shortcut "${shortcut}" already exists!`, 'warning');
-    return conflicts;
+    return { exact, similar: [] };
   }
-  return [];
+  
+  // Similar shortcuts (for warning)
+  const similar = macros.filter(m => {
+    if (m.id === excludeId) return false;
+    const mShortcut = m.shortcut.toLowerCase();
+    // Check for prefix conflicts (one starts with the other)
+    if (mShortcut.startsWith(lower) || lower.startsWith(mShortcut)) return true;
+    // Check Levenshtein distance for similar typos
+    if (levenshteinDistance(lower, mShortcut) <= 2 && lower.length > 2) return true;
+    return false;
+  });
+  
+  if (similar.length > 0) {
+    const names = similar.slice(0, 3).map(m => m.shortcut).join(', ');
+    showToast(`Similar shortcuts exist: ${names}`, 'info');
+  }
+  
+  return { exact, similar };
+}
+
+// Levenshtein distance for fuzzy matching
+function levenshteinDistance(a, b) {
+  if (a.length === 0) return b.length;
+  if (b.length === 0) return a.length;
+  
+  const matrix = [];
+  for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+  for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+  
+  for (let i = 1; i <= b.length; i++) {
+    for (let j = 1; j <= a.length; j++) {
+      if (b.charAt(i - 1) === a.charAt(j - 1)) {
+        matrix[i][j] = matrix[i - 1][j - 1];
+      } else {
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j - 1] + 1,
+          matrix[i][j - 1] + 1,
+          matrix[i - 1][j] + 1
+        );
+      }
+    }
+  }
+  return matrix[b.length][a.length];
+}
+
+// Real-time conflict checking on input
+function setupConflictChecker() {
+  const shortcutInput = document.getElementById('shortcutInput');
+  if (!shortcutInput) return;
+  
+  let debounceTimer;
+  shortcutInput.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      const value = shortcutInput.value.trim();
+      if (value.length >= 2) {
+        checkConflicts(value, currentEditingId);
+      }
+    }, 500);
+  });
 }
 
 // Load view mode preference

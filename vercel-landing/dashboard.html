@@ -14,15 +14,15 @@
         .dashboard-container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 40px 24px;
+            padding: var(--spacing-2xl) var(--spacing-lg);
         }
         .dashboard-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 40px;
+            margin-bottom: var(--spacing-2xl);
             flex-wrap: wrap;
-            gap: 20px;
+            gap: var(--spacing-md);
         }
         .dashboard-header h1 {
             font-size: 32px;
@@ -49,15 +49,37 @@
         .dashboard-stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 24px;
-            margin-bottom: 40px;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-2xl);
         }
         .stat-card {
-            background: var(--bg-white);
-            padding: 24px;
-            border-radius: 12px;
+            background: var(--gradient-card);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-md);
             border: 1px solid var(--border-color);
-            box-shadow: var(--shadow);
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-base);
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform var(--transition-base);
+        }
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-colored);
+        }
+        .stat-card:hover::before {
+            transform: scaleX(1);
         }
         .stat-card h3 {
             font-size: 14px;
@@ -70,12 +92,292 @@
             font-weight: 700;
             color: var(--primary-blue);
         }
-        .dashboard-content {
-            background: var(--bg-white);
-            padding: 32px;
-            border-radius: 16px;
-            box-shadow: var(--shadow);
+        .dashboard-section-card {
+            background: var(--gradient-card);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
             border: 1px solid var(--border-color);
+            margin-bottom: var(--spacing-xl);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            transition: all var(--transition-base);
+        }
+        .dashboard-section-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform var(--transition-base);
+        }
+        .dashboard-section-card:hover::before {
+            transform: scaleX(1);
+        }
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 2px solid var(--border-color);
+            background: var(--gradient-text);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+        }
+        .action-card {
+            background: var(--bg-light);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-md);
+            border: 2px solid var(--border-color);
+            text-decoration: none;
+            color: inherit;
+            transition: all var(--transition-base);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: var(--gradient-primary);
+            opacity: 0;
+            transition: opacity var(--transition-base);
+        }
+        .action-card > * {
+            position: relative;
+            z-index: 1;
+        }
+        .action-card:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: var(--shadow-colored);
+            border-color: var(--primary-blue);
+        }
+        .action-card:hover::before {
+            opacity: 0.1;
+        }
+        .action-card:hover .action-icon {
+            transform: scale(1.2) rotate(5deg);
+        }
+        .action-icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+        }
+        .action-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+        .action-card p {
+            font-size: 14px;
+            color: var(--text-gray);
+            margin: 0;
+        }
+        .backup-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+        .backup-info {
+            display: flex;
+            gap: 20px;
+            flex: 1;
+        }
+        .backup-icon {
+            font-size: 48px;
+            flex-shrink: 0;
+        }
+        .backup-details h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+        .backup-details p {
+            color: var(--text-gray);
+            margin-bottom: 12px;
+        }
+        .backup-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+        .backup-meta span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .backup-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .backup-history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .backup-history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: var(--bg-light);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+        }
+        .backup-history-item:hover {
+            border-color: var(--primary-blue);
+            box-shadow: 0 2px 8px rgba(0, 102, 255, 0.1);
+        }
+        .backup-history-info {
+            flex: 1;
+        }
+        .backup-history-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+        .backup-history-info p {
+            font-size: 12px;
+            color: var(--text-gray);
+            margin: 0;
+        }
+        .backup-history-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .backup-status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .backup-status-indicator.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        .backup-status-indicator.warning {
+            background: #fff3e0;
+            color: #e65100;
+        }
+        .backup-status-indicator.info {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        .profile-settings {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 20px;
+            background: var(--bg-light);
+            border-radius: 12px;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+        .setting-info {
+            flex: 1;
+        }
+        .setting-info h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 6px;
+        }
+        .setting-info p {
+            font-size: 14px;
+            color: var(--text-gray);
+            margin: 0;
+        }
+        .setting-control {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .input-field {
+            padding: 10px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            background: var(--bg-white);
+            color: var(--text-dark);
+            min-width: 200px;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+        .activity-feed {
+            min-height: 200px;
+        }
+        .activity-empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-gray);
+        }
+        .activity-item {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            gap: 16px;
+        }
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        .activity-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        .activity-content h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 6px;
+        }
+        .activity-content p {
+            font-size: 14px;
+            color: var(--text-gray);
+            margin: 0;
+        }
+        .activity-time {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+        .account-info {
+            padding: 0;
         }
     </style>
 </head>
@@ -99,6 +401,10 @@
                     <a href="index.html">Home</a>
                     <a href="index.html#features">Features</a>
                     <a href="index.html#guide">Guide</a>
+                    <a href="dashboard.html" style="font-weight: 600;">Dashboard</a>
+                    <a href="settings.html">Settings</a>
+                    <a href="shared.html">Shared Macros</a>
+                    <a href="forum.html">Forum</a>
                     <span id="user-menu" style="display: none;">
                         <span id="user-name"></span>
                         <button id="logout-btn" class="btn btn-secondary" style="margin-left: 12px;">Logout</button>
@@ -153,15 +459,219 @@
                 </div>
             </div>
 
-            <div class="dashboard-content">
-                <h2 style="margin-bottom: 24px; color: var(--text-dark);">Your Account</h2>
+            <!-- Quick Actions -->
+            <div class="dashboard-section-card">
+                <h2 class="section-title">Quick Actions</h2>
+                <div class="quick-actions-grid">
+                    <a href="shared.html" class="action-card">
+                        <div class="action-icon">🌐</div>
+                        <h3>Browse Shared Macros</h3>
+                        <p>Discover macros shared by the community</p>
+                    </a>
+                    <a href="forum.html" class="action-card">
+                        <div class="action-icon">💬</div>
+                        <h3>Visit Forum</h3>
+                        <p>Ask questions and share tips</p>
+                    </a>
+                    <a href="index.html#import-guide" class="action-card">
+                        <div class="action-icon">📥</div>
+                        <h3>Import Macros</h3>
+                        <p>Import from file or backup</p>
+                    </a>
+                    <a href="index.html#guide" class="action-card">
+                        <div class="action-icon">📖</div>
+                        <h3>View Guide</h3>
+                        <p>Learn advanced features</p>
+                    </a>
+                </div>
+            </div>
+
+            <!-- My Macros List -->
+            <div class="dashboard-section-card">
+                <h2 class="section-title">My Macros</h2>
                 <p style="color: var(--text-gray); margin-bottom: 24px;">
-                    Your macros are synced across all devices where you're logged in. 
-                    Use the Chrome extension to create and manage your macros.
+                    All macros saved to your account. These are automatically synced with the extension when you're logged in.
                 </p>
-                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                    <a href="index.html#download" class="btn btn-primary">Install Extension</a>
-                    <a href="index.html#guide" class="btn btn-secondary">View Guide</a>
+                <div id="user-macros-list" style="min-height: 200px;">
+                    <div style="text-align: center; padding: 40px; color: var(--text-gray);">
+                        <p>Loading macros...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Personal Macros Management -->
+            <div class="dashboard-section-card">
+                <h2 class="section-title">Macro Management</h2>
+                <p style="color: var(--text-gray); margin-bottom: 24px;">
+                    Upload or download your personal macros. These are stored in your account and can be accessed from any device.
+                </p>
+                <!-- Upload Area -->
+                <div id="upload-area" style="
+                    border: 2px dashed var(--border-color);
+                    border-radius: 12px;
+                    padding: 40px;
+                    text-align: center;
+                    background: var(--bg-light);
+                    margin-bottom: 24px;
+                    transition: all 0.3s;
+                    cursor: pointer;
+                ">
+                    <div id="upload-content">
+                        <div style="font-size: 48px; margin-bottom: 16px;">📁</div>
+                        <h3 style="margin: 0 0 8px 0; font-size: 18px; font-weight: 600; color: var(--text-dark);">
+                            Upload Macro JSON File
+                        </h3>
+                        <p style="margin: 0 0 16px 0; font-size: 14px; color: var(--text-gray);">
+                            Drag and drop a JSON file here, or click to browse
+                        </p>
+                        <button class="btn btn-primary" id="upload-personal-macros-btn">
+                            <span style="display: inline-flex; align-items: center; gap: 8px;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="17 8 12 3 7 8"/>
+                                    <line x1="12" y1="3" x2="12" y2="15"/>
+                                </svg>
+                                Choose File
+                            </span>
+                        </button>
+                        <p style="margin: 16px 0 0 0; font-size: 12px; color: var(--text-light);">
+                            Supports JSON files exported from the extension or manually created macro files
+                        </p>
+                    </div>
+                    <div id="upload-progress" style="display: none;">
+                        <div style="font-size: 48px; margin-bottom: 16px;">⏳</div>
+                        <p style="margin: 0; font-size: 14px; color: var(--text-dark);">Processing file...</p>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px;">
+                    <button class="btn btn-secondary" id="download-personal-macros-btn">
+                        <span style="display: inline-flex; align-items: center; gap: 8px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7 10 12 15 17 10"/>
+                                <line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                            Download Personal Macros
+                        </span>
+                    </button>
+                    <button class="btn btn-secondary" id="sync-from-extension-btn">
+                        <span style="display: inline-flex; align-items: center; gap: 8px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+                            </svg>
+                            Sync from Extension
+                        </span>
+                    </button>
+                </div>
+                
+                <!-- Status Display -->
+                <div id="personal-macros-status" style="padding: 16px; background: var(--bg-light); border-radius: 8px; display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h4 style="margin: 0 0 4px 0; font-size: 14px; font-weight: 600; color: var(--text-dark);">Personal Macros Saved</h4>
+                            <p style="margin: 0; font-size: 12px; color: var(--text-gray);" id="personal-macros-info">No macros saved</p>
+                        </div>
+                        <button class="btn btn-secondary" id="clear-personal-macros-btn" style="padding: 6px 12px; font-size: 12px;">Clear</button>
+                    </div>
+                </div>
+                <input type="file" id="personal-macros-file-input" accept=".json" style="display: none;">
+            </div>
+
+            <!-- Macro Backup Status -->
+            <div class="dashboard-section-card">
+                <h2 class="section-title">Macro Backup & Sync</h2>
+                <div style="background: #e3f2fd; border-left: 4px solid #2196f3; padding: 16px; border-radius: 8px; margin-bottom: 24px;">
+                    <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: #1976d2;">💡 How Cloud Backup Works</h4>
+                    <p style="margin: 0; font-size: 13px; color: #1565c0; line-height: 1.5;">
+                        Your macros are saved to your account on this website. To backup from the extension: 
+                        <strong>Open Extension Options → Cloud Sync → Click "Backup to Cloud"</strong>. 
+                        Your macros will then appear here and be accessible from any device when you're logged in.
+                    </p>
+                </div>
+                <div class="backup-status" id="backup-status">
+                    <div class="backup-info">
+                        <div class="backup-icon" id="backup-icon">☁️</div>
+                        <div class="backup-details">
+                            <h3 id="backup-title">No backup found</h3>
+                            <p id="backup-description">Your macros haven't been backed up yet. Use the extension to create a backup.</p>
+                            <div class="backup-meta" id="backup-meta" style="display: none;">
+                                <span id="backup-date"></span>
+                                <span id="backup-macro-count"></span>
+                                <span id="backup-size"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="backup-actions">
+                        <button class="btn btn-secondary" id="refresh-backup-btn">Refresh Status</button>
+                        <a href="index.html#download" class="btn btn-primary">Install Extension</a>
+                    </div>
+                </div>
+                
+                <!-- Backup History -->
+                <div id="backup-history-section" style="display: none; margin-top: 32px; padding-top: 32px; border-top: 2px solid var(--border-color);">
+                    <h3 style="font-size: 18px; font-weight: 600; color: var(--text-dark); margin-bottom: 16px;">Backup History</h3>
+                    <div id="backup-history-list" class="backup-history-list"></div>
+                </div>
+            </div>
+
+            <!-- Profile Settings -->
+            <div class="dashboard-section-card">
+                <h2 class="section-title">Profile Settings</h2>
+                <div class="profile-settings">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h3>Display Name</h3>
+                            <p>Your name as it appears on the forum and shared macros</p>
+                        </div>
+                        <div class="setting-control">
+                            <input type="text" id="profile-name" class="input-field" placeholder="Your name">
+                            <button class="btn btn-primary" id="save-name-btn">Save</button>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h3>Email</h3>
+                            <p id="profile-email-display">Your account email address</p>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h3>Account Created</h3>
+                            <p id="account-created">Account creation date</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="dashboard-section-card">
+                <h2 class="section-title">Recent Activity</h2>
+                <div class="activity-feed" id="activity-feed">
+                    <div class="activity-empty">
+                        <p>No recent activity. Start by sharing macros or posting in the forum!</p>
+                        <div style="display: flex; gap: 12px; margin-top: 16px; justify-content: center;">
+                            <a href="shared.html" class="btn btn-primary">Share a Macro</a>
+                            <a href="forum.html" class="btn btn-secondary">Visit Forum</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account Info -->
+            <div class="dashboard-section-card">
+                <h2 class="section-title">Account Information</h2>
+                <div class="account-info">
+                    <p style="color: var(--text-gray); margin-bottom: 24px;">
+                        Your macros are synced across all devices where you're logged in. 
+                        Use the Chrome extension to create and manage your macros.
+                    </p>
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                        <a href="index.html#download" class="btn btn-primary">Install Extension</a>
+                        <a href="index.html#guide" class="btn btn-secondary">View Guide</a>
+                        <a href="index.html#import-guide" class="btn btn-secondary">Import Guide</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -170,21 +680,771 @@
     <script src="script.js"></script>
     <script src="auth.js"></script>
     <script>
+        // Dashboard functionality
+        let currentUser = null;
+
         // Check authentication
         if (auth.requireAuth()) {
-            const user = auth.getCurrentUser();
-            if (user) {
-                // Display user info
-                document.getElementById('dashboard-user-name').textContent = user.name;
-                document.getElementById('user-email-display').textContent = user.email;
-                document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
-                
-                // Setup logout
-                document.getElementById('logout-btn-header').addEventListener('click', () => {
+            currentUser = auth.getCurrentUser();
+            if (currentUser) {
+                initializeDashboard();
+            }
+        }
+
+        function initializeDashboard() {
+            // Display user info
+            document.getElementById('dashboard-user-name').textContent = currentUser.name;
+            document.getElementById('user-email-display').textContent = currentUser.email;
+            document.getElementById('user-avatar').textContent = currentUser.name.charAt(0).toUpperCase();
+            document.getElementById('profile-email-display').textContent = currentUser.email;
+            document.getElementById('profile-name').value = currentUser.name;
+            
+            // Set account created date
+            const users = auth.getUsers();
+            const userData = users.find(u => u.id === currentUser.id);
+            if (userData && userData.createdAt) {
+                const createdDate = new Date(userData.createdAt);
+                document.getElementById('account-created').textContent = createdDate.toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+            } else {
+                document.getElementById('account-created').textContent = 'Account date not available';
+            }
+
+            // Load backup status
+            loadBackupStatus();
+
+            // Load personal macros status
+            loadPersonalMacrosStatus();
+
+            // Load activity feed
+            loadActivityFeed();
+
+            // Setup event listeners
+            setupEventListeners();
+
+            // Load stats (would come from extension in real implementation)
+            loadStats();
+        }
+
+        function setupEventListeners() {
+            // Logout button
+            const logoutBtnHeader = document.getElementById('logout-btn-header');
+            if (logoutBtnHeader) {
+                logoutBtnHeader.addEventListener('click', () => {
                     auth.logout();
                     window.location.href = 'index.html';
                 });
             }
+
+            // Save name button
+            const saveNameBtn = document.getElementById('save-name-btn');
+            if (saveNameBtn) {
+                saveNameBtn.addEventListener('click', saveProfileName);
+            }
+
+            // Refresh backup button
+            const refreshBackupBtn = document.getElementById('refresh-backup-btn');
+            if (refreshBackupBtn) {
+                refreshBackupBtn.addEventListener('click', loadBackupStatus);
+            }
+
+            // Personal macros buttons
+            const uploadArea = document.getElementById('upload-area');
+            const uploadBtn = document.getElementById('upload-personal-macros-btn');
+            const fileInput = document.getElementById('personal-macros-file-input');
+            
+            // Click to upload
+            if (uploadBtn) {
+                uploadBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    fileInput.click();
+                });
+            }
+            
+            // Click on upload area
+            if (uploadArea) {
+                uploadArea.addEventListener('click', () => {
+                    fileInput.click();
+                });
+            }
+            
+            // Drag and drop
+            if (uploadArea) {
+                uploadArea.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    uploadArea.style.borderColor = 'var(--primary-blue)';
+                    uploadArea.style.background = 'rgba(0, 102, 255, 0.1)';
+                });
+                
+                uploadArea.addEventListener('dragleave', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    uploadArea.style.borderColor = 'var(--border-color)';
+                    uploadArea.style.background = 'var(--bg-light)';
+                });
+                
+                uploadArea.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    uploadArea.style.borderColor = 'var(--border-color)';
+                    uploadArea.style.background = 'var(--bg-light)';
+                    
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                        const file = files[0];
+                        if (file.name.endsWith('.json') || file.type === 'application/json') {
+                            // Create a fake event object
+                            const fakeEvent = {
+                                target: {
+                                    files: [file],
+                                    value: ''
+                                }
+                            };
+                            handlePersonalMacrosUpload(fakeEvent);
+                        } else {
+                            alert('Please drop a JSON file.');
+                        }
+                    }
+                });
+            }
+
+            if (fileInput) {
+                fileInput.addEventListener('change', handlePersonalMacrosUpload);
+            }
+
+            const downloadPersonalMacrosBtn = document.getElementById('download-personal-macros-btn');
+            if (downloadPersonalMacrosBtn) {
+                downloadPersonalMacrosBtn.addEventListener('click', downloadPersonalMacros);
+            }
+
+            const syncFromExtensionBtn = document.getElementById('sync-from-extension-btn');
+            if (syncFromExtensionBtn) {
+                syncFromExtensionBtn.addEventListener('click', syncFromExtension);
+            }
+
+            const clearPersonalMacrosBtn = document.getElementById('clear-personal-macros-btn');
+            if (clearPersonalMacrosBtn) {
+                clearPersonalMacrosBtn.addEventListener('click', clearPersonalMacros);
+            }
+        }
+
+        function saveProfileName() {
+            const newName = document.getElementById('profile-name').value.trim();
+            if (!newName) {
+                alert('Please enter a name');
+                return;
+            }
+
+            const users = auth.getUsers();
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                users[userIndex].name = newName;
+                auth.saveUsers(users);
+                currentUser.name = newName;
+                auth.setCurrentUser(currentUser);
+                
+                // Update display
+                document.getElementById('dashboard-user-name').textContent = newName;
+                document.getElementById('user-avatar').textContent = newName.charAt(0).toUpperCase();
+                
+                alert('Name updated successfully!');
+            }
+        }
+
+        function loadBackupStatus() {
+            const backup = auth.getMacroBackup(currentUser.id);
+            const backupHistory = auth.getBackupHistory(currentUser.id);
+            const backupStatus = document.getElementById('backup-status');
+            const backupTitle = document.getElementById('backup-title');
+            const backupDescription = document.getElementById('backup-description');
+            const backupMeta = document.getElementById('backup-meta');
+            const backupDate = document.getElementById('backup-date');
+            const backupMacroCount = document.getElementById('backup-macro-count');
+            const backupIcon = document.getElementById('backup-icon');
+            const backupHistorySection = document.getElementById('backup-history-section');
+            const backupHistoryList = document.getElementById('backup-history-list');
+
+            if (backup && backup.macros) {
+                backupTitle.textContent = 'Backup Available ✓';
+                backupDescription.textContent = 'Your macros are backed up and synced to the cloud.';
+                backupMeta.style.display = 'flex';
+                backupIcon.textContent = '☁️';
+                
+                if (backup.updatedAt) {
+                    const updateDate = new Date(backup.updatedAt);
+                    const timeAgo = getTimeAgo(updateDate);
+                    backupDate.innerHTML = `<span style="display: flex; align-items: center; gap: 4px;">📅 Last backup: ${timeAgo}</span>`;
+                }
+                
+                const macroCount = backup.macros.length || 0;
+                backupMacroCount.textContent = `📝 ${macroCount} macro${macroCount !== 1 ? 's' : ''}`;
+                
+                // Calculate backup size
+                const backupSize = JSON.stringify(backup).length;
+                const sizeKB = (backupSize / 1024).toFixed(1);
+                const backupSizeEl = document.getElementById('backup-size');
+                if (backupSizeEl) {
+                    backupSizeEl.textContent = `💾 ${sizeKB} KB`;
+                }
+            } else {
+                backupTitle.textContent = 'No backup found';
+                backupDescription.textContent = 'Your macros haven\'t been backed up yet. Use the extension to create a backup.';
+                backupMeta.style.display = 'none';
+                backupIcon.textContent = '⚠️';
+            }
+
+            // Load backup history
+            if (backupHistory && backupHistory.length > 0) {
+                backupHistorySection.style.display = 'block';
+                backupHistoryList.innerHTML = backupHistory.map((backup, index) => {
+                    const backupDate = new Date(backup.createdAt);
+                    const macroCount = backup.macros ? backup.macros.length : 0;
+                    const isCurrent = index === 0;
+                    
+                    return `
+                        <div class="backup-history-item">
+                            <div class="backup-history-info">
+                                <h4>
+                                    ${isCurrent ? '🟢 Current Backup' : '📦 Backup'} 
+                                    ${backupDate.toLocaleDateString()} ${backupDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                </h4>
+                                <p>${macroCount} macro${macroCount !== 1 ? 's' : ''} • ${getTimeAgo(backupDate)}</p>
+                            </div>
+                            <div class="backup-history-actions">
+                                ${!isCurrent ? `<button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="restoreBackup('${backup.id}')">Restore</button>` : ''}
+                                <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="downloadBackup('${backup.id}')">Download</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                backupHistorySection.style.display = 'none';
+            }
+        }
+
+        function getTimeAgo(date) {
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins} minute${diffMins !== 1 ? 's' : ''} ago`;
+            if (diffHours < 24) return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
+            if (diffDays < 7) return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
+            return date.toLocaleDateString();
+        }
+
+        function restoreBackup(backupId) {
+            if (!confirm('This will replace your current macros with this backup. Continue?')) {
+                return;
+            }
+            
+            const result = auth.restoreFromBackup(currentUser.id, backupId);
+            if (result.success) {
+                alert('Backup restored! Please use the extension to sync these macros to your browser.');
+                loadBackupStatus();
+            } else {
+                alert('Failed to restore backup: ' + (result.error || 'Unknown error'));
+            }
+        }
+
+        function downloadBackup(backupId) {
+            const backup = auth.getBackupById(currentUser.id, backupId);
+            if (!backup) {
+                alert('Backup not found');
+                return;
+            }
+
+            const dataStr = JSON.stringify(backup, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `fountain-backup-${backupId}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function loadActivityFeed() {
+            const activityFeed = document.getElementById('activity-feed');
+            const activities = [];
+
+            // Get user's forum posts from localStorage
+            try {
+                const forumData = localStorage.getItem('fountain_forum_posts');
+                if (forumData) {
+                    const allPosts = JSON.parse(forumData);
+                    const userPosts = allPosts
+                        .filter(post => post.authorId === currentUser.id)
+                        .slice(0, 3)
+                        .map(post => ({
+                            type: 'forum',
+                            icon: '💬',
+                            title: 'Posted in forum',
+                            description: post.title,
+                            time: new Date(post.createdAt)
+                        }));
+                    activities.push(...userPosts);
+                }
+            } catch (e) {
+                console.log('Error loading forum posts:', e);
+            }
+
+            // Get user's shared macros from localStorage
+            try {
+                const sharedData = localStorage.getItem('fountain_shared_macros');
+                if (sharedData) {
+                    const allShared = JSON.parse(sharedData);
+                    const userShared = allShared
+                        .filter(item => item.metadata && item.metadata.authorId === currentUser.id)
+                        .slice(0, 3)
+                        .map(item => ({
+                            type: 'macro',
+                            icon: '🌐',
+                            title: 'Shared a macro',
+                            description: item.macros && item.macros[0] ? item.macros[0].shortcut : 'Macro',
+                            time: new Date(item.metadata.createdAt)
+                        }));
+                    activities.push(...userShared);
+                }
+            } catch (e) {
+                console.log('Error loading shared macros:', e);
+            }
+
+            // Sort by time and show latest 5
+            activities.sort((a, b) => b.time - a.time);
+            const recentActivities = activities.slice(0, 5);
+
+            if (recentActivities.length === 0) {
+                activityFeed.innerHTML = `
+                    <div class="activity-empty">
+                        <p>No recent activity. Start by sharing macros or posting in the forum!</p>
+                        <div style="display: flex; gap: 12px; margin-top: 16px; justify-content: center;">
+                            <a href="shared.html" class="btn btn-primary">Share a Macro</a>
+                            <a href="forum.html" class="btn btn-secondary">Visit Forum</a>
+                        </div>
+                    </div>
+                `;
+            } else {
+                activityFeed.innerHTML = recentActivities.map(activity => `
+                    <div class="activity-item">
+                        <div class="activity-icon">${activity.icon}</div>
+                        <div class="activity-content">
+                            <h4>${activity.title}</h4>
+                            <p>${activity.description}</p>
+                            <div class="activity-time">${formatTime(activity.time)}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function formatTime(date) {
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins} minute${diffMins !== 1 ? 's' : ''} ago`;
+            if (diffHours < 24) return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
+            if (diffDays < 7) return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
+            return date.toLocaleDateString();
+        }
+
+        async function loadStats() {
+            // Try to fetch from cloud API first
+            const token = localStorage.getItem('fountain_auth_token');
+            
+            if (token) {
+                try {
+                    const response = await fetch('/api/sync/get', {
+                        method: 'GET',
+                        headers: { 
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success && data.data && data.data.macros) {
+                        const macroCount = data.data.macros.length || 0;
+                        document.getElementById('total-macros').textContent = macroCount;
+                        displayUserMacros(data.data.macros, data.data.folders);
+                        document.getElementById('expansions-today').textContent = '0';
+                        document.getElementById('time-saved').textContent = '0h';
+                        return;
+                    }
+                } catch (error) {
+                    console.error('Error fetching cloud macros:', error);
+                }
+            }
+            
+            // Fallback to local storage
+            const backup = auth.getMacroBackup(currentUser.id);
+            const personalMacros = auth.getPersonalMacros(currentUser.id);
+            
+            if (backup && backup.macros) {
+                const macroCount = backup.macros.length || 0;
+                document.getElementById('total-macros').textContent = macroCount;
+                displayUserMacros(backup.macros);
+            } else if (personalMacros && personalMacros.macros) {
+                const macroCount = personalMacros.macros.length || 0;
+                document.getElementById('total-macros').textContent = macroCount;
+                displayUserMacros(personalMacros.macros);
+            } else {
+                document.getElementById('total-macros').textContent = '0';
+                displayUserMacros([]);
+            }
+
+            // In a real implementation, these would come from the extension
+            // For now, show placeholder values
+            document.getElementById('expansions-today').textContent = '0';
+            document.getElementById('time-saved').textContent = '0h';
+        }
+
+        function loadPersonalMacrosStatus() {
+            const personalMacros = auth.getPersonalMacros(currentUser.id);
+            const statusDiv = document.getElementById('personal-macros-status');
+            const infoDiv = document.getElementById('personal-macros-info');
+
+            if (personalMacros && personalMacros.macros && personalMacros.macros.length > 0) {
+                statusDiv.style.display = 'block';
+                const savedDate = new Date(personalMacros.savedAt);
+                const macroCount = personalMacros.macros.length;
+                infoDiv.textContent = `${macroCount} macro${macroCount !== 1 ? 's' : ''} saved on ${savedDate.toLocaleDateString()}`;
+            } else {
+                statusDiv.style.display = 'none';
+            }
+        }
+
+        function handlePersonalMacrosUpload(event) {
+            const file = event.target.files[0];
+            if (!file) {
+                resetUploadArea();
+                return;
+            }
+
+            // Validate file type
+            if (!file.name.endsWith('.json') && file.type !== 'application/json') {
+                alert('Please select a JSON file.');
+                resetUploadArea();
+                return;
+            }
+
+            // Show progress
+            showUploadProgress();
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const fileContent = e.target.result;
+                    let macrosData = JSON.parse(fileContent);
+                    
+                    // Handle different file formats
+                    // Format 1: Extension export format { macros: [], folders: [], ... }
+                    // Format 2: Simple array of macros [{ shortcut, expansion, ... }, ...]
+                    if (Array.isArray(macrosData)) {
+                        // Convert array format to object format
+                        macrosData = {
+                            macros: macrosData,
+                            folders: [],
+                            macroStats: {},
+                            settings: {}
+                        };
+                    }
+                    
+                    // Validate structure
+                    if (!macrosData.macros || !Array.isArray(macrosData.macros)) {
+                        alert('Invalid file format. Expected a JSON file with a "macros" array or an array of macro objects.');
+                        resetUploadArea();
+                        return;
+                    }
+
+                    // Validate macro objects
+                    const validMacros = macrosData.macros.filter(m => {
+                        return m && (m.shortcut || m.shortcut === '') && (m.expansion || m.expansion === '');
+                    });
+
+                    if (validMacros.length === 0) {
+                        alert('No valid macros found in the file. Each macro must have at least a "shortcut" and "expansion" field.');
+                        resetUploadArea();
+                        return;
+                    }
+
+                    if (validMacros.length < macrosData.macros.length) {
+                        const skipped = macrosData.macros.length - validMacros.length;
+                        if (!confirm(`Found ${validMacros.length} valid macro(s) and ${skipped} invalid macro(s) that will be skipped. Continue?`)) {
+                            resetUploadArea();
+                            return;
+                        }
+                    }
+
+                    macrosData.macros = validMacros;
+
+                    // Ask user if they want to merge or replace
+                    const existing = auth.getPersonalMacros(currentUser.id);
+                    const hasExisting = existing && existing.macros && existing.macros.length > 0;
+                    
+                    let merge = false;
+                    if (hasExisting) {
+                        merge = confirm(
+                            `Found ${macrosData.macros.length} macro(s) in file.\n\n` +
+                            `You currently have ${existing.macros.length} macro(s) saved.\n\n` +
+                            'Click OK to merge with existing macros (duplicates will be skipped), or Cancel to replace them.'
+                        );
+                    }
+
+                    if (merge && hasExisting) {
+                        // Merge macros (avoid duplicates by shortcut)
+                        const existingShortcuts = new Set(
+                            existing.macros.map(m => m.shortcut.toLowerCase())
+                        );
+                        const newMacros = macrosData.macros.filter(
+                            m => !existingShortcuts.has(m.shortcut.toLowerCase())
+                        );
+                        macrosData.macros = [...existing.macros, ...newMacros];
+                        
+                        if (newMacros.length < macrosData.macros.length - existing.macros.length) {
+                            const duplicates = macrosData.macros.length - existing.macros.length - newMacros.length;
+                            alert(`${newMacros.length} new macro(s) added. ${duplicates} duplicate(s) were skipped.`);
+                        }
+                    }
+
+                    // Save personal macros
+                    const result = auth.savePersonalMacros(currentUser.id, {
+                        macros: macrosData.macros || [],
+                        folders: macrosData.folders || [],
+                        macroStats: macrosData.macroStats || {},
+                        settings: macrosData.settings || {},
+                        version: macrosData.version || '1.1.0'
+                    });
+
+                    if (result.success) {
+                        const message = hasExisting && merge 
+                            ? `Successfully merged! You now have ${result.macros.macros.length} macro(s) total.`
+                            : `Successfully imported ${result.macros.macros.length} macro(s)!`;
+                        alert(message);
+                        loadPersonalMacrosStatus();
+                        loadStats();
+                        displayUserMacros(result.macros.macros);
+                    } else {
+                        alert('Failed to save macros: ' + (result.error || 'Unknown error'));
+                    }
+                } catch (error) {
+                    alert('Error reading file: ' + error.message + '\n\nPlease ensure the file is valid JSON.');
+                } finally {
+                    resetUploadArea();
+                }
+            };
+            
+            reader.onerror = () => {
+                alert('Error reading file. Please try again.');
+                resetUploadArea();
+            };
+            
+            reader.readAsText(file);
+        }
+
+        function showUploadProgress() {
+            const uploadArea = document.getElementById('upload-area');
+            const uploadContent = document.getElementById('upload-content');
+            const uploadProgress = document.getElementById('upload-progress');
+            
+            if (uploadArea && uploadContent && uploadProgress) {
+                uploadContent.style.display = 'none';
+                uploadProgress.style.display = 'block';
+                uploadArea.style.borderColor = 'var(--primary-blue)';
+                uploadArea.style.background = 'rgba(0, 102, 255, 0.05)';
+            }
+        }
+
+        function resetUploadArea() {
+            const uploadArea = document.getElementById('upload-area');
+            const uploadContent = document.getElementById('upload-content');
+            const uploadProgress = document.getElementById('upload-progress');
+            const fileInput = document.getElementById('personal-macros-file-input');
+            
+            if (uploadArea && uploadContent && uploadProgress) {
+                uploadContent.style.display = 'block';
+                uploadProgress.style.display = 'none';
+                uploadArea.style.borderColor = 'var(--border-color)';
+                uploadArea.style.background = 'var(--bg-light)';
+            }
+            
+            if (fileInput) {
+                fileInput.value = '';
+            }
+        }
+
+        function downloadPersonalMacros() {
+            const personalMacros = auth.getPersonalMacros(currentUser.id);
+            
+            if (!personalMacros || !personalMacros.macros || personalMacros.macros.length === 0) {
+                alert('No personal macros saved. Please import macros first or sync from extension.');
+                return;
+            }
+
+            // Create download data
+            const downloadData = {
+                macros: personalMacros.macros,
+                folders: personalMacros.folders || [],
+                macroStats: personalMacros.macroStats || {},
+                settings: personalMacros.settings || {},
+                version: personalMacros.version || '1.0.1',
+                exportedAt: new Date().toISOString()
+            };
+
+            // Download as JSON
+            const dataStr = JSON.stringify(downloadData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `fountain-personal-macros-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            alert(`Downloaded ${personalMacros.macros.length} macro(s) successfully!`);
+        }
+
+        function syncFromExtension() {
+            // Check if extension has macros stored
+            const backup = auth.getMacroBackup(currentUser.id);
+            
+            if (!backup || !backup.macros || backup.macros.length === 0) {
+                alert('No macros found in backup. Please backup your macros from the extension first.\n\n' +
+                      '1. Open the extension\n' +
+                      '2. Go to Options\n' +
+                      '3. Click "Backup to Cloud"');
+                return;
+            }
+
+            // Ask user if they want to merge or replace
+            const merge = confirm(
+                `Found ${backup.macros.length} macro(s) in backup.\n\n` +
+                'Click OK to merge with existing personal macros, or Cancel to replace them.'
+            );
+
+            if (merge) {
+                const existing = auth.getPersonalMacros(currentUser.id);
+                if (existing && existing.macros) {
+                    // Merge macros (avoid duplicates by shortcut)
+                    const existingShortcuts = new Set(
+                        existing.macros.map(m => m.shortcut.toLowerCase())
+                    );
+                    const newMacros = backup.macros.filter(
+                        m => !existingShortcuts.has(m.shortcut.toLowerCase())
+                    );
+                    backup.macros = [...existing.macros, ...newMacros];
+                }
+            }
+
+            // Save to personal macros
+            const result = auth.savePersonalMacros(currentUser.id, {
+                macros: backup.macros || [],
+                folders: backup.folders || [],
+                macroStats: backup.macroStats || {},
+                settings: backup.settings || {},
+                version: backup.version || '1.0.1'
+            });
+
+            if (result.success) {
+                alert(`Successfully ${merge ? 'merged' : 'synced'} ${result.macros.macros.length} macro(s) from extension!`);
+                loadPersonalMacrosStatus();
+                loadStats();
+            } else {
+                alert('Failed to sync macros: ' + (result.error || 'Unknown error'));
+            }
+        }
+
+        function clearPersonalMacros() {
+            if (!confirm('Are you sure you want to clear all personal macros? This action cannot be undone.')) {
+                return;
+            }
+
+            const users = auth.getUsers();
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                users[userIndex].personalMacros = null;
+                auth.saveUsers(users);
+                loadPersonalMacrosStatus();
+                loadStats();
+                alert('Personal macros cleared successfully.');
+            }
+        }
+
+        // Display user macros list
+        function displayUserMacros(macros, cloudFolders = null) {
+            const macrosListDiv = document.getElementById('user-macros-list');
+            if (!macrosListDiv) return;
+            
+            if (!macros || macros.length === 0) {
+                macrosListDiv.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--text-gray);">
+                        <p style="font-size: 18px; margin-bottom: 8px;">No macros yet</p>
+                        <p style="font-size: 14px;">Create macros in the extension to see them here!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Get folders - use cloud folders if provided, otherwise fallback to local
+            const personalMacros = auth.getPersonalMacros(currentUser?.id);
+            const folders = cloudFolders || personalMacros?.folders || [];
+            const macroStats = personalMacros?.macroStats || {};
+
+            const macrosHTML = macros.map(macro => {
+                const folderName = macro.folderId ? (folders.find(f => f.id === macro.folderId)?.name || 'Unknown') : 'No Folder';
+                const stats = macroStats[macro.id] || { count: 0, lastUsed: null };
+                const lastUsed = stats.lastUsed ? new Date(stats.lastUsed).toLocaleDateString() : 'Never';
+                
+                return `
+                    <div style="padding: 16px; background: var(--bg-light); border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 12px;">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+                            <div style="flex: 1;">
+                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                                    <strong style="color: var(--text-dark); font-size: 16px;">${escapeHtml(macro.shortcut)}</strong>
+                                    ${macro.aliases && macro.aliases.length > 0 ? `<span style="font-size: 12px; color: var(--text-gray);">🔗 ${macro.aliases.length} alias(es)</span>` : ''}
+                                    ${macro.conditions ? '<span style="font-size: 12px; color: var(--text-gray);">⚡ Conditional</span>' : ''}
+                                </div>
+                                <div style="color: var(--text-gray); font-size: 14px; margin-bottom: 8px;">
+                                    ${escapeHtml(macro.expansion.substring(0, 100))}${macro.expansion.length > 100 ? '...' : ''}
+                                </div>
+                                <div style="display: flex; gap: 16px; font-size: 12px; color: var(--text-light);">
+                                    <span>📁 ${escapeHtml(folderName)}</span>
+                                    <span>📊 Used ${stats.count} times</span>
+                                    <span>🕒 Last: ${lastUsed}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            macrosListDiv.innerHTML = `
+                <div style="margin-bottom: 16px;">
+                    <p style="color: var(--text-gray); font-size: 14px;">Showing ${macros.length} macro(s)</p>
+                </div>
+                ${macrosHTML}
+            `;
+        }
+
+        // Helper function to escape HTML
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
     </script>
 </body>

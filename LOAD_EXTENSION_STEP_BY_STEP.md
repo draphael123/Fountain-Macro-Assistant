@@ -112,3 +112,8 @@ Open the extension folder and verify it contains:
 
 This will help diagnose the exact issue!
 
+
+
+
+
+

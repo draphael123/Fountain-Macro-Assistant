@@ -10,6 +10,37 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        // Check if coming from extension
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('extension') === 'true') {
+                // Listen for login success to send message to extension
+                const originalLogin = auth.login;
+                auth.login = function(email, password, rememberMe) {
+                    const result = originalLogin.call(this, email, password, rememberMe);
+                    if (result.success) {
+                        // Send message to extension
+                        window.postMessage({
+                            type: 'AUTH_SUCCESS',
+                            token: 'demo-token-' + Date.now(), // In production, use real token
+                            user: result.user
+                        }, '*');
+                        
+                        // Also try chrome.runtime message if available
+                        if (chrome && chrome.runtime) {
+                            chrome.runtime.sendMessage({
+                                type: 'AUTH_SUCCESS',
+                                token: 'demo-token-' + Date.now(),
+                                user: result.user
+                            });
+                        }
+                    }
+                    return result;
+                };
+            }
+        });
+    </script>
 </head>
 <body>
     <!-- Header -->
@@ -59,7 +90,7 @@
             <div class="auth-container">
                 <div class="auth-header">
                     <h1>Welcome Back</h1>
-                    <p>Sign in to access your macros and settings</p>
+                    <p>Sign in to access your macros and enable cloud backup</p>
                 </div>
 
                 <form id="login-form" class="auth-form">
@@ -138,5 +169,3 @@
     <script src="auth.js"></script>
 </body>
 </html>
-
-

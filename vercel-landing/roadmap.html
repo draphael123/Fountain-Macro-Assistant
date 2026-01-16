@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roadmap & Changelog - Fountain - Macro Assistant</title>
+    <meta name="description" content="See what's coming next and what's been updated in Fountain Macro Assistant">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .roadmap-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+        .roadmap-section {
+            margin-bottom: 60px;
+        }
+        .roadmap-section h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        .roadmap-item {
+            background: var(--bg-white);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+        .roadmap-item h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+        }
+        .roadmap-item .date {
+            font-size: 14px;
+            color: var(--text-gray);
+            margin-bottom: 16px;
+        }
+        .roadmap-item .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        .status.completed {
+            background: #10b981;
+            color: white;
+        }
+        .status.in-progress {
+            background: var(--primary-blue);
+            color: white;
+        }
+        .status.planned {
+            background: var(--text-gray);
+            color: white;
+        }
+        .roadmap-item ul {
+            margin-left: 20px;
+            color: var(--text-gray);
+        }
+        .roadmap-item li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="index.html" style="text-decoration: none; display: flex; align-items: center; gap: 12px;">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 4L20 12L16 20L12 12L16 4Z" fill="#0066FF"/>
+                            <path d="M12 12L8 16L12 20L16 16L12 12Z" fill="#00B8FF"/>
+                            <path d="M20 12L24 16L20 20L16 16L20 12Z" fill="#00B8FF"/>
+                            <path d="M16 20L12 24L16 28L20 24L16 20Z" fill="#0066FF"/>
+                        </svg>
+                        <span class="logo-text">Fountain</span>
+                    </a>
+                </div>
+                <nav class="nav">
+                    <a href="index.html">Home</a>
+                    <a href="index.html#features">Features</a>
+                    <a href="forum.html">Forum</a>
+                    <a href="roadmap.html" class="active">Roadmap</a>
+                    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+                        <svg class="theme-icon sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="5"/>
+                            <line x1="12" y1="1" x2="12" y2="3"/>
+                            <line x1="12" y1="21" x2="12" y2="23"/>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                            <line x1="1" y1="12" x2="3" y2="12"/>
+                            <line x1="21" y1="12" x2="23" y2="12"/>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                        </svg>
+                        <svg class="theme-icon moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                        </svg>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="roadmap-container" style="padding-top: 120px; padding-bottom: 80px;">
+        <div class="roadmap-section">
+            <h2>Changelog</h2>
+            
+            <div class="roadmap-item">
+                <span class="status completed">Completed</span>
+                <h3>Version 1.0.1 - January 2025</h3>
+                <div class="date">Released: January 27, 2025</div>
+                <ul>
+                    <li>Added dark theme support</li>
+                    <li>Implemented user authentication and accounts</li>
+                    <li>Created community forum</li>
+                    <li>Added macro backup and restore functionality</li>
+                    <li>Enhanced universal compatibility (shadow DOM support)</li>
+                    <li>Improved text expansion reliability</li>
+                    <li>Added user dashboard</li>
+                    <li>Enhanced website with use cases and examples</li>
+                </ul>
+            </div>
+
+            <div class="roadmap-item">
+                <span class="status completed">Completed</span>
+                <h3>Version 1.0.0 - Initial Release</h3>
+                <div class="date">Released: January 2025</div>
+                <ul>
+                    <li>Core text expansion functionality</li>
+                    <li>Macro aliases support</li>
+                    <li>Conditional expansions (time-based, day-based)</li>
+                    <li>Dynamic variables ({date}, {time}, {clipboard})</li>
+                    <li>Folder organization</li>
+                    <li>Usage statistics</li>
+                    <li>Undo functionality</li>
+                    <li>Import/Export macros</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="roadmap-section">
+            <h2>Coming Soon</h2>
+            
+            <div class="roadmap-item">
+                <span class="status in-progress">In Progress</span>
+                <h3>Version 1.1.0 - Enhanced Features</h3>
+                <div class="date">Expected: Q2 2025</div>
+                <ul>
+                    <li>Macro templates library</li>
+                    <li>Tag system for better organization</li>
+                    <li>Improved search with fuzzy matching</li>
+                    <li>Bulk operations (delete, move, edit multiple macros)</li>
+                    <li>Enhanced analytics dashboard</li>
+                    <li>Keyboard shortcuts customization</li>
+                </ul>
+            </div>
+
+            <div class="roadmap-item">
+                <span class="status planned">Planned</span>
+                <h3>Version 1.2.0 - Collaboration</h3>
+                <div class="date">Expected: Q3 2025</div>
+                <ul>
+                    <li>Share macros via URL</li>
+                    <li>Public macro library</li>
+                    <li>Team macro sharing</li>
+                    <li>Import from other text expanders</li>
+                </ul>
+            </div>
+
+            <div class="roadmap-item">
+                <span class="status planned">Planned</span>
+                <h3>Future Features</h3>
+                <div class="date">TBD</div>
+                <ul>
+                    <li>Firefox extension</li>
+                    <li>Edge extension</li>
+                    <li>Rich text support (formatted expansions)</li>
+                    <li>Multi-language support</li>
+                    <li>AI-powered macro suggestions</li>
+                    <li>Mobile app companion</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 4L20 12L16 20L12 12L16 4Z" fill="#0066FF"/>
+                            <path d="M12 12L8 16L12 20L16 16L12 12Z" fill="#00B8FF"/>
+                            <path d="M20 12L24 16L20 20L16 16L20 12Z" fill="#00B8FF"/>
+                            <path d="M16 20L12 24L16 28L20 24L16 20Z" fill="#0066FF"/>
+                        </svg>
+                        <span class="logo-text">Fountain</span>
+                    </div>
+                    <p>Type faster with intelligent text expansion.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Product</h4>
+                        <a href="index.html#features">Features</a>
+                        <a href="index.html#guide">User Guide</a>
+                        <a href="index.html#download">Download</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <a href="https://github.com/draphael123/Fountain-Macro-Assistant" target="_blank" rel="noopener">GitHub</a>
+                        <a href="roadmap.html">Roadmap</a>
+                        <a href="index.html#faq">FAQ</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Fountain. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+
+
+
+
+

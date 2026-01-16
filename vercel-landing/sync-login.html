@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logging in...</title>
+    <script src="auth.js"></script>
+</head>
+<body>
+    <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
+        <h2>Logging in...</h2>
+        <p id="status">Please wait...</p>
+    </div>
+
+    <script>
+        (async function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const email = urlParams.get('email');
+            const password = urlParams.get('password');
+            const requestId = urlParams.get('requestId') || 'login_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            const auth = new AuthSystem();
+
+            try {
+                const result = auth.login(email, password, true);
+                
+                if (result.success) {
+                    // Store login result in localStorage (which extension can access)
+                    // Use a unique key that the extension is polling for
+                    const loginResult = {
+                        type: 'AUTH_SUCCESS',
+                        token: 'demo-token-' + Date.now(),
+                        user: result.user,
+                        requestId: requestId,
+                        timestamp: Date.now()
+                    };
+                    
+                    // Store in both sessionStorage and localStorage for reliability
+                    sessionStorage.setItem('fountain_login_result', JSON.stringify(loginResult));
+                    const storageKey = 'fountain_login_' + requestId;
+                    localStorage.setItem(storageKey, JSON.stringify(loginResult));
+                    
+                    // Also store without requestId for backward compatibility
+                    localStorage.setItem('fountain_login_result', JSON.stringify(loginResult));
+                    
+                    try {
+                        // Try postMessage
+                        window.postMessage({
+                            type: 'AUTH_SUCCESS',
+                            token: loginResult.token,
+                            user: loginResult.user,
+                            source: 'sync-login',
+                            requestId: requestId
+                        }, '*');
+                    } catch (e) {
+                        console.log('postMessage failed:', e);
+                    }
+                    
+                    document.getElementById('status').textContent = 'Login successful! You can close this tab.';
+                    
+                    // Keep tab open longer to ensure extension can read the result
+                    setTimeout(() => {
+                        window.close();
+                    }, 4000);
+                } else {
+                    const errorResult = {
+                        type: 'AUTH_FAILED',
+                        error: result.error,
+                        requestId: requestId,
+                        timestamp: Date.now()
+                    };
+                    
+                    // Store error in both storages
+                    sessionStorage.setItem('fountain_login_result', JSON.stringify(errorResult));
+                    const storageKey = 'fountain_login_' + requestId;
+                    localStorage.setItem(storageKey, JSON.stringify(errorResult));
+                    
+                    try {
+                        window.postMessage({
+                            type: 'AUTH_FAILED',
+                            error: result.error,
+                            source: 'sync-login',
+                            requestId: requestId
+                        }, '*');
+                    } catch (e) {
+                        console.log('postMessage failed:', e);
+                    }
+                    
+                    document.getElementById('status').textContent = 'Login failed: ' + result.error;
+                    setTimeout(() => window.close(), 3000);
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                document.getElementById('status').textContent = 'Error: ' + error.message;
+                setTimeout(() => window.close(), 2000);
+            }
+        })();
+    </script>
+</body>
+</html>
+

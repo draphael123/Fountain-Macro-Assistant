@@ -9,16 +9,32 @@
 <body>
   <div class="container">
     <header>
-      <h1><img src="icons/logo.png" alt="Fountain" class="logo-img"> Fountain</h1>
+      <h1>
+        <svg class="logo-img" width="28" height="28" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="50" fill="#4b5563"/>
+          <ellipse cx="38" cy="50" rx="8" ry="20" fill="#fff" transform="rotate(-10 38 50)"/>
+          <ellipse cx="50" cy="50" rx="6" ry="18" fill="#3b82f6"/>
+          <ellipse cx="62" cy="50" rx="8" ry="20" fill="#fff" transform="rotate(10 62 50)"/>
+        </svg>
+        <span>Fountain</span>
+      </h1>
       <div class="header-actions">
-        <button id="quickCreateBtn" class="btn btn-icon" title="Quick Create from Clipboard" aria-label="Quick create macro from clipboard">📋</button>
-        <button id="themeToggle" class="btn btn-icon" title="Toggle Theme" aria-label="Toggle dark/light theme">🌙</button>
-        <button id="dashboardBtn" class="btn btn-icon" title="Dashboard" aria-label="Open dashboard">📊</button>
-        <button id="packagesBtn" class="btn btn-icon" title="Packages" aria-label="View snippet packages">📦</button>
-        <button id="templatesBtn" class="btn btn-icon" title="Templates" aria-label="View macro templates">📋</button>
-        <button id="addFolderBtn" class="btn btn-icon" title="New Folder" aria-label="Create new folder">📁</button>
-        <button id="helpBtn" class="btn btn-icon" title="Help" aria-label="Open help guide">❓</button>
-        <button id="addMacroBtn" class="btn btn-primary" aria-label="Create new macro">✨ New</button>
+        <button id="themeToggle" class="btn btn-icon" title="Toggle Theme">🌙</button>
+        <button id="dashboardBtn" class="btn btn-icon" title="Stats">📊</button>
+        <button id="settingsBtn" class="btn btn-icon" title="Settings">⚙️</button>
+        <button id="moreBtn" class="btn btn-icon" title="More Options">•••</button>
+        <button id="addMacroBtn" class="btn btn-primary">+ New</button>
+      </div>
+      
+      <!-- More Options Dropdown -->
+      <div id="moreDropdown" class="more-dropdown" style="display:none;">
+        <button class="dropdown-item" id="quickCreateBtn">📋 Quick Create</button>
+        <button class="dropdown-item" id="templatesBtn">📄 Templates</button>
+        <button class="dropdown-item" id="packagesBtn">📦 Packages</button>
+        <button class="dropdown-item" id="importBtn">📥 Import</button>
+        <button class="dropdown-item" id="addFolderBtn">📁 New Folder</button>
+        <button class="dropdown-item" id="trashBtn">🗑️ Trash</button>
+        <button class="dropdown-item" id="helpBtn">❓ Help</button>
       </div>
     </header>
 
@@ -39,6 +55,15 @@
         <div class="stat-value" id="timeSaved">0m</div>
         <div class="stat-label">Saved</div>
       </div>
+    </div>
+
+    <!-- Pinned Section -->
+    <div class="pinned-section" id="pinnedSection" style="display: none;">
+      <div class="section-header">
+        <span class="section-title"><span class="icon">📌</span> Pinned</span>
+        <span class="pinned-count" id="pinnedCount">0/5</span>
+      </div>
+      <div class="pinned-macros" id="pinnedMacros"></div>
     </div>
 
     <!-- Favorites Section -->
@@ -74,6 +99,7 @@
         <div id="searchSuggestions" class="search-suggestions" style="display: none;"></div>
       </div>
       <div class="filter-buttons">
+        <button id="filterPinnedBtn" class="filter-btn" data-filter="pinned" title="Show pinned only">📌</button>
         <button id="filterFavoritesBtn" class="filter-btn" data-filter="favorites" title="Show favorites only">⭐</button>
         <button id="filterRecentBtn" class="filter-btn" data-filter="recent" title="Show recent">🕐</button>
         <button id="filterTagsBtn" class="filter-btn" data-filter="tags" title="Filter by tags">🏷️</button>
@@ -106,6 +132,7 @@
       <span class="bulk-count"><span id="selectedCount">0</span> selected</span>
       <div class="bulk-buttons">
         <button id="bulkFavoriteBtn" class="btn btn-sm">⭐</button>
+        <button id="bulkPinBtn" class="btn btn-sm" title="Pin selected">📌</button>
         <button id="bulkMoveBtn" class="btn btn-sm">📁 Move</button>
         <button id="bulkExportBtn" class="btn btn-sm">📤</button>
         <button id="bulkDeleteBtn" class="btn btn-sm">🗑️</button>
@@ -205,6 +232,17 @@
               <tr><td><code>{time}</code></td><td>Current time</td></tr>
               <tr><td><code>{date:YYYY-MM-DD}</code></td><td>Custom format</td></tr>
               <tr><td><code>{datetime}</code></td><td>Date and time</td></tr>
+              <tr><td><code>{weekday}</code></td><td>Day name (Monday, etc.)</td></tr>
+              <tr><td><code>{iso}</code></td><td>ISO date format</td></tr>
+            </table>
+            
+            <h4>Smart Dates</h4>
+            <table class="help-table">
+              <tr><td><code>{date:tomorrow}</code></td><td>Tomorrow's date</td></tr>
+              <tr><td><code>{date:+3 days}</code></td><td>3 days from now</td></tr>
+              <tr><td><code>{date:next monday}</code></td><td>Next Monday</td></tr>
+              <tr><td><code>{date:end of month}</code></td><td>Last day of month</td></tr>
+              <tr><td><code>{smartdate:+1 week|YYYY-MM-DD}</code></td><td>With format</td></tr>
             </table>
             
             <h4>Special</h4>
@@ -212,15 +250,50 @@
               <tr><td><code>{cursor}</code></td><td>Place cursor here after expansion</td></tr>
               <tr><td><code>{input:Label}</code></td><td>Prompt for input</td></tr>
               <tr><td><code>{clipboard}</code></td><td>Paste clipboard content</td></tr>
+              <tr><td><code>{selection}</code></td><td>Current page selection</td></tr>
               <tr><td><code>{counter:name}</code></td><td>Auto-incrementing counter</td></tr>
               <tr><td><code>{random:a|b|c}</code></td><td>Random selection</td></tr>
+              <tr><td><code>{randomnum:1-100}</code></td><td>Random number range</td></tr>
               <tr><td><code>{macro:/other}</code></td><td>Nest another macro</td></tr>
+              <tr><td><code>{uuid}</code></td><td>Generate UUID</td></tr>
+              <tr><td><code>{url}</code></td><td>Current page URL</td></tr>
+              <tr><td><code>{domain}</code></td><td>Current domain</td></tr>
+              <tr><td><code>{title}</code></td><td>Page title</td></tr>
+            </table>
+            
+            <h4>Math & Calculations</h4>
+            <table class="help-table">
+              <tr><td><code>{calc:5+3*2}</code></td><td>Math expression → 11</td></tr>
+              <tr><td><code>{calc:sqrt(16)}</code></td><td>Functions: sqrt, abs, round</td></tr>
+              <tr><td><code>{calc:floor(3.7)}</code></td><td>Floor: 3</td></tr>
+            </table>
+            
+            <h4>Case Transformations</h4>
+            <table class="help-table">
+              <tr><td><code>{upper:text}</code></td><td>TEXT</td></tr>
+              <tr><td><code>{lower:TEXT}</code></td><td>text</td></tr>
+              <tr><td><code>{title:hello world}</code></td><td>Hello World</td></tr>
+            </table>
+            
+            <h4>Lists & Loops</h4>
+            <table class="help-table">
+              <tr><td><code>{list:a,b,c}</code></td><td>• a<br>• b<br>• c</td></tr>
+              <tr><td><code>{numlist:a,b,c}</code></td><td>1. a<br>2. b<br>3. c</td></tr>
+              <tr><td><code>{repeat:3}★{/repeat}</code></td><td>★★★</td></tr>
+            </table>
+            
+            <h4>Conditionals</h4>
+            <table class="help-table">
+              <tr><td><code>{if:isMorning}Hello!{else}Hi!{endif}</code></td><td>Time-based</td></tr>
+              <tr><td><code>{if:isWeekday}Work{else}Relax{endif}</code></td><td>Day-based</td></tr>
+              <tr><td><code>{if:hour<12}AM{else}PM{endif}</code></td><td>Custom condition</td></tr>
             </table>
             
             <div class="help-example">
               <p><strong>Example:</strong></p>
               <pre>Invoice #{counter:invoice}
 Date: {date:YYYY-MM-DD}
+Due: {date:+30 days|YYYY-MM-DD}
 Client: {input:Client Name}
 {cursor}</pre>
             </div>
@@ -489,7 +562,7 @@ Evening (18-24): "Good evening!"</pre>
         <div class="form-group">
           <label>Color</label>
           <div class="folder-color-picker" id="folderColorPicker">
-            <div class="color-option selected" data-color="#00b3b3" style="background: #00b3b3;"></div>
+            <div class="color-option selected" data-color="#3b82f6" style="background: #3b82f6;"></div>
             <div class="color-option" data-color="#3b82f6" style="background: #3b82f6;"></div>
             <div class="color-option" data-color="#8b5cf6" style="background: #8b5cf6;"></div>
             <div class="color-option" data-color="#ec4899" style="background: #ec4899;"></div>
@@ -609,6 +682,11 @@ Evening (18-24): "Good evening!"</pre>
           <div class="chart-title">🏆 Top 5 Macros</div>
           <div class="bar-chart" id="topMacrosChart"></div>
         </div>
+        
+        <div class="insights-container" style="margin-top: 16px;">
+          <div class="chart-title">💡 Usage Insights</div>
+          <div id="usageInsights"></div>
+        </div>
       </div>
       <div class="modal-footer">
         <div class="modal-footer-left">
@@ -683,6 +761,9 @@ Evening (18-24): "Good evening!"</pre>
     <button class="context-menu-item" data-action="favorite" role="menuitem">
       <span>⭐ Favorite</span>
     </button>
+    <button class="context-menu-item" data-action="pin" role="menuitem">
+      <span>📌 Pin to Top</span>
+    </button>
     <button class="context-menu-item" data-action="copy-shortcut" role="menuitem">
       <span>📝 Copy Shortcut</span>
     </button>
@@ -694,6 +775,71 @@ Evening (18-24): "Good evening!"</pre>
       <span>🗑️ Delete</span>
       <kbd>Del</kbd>
     </button>
+  </div>
+
+  <!-- Trash Modal -->
+  <div id="trashModal" class="modal">
+    <div class="modal-content" style="max-width: 500px;">
+      <div class="modal-header">
+        <h2>🗑️ Trash <span class="trash-count-badge" id="trashCount">0</span></h2>
+        <button class="close-btn" id="closeTrashModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 12px;">
+          Deleted macros are kept for 30 days before permanent deletion.
+        </p>
+        <div id="trashList" class="trash-list"></div>
+      </div>
+      <div class="modal-footer">
+        <div class="modal-footer-left">
+          <button id="emptyTrashBtn" class="btn btn-danger btn-sm">🗑️ Empty Trash</button>
+        </div>
+        <div class="modal-footer-right">
+          <button id="closeTrashBtn" class="btn btn-secondary">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Import Modal -->
+  <div id="importModal" class="modal">
+    <div class="modal-content" style="max-width: 500px;">
+      <div class="modal-header">
+        <h2>📥 Import Macros</h2>
+        <button class="close-btn" id="closeImportModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="import-options">
+          <div class="import-option" id="importFountainBtn">
+            <div class="import-icon">💧</div>
+            <div class="import-info">
+              <div class="import-title">Fountain JSON</div>
+              <div class="import-desc">Import from Fountain backup file</div>
+            </div>
+          </div>
+          <div class="import-option" id="importTextExpanderBtn">
+            <div class="import-icon">📋</div>
+            <div class="import-info">
+              <div class="import-title">TextExpander CSV</div>
+              <div class="import-desc">Import from TextExpander export</div>
+            </div>
+          </div>
+          <div class="import-option" id="importATextBtn">
+            <div class="import-icon">📝</div>
+            <div class="import-info">
+              <div class="import-title">aText CSV</div>
+              <div class="import-desc">Import from aText export</div>
+            </div>
+          </div>
+        </div>
+        <input type="file" id="importFileInput" accept=".json,.csv" style="display: none;">
+      </div>
+      <div class="modal-footer">
+        <div class="modal-footer-right">
+          <button id="closeImportBtn" class="btn btn-secondary">Close</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script src="popup.js"></script>

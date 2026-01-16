@@ -1,0 +1,111 @@
+{
+  "name": "Developer Essentials",
+  "description": "Essential code snippets and shortcuts for developers",
+  "author": "Fountain Team",
+  "version": "1.0.0",
+  "category": "Development",
+  "icon": "👨‍💻",
+  "macros": [
+    {
+      "shortcut": "/log",
+      "expansion": "console.log({cursor});",
+      "tags": ["javascript", "debug"]
+    },
+    {
+      "shortcut": "/logt",
+      "expansion": "console.log('{input:Label}:', {cursor});",
+      "tags": ["javascript", "debug"]
+    },
+    {
+      "shortcut": "/func",
+      "expansion": "function {input:functionName}({input:params}) {\n  {cursor}\n}",
+      "tags": ["javascript", "function"]
+    },
+    {
+      "shortcut": "/afunc",
+      "expansion": "const {input:functionName} = ({input:params}) => {\n  {cursor}\n};",
+      "tags": ["javascript", "arrow function"]
+    },
+    {
+      "shortcut": "/async",
+      "expansion": "async function {input:functionName}({input:params}) {\n  try {\n    {cursor}\n  } catch (error) {\n    console.error(error);\n  }\n}",
+      "tags": ["javascript", "async"]
+    },
+    {
+      "shortcut": "/fetch",
+      "expansion": "const response = await fetch('{input:URL}');\nconst data = await response.json();\n{cursor}",
+      "tags": ["javascript", "api"]
+    },
+    {
+      "shortcut": "/trycatch",
+      "expansion": "try {\n  {cursor}\n} catch (error) {\n  console.error('Error:', error);\n}",
+      "tags": ["javascript", "error handling"]
+    },
+    {
+      "shortcut": "/map",
+      "expansion": "{input:array}.map(({input:item}) => {\n  {cursor}\n});",
+      "tags": ["javascript", "array"]
+    },
+    {
+      "shortcut": "/filter",
+      "expansion": "{input:array}.filter(({input:item}) => {cursor});",
+      "tags": ["javascript", "array"]
+    },
+    {
+      "shortcut": "/reduce",
+      "expansion": "{input:array}.reduce((acc, {input:item}) => {\n  {cursor}\n  return acc;\n}, {input:initialValue});",
+      "tags": ["javascript", "array"]
+    },
+    {
+      "shortcut": "/usestate",
+      "expansion": "const [{input:state}, set{input:State}] = useState({input:initialValue});",
+      "tags": ["react", "hooks"]
+    },
+    {
+      "shortcut": "/useeffect",
+      "expansion": "useEffect(() => {\n  {cursor}\n}, []);",
+      "tags": ["react", "hooks"]
+    },
+    {
+      "shortcut": "/component",
+      "expansion": "const {input:ComponentName} = ({ {input:props} }) => {\n  return (\n    <div>\n      {cursor}\n    </div>\n  );\n};\n\nexport default {input:ComponentName};",
+      "tags": ["react", "component"]
+    },
+    {
+      "shortcut": "/sql",
+      "expansion": "SELECT {input:columns}\nFROM {input:table}\nWHERE {cursor};",
+      "tags": ["sql", "query"]
+    },
+    {
+      "shortcut": "/gitcommit",
+      "expansion": "git add . && git commit -m \"{input:message}\"",
+      "tags": ["git", "terminal"]
+    },
+    {
+      "shortcut": "/gitpush",
+      "expansion": "git push origin {input:branch}",
+      "tags": ["git", "terminal"]
+    },
+    {
+      "shortcut": "/uuid",
+      "expansion": "{uuid}",
+      "tags": ["utility"]
+    },
+    {
+      "shortcut": "/timestamp",
+      "expansion": "{timestamp}",
+      "tags": ["utility"]
+    },
+    {
+      "shortcut": "/todo",
+      "expansion": "// TODO: {cursor} - {date:YYYY-MM-DD}",
+      "tags": ["comment"]
+    },
+    {
+      "shortcut": "/fixme",
+      "expansion": "// FIXME: {cursor} - {date:YYYY-MM-DD}",
+      "tags": ["comment"]
+    }
+  ]
+}
+

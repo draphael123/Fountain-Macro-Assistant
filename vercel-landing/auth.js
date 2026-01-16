@@ -34,6 +34,148 @@ class AuthSystem {
         localStorage.setItem(this.usersKey, JSON.stringify(users));
     }
 
+    // Save macro backup for user (with history support)
+    saveMacroBackup(userId, backupData) {
+        const users = this.getUsers();
+        const user = users.find(u => u.id === userId);
+        if (user) {
+            // Initialize backup history if it doesn't exist
+            if (!user.backupHistory) {
+                user.backupHistory = [];
+            }
+
+            // Create backup entry
+            const backupEntry = {
+                ...backupData,
+                id: Date.now().toString(),
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+
+            // Add to history (keep last 10 backups)
+            user.backupHistory.unshift(backupEntry);
+            if (user.backupHistory.length > 10) {
+                user.backupHistory = user.backupHistory.slice(0, 10);
+            }
+
+            // Set as current backup
+            user.macroBackup = backupEntry;
+            this.saveUsers(users);
+            return { success: true, backup: backupEntry };
+        }
+        return { success: false, error: 'User not found' };
+    }
+
+    // Get macro backup for user
+    getMacroBackup(userId) {
+        const users = this.getUsers();
+        const user = users.find(u => u.id === userId);
+        return user && user.macroBackup ? user.macroBackup : null;
+    }
+
+    // Get backup history for user
+    getBackupHistory(userId) {
+        const users = this.getUsers();
+        const user = users.find(u => u.id === userId);
+        return user && user.backupHistory ? user.backupHistory : [];
+    }
+
+    // Get specific backup by ID
+    getBackupById(userId, backupId) {
+        const history = this.getBackupHistory(userId);
+        return history.find(b => b.id === backupId) || null;
+    }
+
+    // Restore from specific backup
+    restoreFromBackup(userId, backupId) {
+        const backup = this.getBackupById(userId, backupId);
+        if (backup) {
+            const users = this.getUsers();
+            const user = users.find(u => u.id === userId);
+            if (user) {
+                user.macroBackup = backup;
+                this.saveUsers(users);
+                return { success: true, backup: backup };
+            }
+        }
+        return { success: false, error: 'Backup not found' };
+    }
+
+    // Save personal macros (separate from backup - for manual upload/download)
+    savePersonalMacros(userId, macrosData) {
+        const users = this.getUsers();
+        const user = users.find(u => u.id === userId);
+        if (user) {
+            // Merge with existing macros if they exist
+            const existing = user.personalMacros;
+            let finalMacros = macrosData.macros || [];
+            
+            if (existing && existing.macros && existing.macros.length > 0) {
+                // Merge macros, avoiding duplicates by shortcut
+                const existingShortcuts = new Set(
+                    existing.macros.map(m => m.shortcut.toLowerCase())
+                );
+                const newMacros = (macrosData.macros || []).filter(
+                    m => !existingShortcuts.has(m.shortcut.toLowerCase())
+                );
+                finalMacros = [...existing.macros, ...newMacros];
+            }
+            
+            user.personalMacros = {
+                macros: finalMacros,
+                folders: macrosData.folders || existing?.folders || [],
+                macroStats: { ...(existing?.macroStats || {}), ...(macrosData.macroStats || {}) },
+                settings: { ...(existing?.settings || {}), ...(macrosData.settings || {}) },
+                savedAt: new Date().toISOString(),
+                version: macrosData.version || existing?.version || '1.1.0'
+            };
+            this.saveUsers(users);
+            return { success: true, macros: user.personalMacros };
+        }
+        return { success: false, error: 'User not found' };
+    }
+
+    // Get personal macros
+    getPersonalMacros(userId) {
+        const users = this.getUsers();
+        const user = users.find(u => u.id === userId);
+        return user && user.personalMacros ? user.personalMacros : null;
+    }
+
+    // Update personal macros (merge with existing)
+    updatePersonalMacros(userId, macrosData) {
+        const existing = this.getPersonalMacros(userId);
+        const users = this.getUsers();
+        const user = users.find(u => u.id === userId);
+        
+        if (user) {
+            if (existing) {
+                // Merge with existing
+                user.personalMacros = {
+                    macros: macrosData.macros || existing.macros || [],
+                    folders: macrosData.folders || existing.folders || [],
+                    macroStats: macrosData.macroStats || existing.macroStats || {},
+                    settings: macrosData.settings || existing.settings || {},
+                    savedAt: new Date().toISOString(),
+                    version: macrosData.version || existing.version || '1.0.1'
+                };
+            } else {
+                // Create new
+                user.personalMacros = {
+                    macros: macrosData.macros || [],
+                    folders: macrosData.folders || [],
+                    macroStats: macrosData.macroStats || {},
+                    settings: macrosData.settings || {},
+                    savedAt: new Date().toISOString(),
+                    version: macrosData.version || '1.0.1'
+                };
+            }
+            this.saveUsers(users);
+            return { success: true, macros: user.personalMacros };
+        }
+        return { success: false, error: 'User not found' };
+    }
+
     // Get current user
     getCurrentUser() {
         const user = localStorage.getItem(this.currentUserKey);
@@ -126,7 +268,8 @@ class AuthSystem {
             name: name.trim(),
             email: email.toLowerCase().trim(),
             password: this.hashPassword(password), // In production, never store passwords in plain text
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
+            macroBackup: null // Store macro backups here
         };
 
         users.push(newUser);
@@ -207,6 +350,10 @@ class AuthSystem {
         }
 
         // Login form
+        // Check if coming from extension
+        const urlParams = new URLSearchParams(window.location.search);
+        const isExtensionLogin = urlParams.get('extension') === 'true';
+        
         const loginForm = document.getElementById('login-form');
         if (loginForm) {
             loginForm.addEventListener('submit', (e) => {
@@ -225,7 +372,7 @@ class AuthSystem {
     }
 
     // Handle registration
-    handleRegister(form) {
+    async handleRegister(form) {
         const formData = new FormData(form);
         const userData = {
             name: formData.get('name'),
@@ -237,6 +384,49 @@ class AuthSystem {
         // Clear previous errors
         this.clearErrors();
 
+        // Validate passwords match
+        if (userData.password !== userData.confirmPassword) {
+            this.showMessage('Passwords do not match', 'error');
+            return;
+        }
+
+        // Try cloud API first
+        try {
+            const response = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    email: userData.email, 
+                    password: userData.password,
+                    displayName: userData.name 
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                // Save cloud auth token
+                localStorage.setItem('fountain_auth_token', data.token);
+                localStorage.setItem('fountain_user', JSON.stringify(data.user));
+                
+                // Also set in the old system for compatibility
+                this.setCurrentUser(data.user);
+                
+                this.showMessage('Account created successfully! Redirecting...', 'success');
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+                return;
+            } else {
+                this.showMessage(data.error || 'Registration failed', 'error');
+                return;
+            }
+        } catch (error) {
+            console.error('Cloud registration error:', error);
+            // Fall back to local registration
+        }
+
+        // Fallback to local registration
         const result = this.register(userData);
         
         if (result.success) {
@@ -250,7 +440,7 @@ class AuthSystem {
     }
 
     // Handle login
-    handleLogin(form) {
+    async handleLogin(form) {
         const formData = new FormData(form);
         const email = formData.get('email');
         const password = formData.get('password');
@@ -259,14 +449,79 @@ class AuthSystem {
         // Clear previous errors
         this.clearErrors();
 
+        // Try cloud API first
+        try {
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                // Save cloud auth token
+                localStorage.setItem('fountain_auth_token', data.token);
+                localStorage.setItem('fountain_user', JSON.stringify(data.user));
+                
+                // Also set in the old system for compatibility
+                this.setCurrentUser(data.user);
+                
+                // Check if this is an extension login
+                const urlParams = new URLSearchParams(window.location.search);
+                const isExtensionLogin = urlParams.get('extension') === 'true';
+                
+                if (isExtensionLogin) {
+                    this.showMessage('Login successful! You can now close this tab and use the extension.', 'success');
+                } else {
+                    this.showMessage('Login successful! Redirecting...', 'success');
+                    setTimeout(() => {
+                        const redirectTo = new URLSearchParams(window.location.search).get('redirect') || 'dashboard.html';
+                        window.location.href = redirectTo;
+                    }, 1500);
+                }
+                return;
+            } else {
+                this.showError(data.error || 'Invalid email or password');
+                return;
+            }
+        } catch (error) {
+            console.error('Cloud login error:', error);
+            // Fall back to local login
+        }
+
+        // Fallback to local login
         const result = this.login(email, password, rememberMe);
         
         if (result.success) {
-            this.showMessage('Login successful! Redirecting...', 'success');
-            setTimeout(() => {
-                const redirectTo = new URLSearchParams(window.location.search).get('redirect') || 'dashboard.html';
-                window.location.href = redirectTo;
-            }, 1500);
+            // Check if this is an extension login
+            const urlParams = new URLSearchParams(window.location.search);
+            const isExtensionLogin = urlParams.get('extension') === 'true';
+            
+            if (isExtensionLogin) {
+                // Send message to extension
+                try {
+                    // Try to send via chrome.runtime if available
+                    if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.id) {
+                        chrome.runtime.sendMessage({
+                            type: 'AUTH_SUCCESS',
+                            token: 'demo-token-' + Date.now(), // In production, use real token
+                            user: result.user
+                        });
+                    }
+                } catch (error) {
+                    console.log('Could not send message to extension:', error);
+                }
+                
+                this.showMessage('Login successful! You can now close this tab and use the extension.', 'success');
+                // Don't redirect, let user close the tab
+            } else {
+                this.showMessage('Login successful! Redirecting...', 'success');
+                setTimeout(() => {
+                    const redirectTo = new URLSearchParams(window.location.search).get('redirect') || 'dashboard.html';
+                    window.location.href = redirectTo;
+                }, 1500);
+            }
         } else {
             this.showMessage(result.error, 'error');
         }

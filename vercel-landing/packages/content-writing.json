@@ -1,0 +1,131 @@
+{
+  "name": "Content & Writing",
+  "description": "Templates and shortcuts for content creators, bloggers, and writers",
+  "author": "Fountain Team",
+  "version": "1.0.0",
+  "category": "Writing",
+  "icon": "✍️",
+  "macros": [
+    {
+      "shortcut": "/h1",
+      "expansion": "# {cursor}",
+      "tags": ["markdown", "heading"]
+    },
+    {
+      "shortcut": "/h2",
+      "expansion": "## {cursor}",
+      "tags": ["markdown", "heading"]
+    },
+    {
+      "shortcut": "/h3",
+      "expansion": "### {cursor}",
+      "tags": ["markdown", "heading"]
+    },
+    {
+      "shortcut": "/bold",
+      "expansion": "**{cursor}**",
+      "tags": ["markdown", "formatting"]
+    },
+    {
+      "shortcut": "/italic",
+      "expansion": "*{cursor}*",
+      "tags": ["markdown", "formatting"]
+    },
+    {
+      "shortcut": "/link",
+      "expansion": "[{input:Link Text}]({input:URL})",
+      "tags": ["markdown", "link"]
+    },
+    {
+      "shortcut": "/img",
+      "expansion": "![{input:Alt Text}]({input:Image URL})",
+      "tags": ["markdown", "image"]
+    },
+    {
+      "shortcut": "/code",
+      "expansion": "```{input:language}\n{cursor}\n```",
+      "tags": ["markdown", "code"]
+    },
+    {
+      "shortcut": "/quote",
+      "expansion": "> {cursor}",
+      "tags": ["markdown", "quote"]
+    },
+    {
+      "shortcut": "/list",
+      "expansion": "- {cursor}\n- \n- ",
+      "tags": ["markdown", "list"]
+    },
+    {
+      "shortcut": "/numlist",
+      "expansion": "1. {cursor}\n2. \n3. ",
+      "tags": ["markdown", "list"]
+    },
+    {
+      "shortcut": "/table",
+      "expansion": "| Column 1 | Column 2 | Column 3 |\n|----------|----------|----------|\n| {cursor} |          |          |",
+      "tags": ["markdown", "table"]
+    },
+    {
+      "shortcut": "/blogpost",
+      "expansion": "# {input:Title}\n\n*Published: {date:MMMM DD, YYYY}*\n\n## Introduction\n\n{cursor}\n\n## Main Points\n\n### Point 1\n\n### Point 2\n\n### Point 3\n\n## Conclusion\n\n---\n\n*Tags: *",
+      "tags": ["blog", "template"]
+    },
+    {
+      "shortcut": "/tldr",
+      "expansion": "**TL;DR:** {cursor}",
+      "tags": ["summary"]
+    },
+    {
+      "shortcut": "/cta",
+      "expansion": "**Ready to get started?** [Click here to {input:Action}]({input:URL})",
+      "tags": ["marketing", "cta"]
+    },
+    {
+      "shortcut": "/bio",
+      "expansion": "{input:Name} is a {input:Title} at {input:Company}. With {input:Years} years of experience in {input:Field}, they specialize in {input:Specialty}. Connect with them on [LinkedIn]({input:LinkedIn URL}) or [Twitter]({input:Twitter URL}).",
+      "tags": ["bio", "about"]
+    },
+    {
+      "shortcut": "/tweet",
+      "expansion": "{cursor}\n\n#",
+      "tags": ["social", "twitter"]
+    },
+    {
+      "shortcut": "/linkedin",
+      "expansion": "{cursor}\n\n---\n\n👉 Follow me for more insights on {input:Topic}\n\n#",
+      "tags": ["social", "linkedin"]
+    },
+    {
+      "shortcut": "/headline",
+      "expansion": "{input:Number} {input:Adjective} Ways to {input:Action} {input:Topic}",
+      "tags": ["headline", "blog"]
+    },
+    {
+      "shortcut": "/disclaimer",
+      "expansion": "*Disclaimer: {cursor}*",
+      "tags": ["legal"]
+    },
+    {
+      "shortcut": "/note",
+      "expansion": "> 📝 **Note:** {cursor}",
+      "tags": ["markdown", "callout"]
+    },
+    {
+      "shortcut": "/warning",
+      "expansion": "> ⚠️ **Warning:** {cursor}",
+      "tags": ["markdown", "callout"]
+    },
+    {
+      "shortcut": "/tip",
+      "expansion": "> 💡 **Tip:** {cursor}",
+      "tags": ["markdown", "callout"]
+    },
+    {
+      "shortcut": "/lorem",
+      "expansion": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
+      "tags": ["placeholder"]
+    }
+  ]
+}
+

@@ -1,0 +1,111 @@
+{
+  "name": "Customer Support",
+  "description": "Ready-to-use responses for customer service and support teams",
+  "author": "Fountain Team",
+  "version": "1.0.0",
+  "category": "Support",
+  "icon": "🎧",
+  "macros": [
+    {
+      "shortcut": "/greet",
+      "expansion": "Hi {input:Customer Name}! Thank you for contacting us. My name is {input:Your Name} and I'll be happy to help you today. {cursor}",
+      "tags": ["greeting", "opening"]
+    },
+    {
+      "shortcut": "/understand",
+      "expansion": "I understand how {input:frustrating/concerning/inconvenient} this must be for you. Let me look into this right away.",
+      "tags": ["empathy"]
+    },
+    {
+      "shortcut": "/apologize",
+      "expansion": "I sincerely apologize for the inconvenience this has caused. This is not the experience we want you to have with us.",
+      "tags": ["empathy", "apology"]
+    },
+    {
+      "shortcut": "/investigating",
+      "expansion": "I'm currently investigating this issue for you. Please bear with me for a moment while I gather more information.",
+      "tags": ["status"]
+    },
+    {
+      "shortcut": "/escalate",
+      "expansion": "I've escalated your case to our specialist team who can better assist with this matter. They will reach out to you within {input:Timeframe}. Your case reference number is #{counter:case}.",
+      "tags": ["escalation"]
+    },
+    {
+      "shortcut": "/refund",
+      "expansion": "I've processed a refund of ${input:Amount} to your original payment method. Please allow 5-7 business days for the amount to appear in your account. You'll receive a confirmation email shortly.",
+      "tags": ["billing", "refund"]
+    },
+    {
+      "shortcut": "/reset",
+      "expansion": "To reset your password:\n1. Go to {input:URL}\n2. Click \"Forgot Password\"\n3. Enter your email address\n4. Check your inbox for the reset link\n5. Create a new password\n\nIf you don't receive the email within 5 minutes, please check your spam folder.",
+      "tags": ["account", "password"]
+    },
+    {
+      "shortcut": "/verify",
+      "expansion": "For security purposes, I'll need to verify your account. Could you please provide:\n- The email address associated with your account\n- The last 4 digits of the payment method on file\n\nThis helps us ensure we're speaking with the account owner.",
+      "tags": ["security", "verification"]
+    },
+    {
+      "shortcut": "/workaround",
+      "expansion": "While our team works on a permanent fix, here's a temporary workaround:\n\n{cursor}\n\nI'll follow up with you once we have a complete resolution.",
+      "tags": ["troubleshooting"]
+    },
+    {
+      "shortcut": "/steps",
+      "expansion": "Please try the following steps:\n\n1. {cursor}\n2. \n3. \n\nLet me know if this resolves the issue!",
+      "tags": ["troubleshooting"]
+    },
+    {
+      "shortcut": "/eta",
+      "expansion": "Based on our current timeline, we expect this to be resolved by {input:Date/Time}. I'll keep you updated on any changes.",
+      "tags": ["status", "timeline"]
+    },
+    {
+      "shortcut": "/feedback",
+      "expansion": "Thank you for your feedback! I've shared your comments with our product team. We're always looking for ways to improve, and insights like yours help us do that.",
+      "tags": ["feedback"]
+    },
+    {
+      "shortcut": "/close",
+      "expansion": "Is there anything else I can help you with today? If not, I'll go ahead and close this ticket. You'll receive a summary via email.",
+      "tags": ["closing"]
+    },
+    {
+      "shortcut": "/resolved",
+      "expansion": "Great news! I've resolved the issue. {cursor}\n\nPlease don't hesitate to reach out if you need any further assistance. Have a wonderful day!",
+      "tags": ["closing", "resolution"]
+    },
+    {
+      "shortcut": "/survey",
+      "expansion": "Thank you for chatting with us today! We'd love to hear about your experience. Would you mind taking a brief survey after this conversation? Your feedback helps us improve.",
+      "tags": ["closing", "feedback"]
+    },
+    {
+      "shortcut": "/hours",
+      "expansion": "Our support team is available:\n- Monday to Friday: 9 AM - 6 PM EST\n- Saturday: 10 AM - 4 PM EST\n- Sunday: Closed\n\nYou can also check our Help Center at {input:URL} for 24/7 self-service support.",
+      "tags": ["information"]
+    },
+    {
+      "shortcut": "/ticket",
+      "expansion": "Your ticket number is #{counter:ticket}. You can reference this number in any future communications about this issue.",
+      "tags": ["reference"]
+    },
+    {
+      "shortcut": "/busy",
+      "expansion": "Thank you for your patience! We're experiencing higher than usual volume right now. I'll be with you as soon as possible.",
+      "tags": ["status"]
+    },
+    {
+      "shortcut": "/hold",
+      "expansion": "I'm going to put you on a brief hold while I {input:Action}. I'll be back with you in just a moment. Thank you for your patience!",
+      "tags": ["status"]
+    },
+    {
+      "shortcut": "/transfer",
+      "expansion": "I'm going to transfer you to our {input:Department} team who can better assist with this. Please hold while I connect you. It's been a pleasure helping you!",
+      "tags": ["transfer"]
+    }
+  ]
+}
+

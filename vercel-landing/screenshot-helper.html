@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screenshot Helper - Fountain Extension</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .screenshot-step {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border-left: 4px solid #0066FF;
+        }
+        .screenshot-step h3 {
+            color: #0066FF;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .step-number {
+            background: #0066FF;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .instructions {
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+        .instructions ol, .instructions ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        .filename {
+            background: #e3f2fd;
+            padding: 12px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-weight: bold;
+            color: #1976d2;
+            margin-top: 15px;
+        }
+        .tip {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 12px;
+            font-size: 14px;
+        }
+        .tip strong {
+            color: #856404;
+        }
+        .keyboard-shortcut {
+            background: #f0f0f0;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 13px;
+        }
+        .checklist {
+            margin-top: 30px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .checklist h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+        }
+        .checklist-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
+        .btn {
+            background: #0066FF;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .btn:hover {
+            background: #0052CC;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📸 Screenshot Helper</h1>
+        <p class="subtitle">Follow these steps to capture screenshots for the "See It In Action" section</p>
+
+        <div class="screenshot-step">
+            <h3>
+                <span class="step-number">1</span>
+                Extension Popup Screenshot
+            </h3>
+            <div class="instructions">
+                <ol>
+                    <li><strong>Open Chrome</strong> and make sure the extension is loaded</li>
+                    <li><strong>Click the extension icon</strong> in the toolbar to open the popup</li>
+                    <li><strong>Create some example macros</strong> if you don't have any:
+                        <ul>
+                            <li><code>/email</code> → <code>your.email@example.com</code></li>
+                            <li><code>/phone</code> → <code>(555) 123-4567</code></li>
+                            <li><code>/sig</code> → <code>Best regards, Your Name</code></li>
+                        </ul>
+                    </li>
+                    <li><strong>Take screenshot:</strong>
+                        <ul>
+                            <li><strong>Windows:</strong> Press <span class="keyboard-shortcut">Windows + Shift + S</span></li>
+                            <li><strong>Mac:</strong> Press <span class="keyboard-shortcut">Cmd + Shift + 4</span></li>
+                        </ul>
+                    </li>
+                    <li><strong>Select only the popup area</strong> (crop out browser chrome)</li>
+                </ol>
+                <div class="filename">Save as: <code>usage-1-popup.png</code></div>
+                <div class="tip">
+                    <strong>💡 Tip:</strong> Make sure the popup shows the search bar, macro list, and "+ Add Macro" button clearly.
+                </div>
+            </div>
+        </div>
+
+        <div class="screenshot-step">
+            <h3>
+                <span class="step-number">2</span>
+                Creating Macro Modal Screenshot
+            </h3>
+            <div class="instructions">
+                <ol>
+                    <li><strong>Open the extension popup</strong></li>
+                    <li><strong>Click the "+ Add Macro" button</strong></li>
+                    <li><strong>Fill in example data:</strong>
+                        <ul>
+                            <li>Shortcut: <code>/email</code></li>
+                            <li>Expansion: <code>your.email@example.com</code></li>
+                            <li>Optionally add an alias or select a folder</li>
+                        </ul>
+                    </li>
+                    <li><strong>Take screenshot</strong> of the modal (not the whole page)</li>
+                </ol>
+                <div class="filename">Save as: <code>usage-2-creating-macro.png</code></div>
+                <div class="tip">
+                    <strong>💡 Tip:</strong> Make sure all form fields are visible and text is readable. Include the modal title "Add Macro".
+                </div>
+            </div>
+        </div>
+
+        <div class="screenshot-step">
+            <h3>
+                <span class="step-number">3</span>
+                Text Expansion Screenshot
+            </h3>
+            <div class="instructions">
+                <ol>
+                    <li><strong>Open a text field:</strong> Go to Google Docs, Gmail compose, or any website with text input</li>
+                    <li><strong>Type a shortcut:</strong> Type <code>/email </code> (with a space)</li>
+                    <li><strong>Watch it expand</strong> to the full text</li>
+                    <li><strong>Take screenshot</strong> showing the expanded text</li>
+                </ol>
+                <div class="filename">Save as: <code>usage-3-text-expansion.png</code></div>
+                <div class="tip">
+                    <strong>💡 Tip:</strong> Use a clean background. You can show before/after or just the final expanded text.
+                </div>
+            </div>
+        </div>
+
+        <div class="screenshot-step">
+            <h3>
+                <span class="step-number">4</span>
+                Settings Page Screenshot
+            </h3>
+            <div class="instructions">
+                <ol>
+                    <li><strong>Open settings:</strong>
+                        <ul>
+                            <li>Right-click extension icon → "Options", OR</li>
+                            <li>Go to <code>chrome://extensions/</code> → Find extension → "Details" → "Extension options"</li>
+                        </ul>
+                    </li>
+                    <li><strong>Show the settings page</strong> with export/import buttons visible</li>
+                    <li><strong>Take screenshot</strong> of the full settings page</li>
+                </ol>
+                <div class="filename">Save as: <code>usage-4-settings.png</code></div>
+                <div class="tip">
+                    <strong>💡 Tip:</strong> Include the page title and make sure export/import functionality is visible.
+                </div>
+            </div>
+        </div>
+
+        <div class="checklist">
+            <h3>✅ Screenshot Checklist</h3>
+            <div class="checklist-item">
+                <input type="checkbox" id="check1">
+                <label for="check1">Screenshot 1: Extension popup saved as <code>usage-1-popup.png</code></label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="check2">
+                <label for="check2">Screenshot 2: Macro modal saved as <code>usage-2-creating-macro.png</code></label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="check3">
+                <label for="check3">Screenshot 3: Text expansion saved as <code>usage-3-text-expansion.png</code></label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="check4">
+                <label for="check4">Screenshot 4: Settings page saved as <code>usage-4-settings.png</code></label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="check5">
+                <label for="check5">All files placed in <code>vercel-landing/screenshots/</code> folder</label>
+            </div>
+        </div>
+
+        <div style="margin-top: 30px; padding: 20px; background: #e8f5e9; border-radius: 8px;">
+            <h3 style="color: #2e7d32; margin-bottom: 10px;">📁 Where to Save Files</h3>
+            <p style="color: #555; margin-bottom: 10px;">Save all screenshots in this folder:</p>
+            <div class="filename" style="background: white; margin-top: 10px;">
+                <code>vercel-landing/screenshots/</code>
+            </div>
+            <p style="color: #555; margin-top: 15px; font-size: 14px;">
+                Once you add the files, they will automatically appear on the website! The website is already set up to display them.
+            </p>
+        </div>
+
+        <button class="btn" onclick="window.print()">🖨️ Print This Guide</button>
+    </div>
+</body>
+</html>
+
+
+
+
+
+

@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Settings - Fountain - Macro Assistant</title>
+    <meta name="description" content="Manage your Fountain account settings">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="auth.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .settings-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: var(--spacing-2xl) var(--spacing-lg);
+        }
+        .settings-header {
+            margin-bottom: var(--spacing-2xl);
+        }
+        .settings-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+        .settings-section {
+            background: var(--gradient-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-lg);
+            box-shadow: var(--shadow-md);
+        }
+        .settings-section h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 2px solid var(--border-color);
+        }
+        .form-group {
+            margin-bottom: var(--spacing-lg);
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            background: var(--bg-white);
+            color: var(--text-dark);
+            transition: border-color var(--transition-base);
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+        .form-group input:disabled {
+            background: var(--bg-light);
+            color: var(--text-gray);
+            cursor: not-allowed;
+        }
+        .form-group small {
+            display: block;
+            color: var(--text-gray);
+            margin-top: 6px;
+            font-size: 12px;
+        }
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: var(--spacing-lg);
+        }
+        .message {
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-md);
+            font-size: 14px;
+            display: none;
+        }
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 40px;
+            text-align: center;
+            background: var(--bg-light);
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+        .upload-area:hover {
+            border-color: var(--primary-blue);
+            background: rgba(0, 102, 255, 0.05);
+        }
+        .upload-area.dragover {
+            border-color: var(--primary-blue);
+            background: rgba(0, 102, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="index.html" style="text-decoration: none; display: flex; align-items: center; gap: 12px;">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 4L20 12L16 20L12 12L16 4Z" fill="#0066FF"/>
+                            <path d="M12 12L8 16L12 20L16 16L12 12Z" fill="#00B8FF"/>
+                            <path d="M20 12L24 16L20 20L16 16L20 12Z" fill="#00B8FF"/>
+                            <path d="M16 20L12 24L16 28L20 24L16 20Z" fill="#0066FF"/>
+                        </svg>
+                        <span class="logo-text">Fountain</span>
+                    </a>
+                </div>
+                <nav class="nav">
+                    <a href="index.html">Home</a>
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="shared.html">Shared Macros</a>
+                    <a href="forum.html">Forum</a>
+                    <span id="user-menu" style="display: none;">
+                        <span id="user-name"></span>
+                        <button id="logout-btn" class="btn btn-secondary" style="margin-left: 12px;">Logout</button>
+                    </span>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="settings-container">
+        <div class="settings-header">
+            <h1>Account Settings</h1>
+            <p style="color: var(--text-gray);">Manage your account information and preferences</p>
+        </div>
+
+        <!-- Account Information -->
+        <div class="settings-section">
+            <h2>Account Information</h2>
+            <div id="account-message" class="message"></div>
+            
+            <div class="form-group">
+                <label for="display-name">Display Name</label>
+                <input type="text" id="display-name" placeholder="Your display name">
+                <small>This name appears on your shared macros and forum posts</small>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" disabled>
+                <small>Email cannot be changed. Contact support if you need to update it.</small>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" id="save-account-btn">Save Changes</button>
+            </div>
+        </div>
+
+        <!-- Change Password -->
+        <div class="settings-section">
+            <h2>Change Password</h2>
+            <div id="password-message" class="message"></div>
+            
+            <div class="form-group">
+                <label for="current-password">Current Password</label>
+                <input type="password" id="current-password" placeholder="Enter current password">
+            </div>
+
+            <div class="form-group">
+                <label for="new-password">New Password</label>
+                <input type="password" id="new-password" placeholder="Enter new password">
+                <small>Password must be at least 8 characters with uppercase, lowercase, and a number</small>
+            </div>
+
+            <div class="form-group">
+                <label for="confirm-password">Confirm New Password</label>
+                <input type="password" id="confirm-password" placeholder="Confirm new password">
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" id="change-password-btn">Change Password</button>
+            </div>
+        </div>
+
+        <!-- Import Macros -->
+        <div class="settings-section">
+            <h2>Import Macros</h2>
+            <div id="import-message" class="message"></div>
+            
+            <p style="color: var(--text-gray); margin-bottom: var(--spacing-lg);">
+                Upload a JSON file to import macros to your account. These macros will be saved to your profile.
+            </p>
+
+            <div class="upload-area" id="upload-area">
+                <div id="upload-content">
+                    <div style="font-size: 48px; margin-bottom: 16px;">📁</div>
+                    <h3 style="margin: 0 0 8px 0; font-size: 18px; font-weight: 600; color: var(--text-dark);">
+                        Upload Macro JSON File
+                    </h3>
+                    <p style="margin: 0 0 16px 0; font-size: 14px; color: var(--text-gray);">
+                        Drag and drop a JSON file here, or click to browse
+                    </p>
+                    <button class="btn btn-primary" id="upload-macros-btn">
+                        Choose File
+                    </button>
+                    <p style="margin: 16px 0 0 0; font-size: 12px; color: var(--text-light);">
+                        Supports JSON files exported from the extension
+                    </p>
+                </div>
+                <div id="upload-progress" style="display: none;">
+                    <div style="font-size: 48px; margin-bottom: 16px;">⏳</div>
+                    <p style="margin: 0; font-size: 14px; color: var(--text-dark);">Processing file...</p>
+                </div>
+            </div>
+            <input type="file" id="macros-file-input" accept=".json" style="display: none;">
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="settings-section" style="border-color: #dc3545;">
+            <h2 style="color: #dc3545;">Danger Zone</h2>
+            <p style="color: var(--text-gray); margin-bottom: var(--spacing-lg);">
+                Irreversible and destructive actions
+            </p>
+            <button class="btn" id="delete-account-btn" style="background: #dc3545; color: white; border: none;">
+                Delete Account
+            </button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="auth.js"></script>
+    <script>
+        // Wait for DOM to be ready
+        document.addEventListener('DOMContentLoaded', function() {
+            const auth = new AuthSystem();
+            let currentUser = null;
+
+            // Check if user is logged in
+            function checkAuth() {
+                currentUser = auth.getCurrentUser();
+                if (!currentUser) {
+                    window.location.href = 'login.html?redirect=settings.html';
+                    return false;
+                }
+                return true;
+            }
+
+            // Load user data
+            function loadUserData() {
+                if (!checkAuth()) return;
+
+                const displayNameInput = document.getElementById('display-name');
+                const emailInput = document.getElementById('email');
+                if (displayNameInput) displayNameInput.value = currentUser.name || '';
+                if (emailInput) emailInput.value = currentUser.email || '';
+            }
+
+            // Save account information
+            const saveAccountBtn = document.getElementById('save-account-btn');
+            if (saveAccountBtn) {
+                saveAccountBtn.addEventListener('click', () => {
+            const name = document.getElementById('display-name').value.trim();
+            const messageEl = document.getElementById('account-message');
+
+            if (!name) {
+                messageEl.textContent = 'Please enter a display name';
+                messageEl.className = 'message error';
+                messageEl.style.display = 'block';
+                return;
+            }
+
+            const users = auth.getUsers();
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                users[userIndex].name = name;
+                auth.saveUsers(users);
+                currentUser.name = name;
+                auth.setCurrentUser(currentUser);
+
+                messageEl.textContent = 'Account information updated successfully!';
+                messageEl.className = 'message success';
+                messageEl.style.display = 'block';
+                setTimeout(() => {
+                    messageEl.style.display = 'none';
+                }, 3000);
+                }
+            });
+            }
+
+            // Change password
+            const changePasswordBtn = document.getElementById('change-password-btn');
+            if (changePasswordBtn) {
+                changePasswordBtn.addEventListener('click', () => {
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const messageEl = document.getElementById('password-message');
+
+            // Validate current password
+            const users = auth.getUsers();
+            const user = users.find(u => u.id === currentUser.id);
+            if (!user || user.password !== currentPassword) {
+                messageEl.textContent = 'Current password is incorrect';
+                messageEl.className = 'message error';
+                messageEl.style.display = 'block';
+                return;
+            }
+
+            // Validate new password
+            const passwordRequirements = auth.validatePassword(newPassword);
+            if (!passwordRequirements.length || !passwordRequirements.uppercase || 
+                !passwordRequirements.lowercase || !passwordRequirements.number) {
+                messageEl.textContent = 'New password does not meet requirements';
+                messageEl.className = 'message error';
+                messageEl.style.display = 'block';
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                messageEl.textContent = 'Passwords do not match';
+                messageEl.className = 'message error';
+                messageEl.style.display = 'block';
+                return;
+            }
+
+            // Update password
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                users[userIndex].password = newPassword;
+                auth.saveUsers(users);
+
+                messageEl.textContent = 'Password changed successfully!';
+                messageEl.className = 'message success';
+                messageEl.style.display = 'block';
+                
+                // Clear password fields
+                document.getElementById('current-password').value = '';
+                document.getElementById('new-password').value = '';
+                document.getElementById('confirm-password').value = '';
+                
+                setTimeout(() => {
+                    messageEl.style.display = 'none';
+                }, 3000);
+                }
+            });
+            }
+
+            // Import macros
+            const uploadArea = document.getElementById('upload-area');
+            const uploadBtn = document.getElementById('upload-macros-btn');
+            const fileInput = document.getElementById('macros-file-input');
+
+            if (uploadArea && fileInput) {
+                uploadArea.addEventListener('click', () => fileInput.click());
+            }
+            
+            if (uploadBtn && fileInput) {
+                uploadBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    fileInput.click();
+                });
+            }
+
+                if (uploadArea) {
+                    uploadArea.addEventListener('dragover', (e) => {
+                        e.preventDefault();
+                        uploadArea.classList.add('dragover');
+                    });
+
+                    uploadArea.addEventListener('dragleave', () => {
+                        uploadArea.classList.remove('dragover');
+                    });
+
+                    uploadArea.addEventListener('drop', (e) => {
+                        e.preventDefault();
+                        uploadArea.classList.remove('dragover');
+                        const files = e.dataTransfer.files;
+                        if (files.length > 0) {
+                            handleFileUpload(files[0]);
+                        }
+                    });
+                }
+
+                if (fileInput) {
+                    fileInput.addEventListener('change', (e) => {
+                        if (e.target.files[0]) {
+                            handleFileUpload(e.target.files[0]);
+                        }
+                    });
+                }
+            }
+
+            function handleFileUpload(file) {
+            if (!file.name.endsWith('.json') && file.type !== 'application/json') {
+                showImportMessage('Please select a JSON file.', 'error');
+                return;
+            }
+
+            showUploadProgress();
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const fileContent = e.target.result;
+                    let macrosData = JSON.parse(fileContent);
+                    
+                    // Handle different formats
+                    if (Array.isArray(macrosData)) {
+                        macrosData = {
+                            macros: macrosData,
+                            folders: [],
+                            macroStats: {},
+                            settings: {}
+                        };
+                    }
+                    
+                    if (!macrosData.macros || !Array.isArray(macrosData.macros)) {
+                        showImportMessage('Invalid file format. Expected a JSON file with a "macros" array.', 'error');
+                        resetUploadArea();
+                        return;
+                    }
+
+                    const validMacros = macrosData.macros.filter(m => {
+                        return m && (m.shortcut || m.shortcut === '') && (m.expansion || m.expansion === '');
+                    });
+
+                    if (validMacros.length === 0) {
+                        showImportMessage('No valid macros found in the file.', 'error');
+                        resetUploadArea();
+                        return;
+                    }
+
+                    // Save to user profile
+                    const result = auth.savePersonalMacros(currentUser.id, {
+                        macros: validMacros,
+                        folders: macrosData.folders || [],
+                        macroStats: macrosData.macroStats || {},
+                        settings: macrosData.settings || {},
+                        version: macrosData.version || '1.1.0'
+                    });
+
+                    if (result.success) {
+                        showImportMessage(`Successfully imported ${validMacros.length} macro(s) to your account!`, 'success');
+                    } else {
+                        showImportMessage('Failed to save macros: ' + (result.error || 'Unknown error'), 'error');
+                    }
+                } catch (error) {
+                    showImportMessage('Error reading file: ' + error.message, 'error');
+                } finally {
+                    resetUploadArea();
+                }
+            };
+            
+            reader.onerror = () => {
+                showImportMessage('Error reading file. Please try again.', 'error');
+                resetUploadArea();
+            };
+            
+            reader.readAsText(file);
+        }
+
+            function showUploadProgress() {
+                const uploadContent = document.getElementById('upload-content');
+                const uploadProgress = document.getElementById('upload-progress');
+                if (uploadContent) uploadContent.style.display = 'none';
+                if (uploadProgress) uploadProgress.style.display = 'block';
+            }
+
+            function resetUploadArea() {
+                const uploadContent = document.getElementById('upload-content');
+                const uploadProgress = document.getElementById('upload-progress');
+                const fileInput = document.getElementById('macros-file-input');
+                if (uploadContent) uploadContent.style.display = 'block';
+                if (uploadProgress) uploadProgress.style.display = 'none';
+                if (fileInput) fileInput.value = '';
+            }
+
+            function showImportMessage(message, type) {
+                const messageEl = document.getElementById('import-message');
+                if (messageEl) {
+                    messageEl.textContent = message;
+                    messageEl.className = `message ${type}`;
+                    messageEl.style.display = 'block';
+                    setTimeout(() => {
+                        messageEl.style.display = 'none';
+                    }, 5000);
+                }
+            }
+
+            // Delete account
+            const deleteAccountBtn = document.getElementById('delete-account-btn');
+            if (deleteAccountBtn) {
+                deleteAccountBtn.addEventListener('click', () => {
+            if (!confirm('Are you sure you want to delete your account? This action cannot be undone and will delete all your data.')) {
+                return;
+            }
+
+            if (!confirm('This will permanently delete your account, macros, backups, and all associated data. Are you absolutely sure?')) {
+                return;
+            }
+
+            const users = auth.getUsers();
+            const filteredUsers = users.filter(u => u.id !== currentUser.id);
+            auth.saveUsers(filteredUsers);
+            auth.logout();
+            
+                    alert('Your account has been deleted.');
+                    window.location.href = 'index.html';
+                });
+            }
+
+            // Logout
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    auth.logout();
+                    window.location.href = 'index.html';
+                });
+            }
+
+            // Initialize
+            if (checkAuth()) {
+                loadUserData();
+            }
+        });
+    </script>
+</body>
+</html>
+

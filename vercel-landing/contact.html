@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact & Support - Fountain - Macro Assistant</title>
+    <meta name="description" content="Get help, report issues, or contact the Fountain team">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="auth.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .contact-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 120px 24px 80px;
+        }
+        .contact-form {
+            background: var(--bg-white);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+        }
+        .contact-form h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 24px;
+        }
+        .support-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+        .support-card {
+            background: var(--bg-white);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        .support-card h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+        }
+        .support-card p {
+            color: var(--text-gray);
+            margin-bottom: 16px;
+        }
+        .support-card .icon {
+            font-size: 40px;
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="index.html" style="text-decoration: none; display: flex; align-items: center; gap: 12px;">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 4L20 12L16 20L12 12L16 4Z" fill="#0066FF"/>
+                            <path d="M12 12L8 16L12 20L16 16L12 12Z" fill="#00B8FF"/>
+                            <path d="M20 12L24 16L20 20L16 16L20 12Z" fill="#00B8FF"/>
+                            <path d="M16 20L12 24L16 28L20 24L16 20Z" fill="#0066FF"/>
+                        </svg>
+                        <span class="logo-text">Fountain</span>
+                    </a>
+                </div>
+                <nav class="nav">
+                    <a href="index.html">Home</a>
+                    <a href="index.html#features">Features</a>
+                    <a href="forum.html">Forum</a>
+                    <a href="contact.html" class="active">Contact</a>
+                    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+                        <svg class="theme-icon sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="5"/>
+                            <line x1="12" y1="1" x2="12" y2="3"/>
+                            <line x1="12" y1="21" x2="12" y2="23"/>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                            <line x1="1" y1="12" x2="3" y2="12"/>
+                            <line x1="21" y1="12" x2="23" y2="12"/>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                        </svg>
+                        <svg class="theme-icon moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                        </svg>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="contact-container">
+        <h1 style="font-size: 42px; font-weight: 700; color: var(--text-dark); margin-bottom: 16px; text-align: center;">Contact & Support</h1>
+        <p style="font-size: 18px; color: var(--text-gray); text-align: center; margin-bottom: 60px;">We're here to help! Get support, report issues, or share feedback.</p>
+
+        <div class="support-options">
+            <div class="support-card">
+                <div class="icon">💬</div>
+                <h3>Community Forum</h3>
+                <p>Get help from the community, share tips, and discuss features</p>
+                <a href="forum.html" class="btn btn-primary">Visit Forum</a>
+            </div>
+            <div class="support-card">
+                <div class="icon">📚</div>
+                <h3>Documentation</h3>
+                <p>Browse guides, FAQs, and documentation</p>
+                <a href="index.html#guide" class="btn btn-secondary">View Guide</a>
+            </div>
+            <div class="support-card">
+                <div class="icon">🐛</div>
+                <h3>Report Issues</h3>
+                <p>Found a bug? Report it on GitHub</p>
+                <a href="https://github.com/draphael123/Fountain-Macro-Assistant/issues" target="_blank" rel="noopener" class="btn btn-secondary">GitHub Issues</a>
+            </div>
+        </div>
+
+        <div class="contact-form">
+            <h2>Send Us a Message</h2>
+            <form id="contact-form" onsubmit="event.preventDefault(); alert('Contact form submission coming soon! For now, please use the forum or GitHub issues.');">
+                <div class="form-group">
+                    <label for="contact-name">Name</label>
+                    <input type="text" id="contact-name" required placeholder="Your name">
+                </div>
+                <div class="form-group">
+                    <label for="contact-email">Email</label>
+                    <input type="email" id="contact-email" required placeholder="your.email@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="contact-subject">Subject</label>
+                    <select id="contact-subject" required>
+                        <option value="">Select a topic...</option>
+                        <option value="support">Support Request</option>
+                        <option value="bug">Bug Report</option>
+                        <option value="feature">Feature Request</option>
+                        <option value="feedback">Feedback</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="contact-message">Message</label>
+                    <textarea id="contact-message" rows="8" required placeholder="Tell us how we can help..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Send Message</button>
+                </div>
+            </form>
+        </div>
+
+        <div style="text-align: center; padding: 40px 0; color: var(--text-gray);">
+            <p><strong>Note:</strong> Contact form submissions are coming soon. For immediate assistance, please use the <a href="forum.html">Community Forum</a> or <a href="https://github.com/draphael123/Fountain-Macro-Assistant/issues" target="_blank" rel="noopener">GitHub Issues</a>.</p>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 4L20 12L16 20L12 12L16 4Z" fill="#0066FF"/>
+                            <path d="M12 12L8 16L12 20L16 16L12 12Z" fill="#00B8FF"/>
+                            <path d="M20 12L24 16L20 20L16 16L20 12Z" fill="#00B8FF"/>
+                            <path d="M16 20L12 24L16 28L20 24L16 20Z" fill="#0066FF"/>
+                        </svg>
+                        <span class="logo-text">Fountain</span>
+                    </div>
+                    <p>Type faster with intelligent text expansion.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Product</h4>
+                        <a href="index.html#features">Features</a>
+                        <a href="index.html#guide">User Guide</a>
+                        <a href="index.html#download">Download</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <a href="https://github.com/draphael123/Fountain-Macro-Assistant" target="_blank" rel="noopener">GitHub</a>
+                        <a href="roadmap.html">Roadmap</a>
+                        <a href="contact.html">Contact</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Fountain. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+
+
+
+
+

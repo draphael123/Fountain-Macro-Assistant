@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fountain - Settings</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1><img src="icons/logo.png" alt="Fountain" class="logo-img"> Settings</h1>
+      <button id="themeToggle" class="theme-toggle" title="Toggle Theme">☀️</button>
+    </header>
+
+    <section class="settings-section">
+      <h2>⚙️ General</h2>
+      
+      <div class="setting-item">
+        <label>
+          <input type="checkbox" id="autoExpandCheck">
+          Auto-expand as you type
+        </label>
+        <p class="setting-description">Expand shortcuts after a brief pause. Otherwise, only on Space/Enter.</p>
+      </div>
+
+      <div class="setting-item">
+        <label>
+          <input type="checkbox" id="showSuggestionsCheck">
+          Show suggestions while typing
+        </label>
+        <p class="setting-description">Display matching macros as you type shortcuts starting with / . @ #</p>
+      </div>
+
+      <div class="setting-item">
+        <label>
+          <input type="checkbox" id="enableNotificationsCheck">
+          Show expansion notifications
+        </label>
+        <p class="setting-description">Brief toast when a macro expands.</p>
+      </div>
+    </section>
+
+    <section class="settings-section">
+      <h2>🔧 Advanced</h2>
+      
+      <div class="setting-item">
+        <label>
+          <input type="checkbox" id="typewriterDefaultCheck">
+          Typewriter effect by default
+        </label>
+        <p class="setting-description">New macros will have animated typing enabled.</p>
+      </div>
+
+      <div class="setting-item">
+        <label>
+          <input type="checkbox" id="debugModeCheck">
+          Debug mode
+        </label>
+        <p class="setting-description">Show detailed console logs.</p>
+      </div>
+    </section>
+
+    <section class="settings-section">
+      <h2>💾 Data Management</h2>
+      
+      <div class="setting-item">
+        <label style="font-weight: 600; margin-bottom: 12px; display: block;">Automatic Backups</label>
+        <div class="checkbox-group">
+          <label>
+            <input type="checkbox" id="autoBackupCheck">
+            Auto-backup before extension updates
+          </label>
+        </div>
+        <p class="setting-description">Automatically create a backup when the extension updates. Backups are stored locally and can be exported.</p>
+      </div>
+
+      <div class="setting-item" style="margin-top: 24px;">
+        <label style="font-weight: 600; margin-bottom: 12px; display: block;">Export & Backup</label>
+        <p style="color: var(--text-secondary); margin-bottom: 16px;">Export your macros for backup or import from a file.</p>
+        
+        <div class="data-actions">
+          <button id="backupNowBtn" class="btn btn-primary" style="grid-column: 1 / -1;">💾 Backup Now (JSON)</button>
+          <button id="exportBtn" class="btn btn-secondary">📥 JSON Export</button>
+          <button id="exportCSVBtn" class="btn btn-secondary">📊 CSV Export</button>
+          <button id="exportTextBtn" class="btn btn-secondary">📄 Text Export</button>
+          <label for="importInput" class="btn btn-secondary" style="cursor: pointer;">📤 Import</label>
+          <input type="file" id="importInput" accept=".json">
+        </div>
+      </div>
+
+      <div class="setting-item" style="margin-top: 16px;">
+        <label style="font-weight: 600; margin-bottom: 12px; display: block;">Restore Auto-Backups</label>
+        <p style="color: var(--text-secondary); margin-bottom: 12px;">Restore from automatic backups created before updates.</p>
+        <button id="restoreBackupBtn" class="btn btn-secondary">🔄 View & Restore Auto-Backups</button>
+      </div>
+
+      <div class="setting-item">
+        <label style="color: var(--color-pink);">⚠️ Danger Zone</label>
+        <p class="setting-description" style="margin-bottom: 14px;">These actions cannot be undone!</p>
+        <div class="btn-group">
+          <button id="clearStatsBtn" class="btn btn-secondary">🔄 Reset Stats</button>
+          <button id="clearCountersBtn" class="btn btn-secondary">🔢 Reset Counters</button>
+          <button id="clearAllBtn" class="btn btn-danger">🗑️ Delete All</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="settings-section">
+      <h2>✍️ Signature Options</h2>
+      
+      <div class="setting-item">
+        <label style="font-weight: 600; margin-bottom: 12px; display: block;">Default Signature Template</label>
+        <select id="signatureTemplateSelect" class="setting-select">
+          <option value="professional">Professional</option>
+          <option value="casual">Casual</option>
+          <option value="formal">Formal</option>
+          <option value="minimal">Minimal</option>
+          <option value="detailed">Detailed</option>
+        </select>
+        <p class="setting-description">Choose your default email signature style</p>
+      </div>
+
+      <div class="setting-item">
+        <label style="font-weight: 600; margin-bottom: 12px; display: block;">Signature Information</label>
+        <div class="signature-fields">
+          <input type="text" id="sigNameInput" placeholder="Your Name" class="setting-input">
+          <input type="text" id="sigTitleInput" placeholder="Your Title" class="setting-input">
+          <input type="text" id="sigCompanyInput" placeholder="Company Name" class="setting-input">
+          <input type="email" id="sigEmailInput" placeholder="your.email@example.com" class="setting-input">
+          <input type="tel" id="sigPhoneInput" placeholder="Phone Number" class="setting-input">
+          <input type="text" id="sigWebsiteInput" placeholder="Website URL" class="setting-input">
+        </div>
+        <p class="setting-description">These details will be used in signature templates</p>
+      </div>
+
+      <div class="setting-item">
+        <label style="font-weight: 600; margin-bottom: 12px; display: block;">Signature Shortcuts</label>
+        <div class="signature-shortcuts">
+          <div class="shortcut-item">
+            <span class="shortcut-label">Main Signature:</span>
+            <input type="text" id="sigMainShortcut" value="/sig" class="setting-input-small" placeholder="/sig">
+          </div>
+          <div class="shortcut-item">
+            <span class="shortcut-label">Professional:</span>
+            <input type="text" id="sigProShortcut" value="/sigpro" class="setting-input-small" placeholder="/sigpro">
+          </div>
+          <div class="shortcut-item">
+            <span class="shortcut-label">Casual:</span>
+            <input type="text" id="sigCasualShortcut" value="/sigcasual" class="setting-input-small" placeholder="/sigcasual">
+          </div>
+          <div class="shortcut-item">
+            <span class="shortcut-label">Formal:</span>
+            <input type="text" id="sigFormalShortcut" value="/sigformal" class="setting-input-small" placeholder="/sigformal">
+          </div>
+        </div>
+        <p class="setting-description">Customize shortcuts for different signature styles</p>
+      </div>
+
+      <div class="setting-item">
+        <div class="checkbox-group">
+          <label>
+            <input type="checkbox" id="sigIncludeDateCheck">
+            Include date in signature
+          </label>
+        </div>
+        <div class="checkbox-group">
+          <label>
+            <input type="checkbox" id="sigIncludeSeparatorCheck">
+            Include separator line
+          </label>
+        </div>
+        <div class="checkbox-group">
+          <label>
+            <input type="checkbox" id="sigAutoCreateCheck">
+            Auto-create signature macros
+          </label>
+        </div>
+        <p class="setting-description">Automatically create signature macros when you save settings</p>
+      </div>
+
+      <div class="setting-item">
+        <button id="previewSignatureBtn" class="btn btn-secondary">👁️ Preview Signature</button>
+        <button id="saveSignatureBtn" class="btn btn-primary">💾 Save Signature Settings</button>
+      </div>
+
+      <div id="signaturePreview" class="signature-preview" style="display: none;">
+        <h4>Preview:</h4>
+        <div class="signature-preview-content" id="signaturePreviewContent"></div>
+      </div>
+    </section>
+
+    <section class="settings-section">
+      <h2>ℹ️ About</h2>
+      <div class="about-content">
+        <p><span class="version">v3.0.0</span></p>
+        <p style="margin-top: 14px;">Fountain helps you type faster with smart text expansion.</p>
+        
+        <p style="margin-top: 14px;"><strong>Features in v3.0:</strong></p>
+        <ul>
+          <li>🎯 Regex pattern matching</li>
+          <li>💻 JavaScript snippets <code>{js:code}</code></li>
+          <li>🔢 Auto-incrementing counters <code>{counter:name}</code></li>
+          <li>🎲 Random selection <code>{random:a|b|c}</code></li>
+          <li>📅 Date formatting <code>{date:YYYY-MM-DD}</code></li>
+          <li>🔗 Nested macros <code>{macro:/other}</code></li>
+          <li>💬 Auto-suggest popup</li>
+          <li>⭐ Favorites system</li>
+          <li>📊 Usage heatmap</li>
+          <li>🎨 Colorful new UI</li>
+        </ul>
+        
+        <p style="margin-top: 16px;">
+          <a href="https://fountain-macro-assistant.vercel.app/" target="_blank">Website</a> · 
+          <a href="#" target="_blank">GitHub</a>
+        </p>
+      </div>
+    </section>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>

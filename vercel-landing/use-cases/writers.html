@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fountain for Writers | Writing Templates & Shortcuts</title>
+    <meta name="description" content="Write faster with Fountain. Create shortcuts for common phrases, signatures, formatting, and more.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        .use-case-hero {
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 50%, #5b21b6 100%);
+            padding: 100px 0 80px;
+            text-align: center;
+            color: white;
+        }
+        .use-case-hero h1 {
+            font-size: 56px;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+        .use-case-hero p {
+            font-size: 20px;
+            color: rgba(255,255,255,0.9);
+            max-width: 600px;
+            margin: 0 auto 32px;
+        }
+        .use-case-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 50px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+        .templates-section {
+            padding: 80px 0;
+            background: var(--bg-light);
+        }
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+            margin-top: 48px;
+        }
+        .template-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        .template-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+            border-color: #7c3aed;
+        }
+        .template-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .template-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        .template-shortcut {
+            background: #ede9fe;
+            color: #5b21b6;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: var(--font-mono);
+        }
+        .template-preview {
+            background: var(--bg-light);
+            padding: 16px;
+            border-radius: 8px;
+            color: var(--text-gray);
+            font-size: 14px;
+            line-height: 1.6;
+            border-left: 3px solid #7c3aed;
+            font-style: italic;
+        }
+        .benefits-section {
+            padding: 80px 0;
+        }
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 32px;
+            margin-top: 48px;
+        }
+        .benefit-card {
+            text-align: center;
+            padding: 32px;
+        }
+        .benefit-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        .benefit-card h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-dark);
+        }
+        .benefit-card p {
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+        .cta-section {
+            padding: 80px 0;
+            background: #7c3aed;
+            text-align: center;
+            color: white;
+        }
+        .cta-section h2 {
+            font-size: 40px;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+        .cta-section p {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 32px;
+        }
+        .cta-section .btn-primary {
+            background: white;
+            color: #7c3aed;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="../index.html" class="logo">
+                    <img src="../logo.png" alt="Fountain" class="logo-img" style="height: 32px; width: auto;">
+                </a>
+                <nav class="nav">
+                    <a href="../index.html#features">Features</a>
+                    <a href="../index.html#demo">Demo</a>
+                    <a href="../index.html#download">Download</a>
+                    <a href="../index.html" class="btn btn-primary" style="padding: 10px 20px;">Back to Home</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <section class="use-case-hero">
+        <div class="container">
+            <div class="use-case-badge">
+                <span>✍️</span>
+                <span>For Writers</span>
+            </div>
+            <h1>Write More, Type Less</h1>
+            <p>Focus on your creativity, not repetitive typing. Expand common phrases, signatures, and formatting in an instant.</p>
+            <a href="../index.html#download" class="btn btn-primary btn-large">Download Free</a>
+        </div>
+    </section>
+
+    <section class="templates-section">
+        <div class="container">
+            <h2 class="section-title">Writer-Friendly Templates</h2>
+            <p class="section-subtitle">Shortcuts that let you focus on what matters - your words</p>
+            
+            <div class="templates-grid">
+                <div class="template-card">
+                    <div class="template-header">
+                        <h3>Email Signature</h3>
+                        <span class="template-shortcut">/sig</span>
+                    </div>
+                    <div class="template-preview">
+                        Best regards,<br>
+                        Jane Writer<br>
+                        Freelance Content Writer<br>
+                        jane@example.com | Portfolio: janewriter.com
+                    </div>
+                </div>
+                
+                <div class="template-card">
+                    <div class="template-header">
+                        <h3>Article Intro</h3>
+                        <span class="template-shortcut">/intro</span>
+                    </div>
+                    <div class="template-preview">
+                        In this article, we'll explore [TOPIC] and discover how it can transform the way you [BENEFIT]. Whether you're a beginner or an expert, you'll find actionable insights to take your skills to the next level.
+                    </div>
+                </div>
+                
+                <div class="template-card">
+                    <div class="template-header">
+                        <h3>Call to Action</h3>
+                        <span class="template-shortcut">/cta</span>
+                    </div>
+                    <div class="template-preview">
+                        Ready to get started? Click the button below to [ACTION] and begin your journey today. Don't wait - your future self will thank you!
+                    </div>
+                </div>
+                
+                <div class="template-card">
+                    <div class="template-header">
+                        <h3>Bio (Short)</h3>
+                        <span class="template-shortcut">/bio</span>
+                    </div>
+                    <div class="template-preview">
+                        Jane is a freelance writer specializing in technology and productivity. With 5+ years of experience, she helps businesses tell their stories through compelling content.
+                    </div>
+                </div>
+                
+                <div class="template-card">
+                    <div class="template-header">
+                        <h3>Thank You Note</h3>
+                        <span class="template-shortcut">/thanks</span>
+                    </div>
+                    <div class="template-preview">
+                        Thank you so much for taking the time to read this. If you found it helpful, I'd love to hear your thoughts in the comments below. And if you'd like more content like this, be sure to subscribe!
+                    </div>
+                </div>
+                
+                <div class="template-card">
+                    <div class="template-header">
+                        <h3>Date Stamp</h3>
+                        <span class="template-shortcut">/today</span>
+                    </div>
+                    <div class="template-preview">
+                        {date} - Automatically inserts today's date in your preferred format. Perfect for journals, logs, and dated content.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="benefits-section">
+        <div class="container">
+            <h2 class="section-title">Why Writers Love Fountain</h2>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">🚀</div>
+                    <h3>Stay in Flow</h3>
+                    <p>Don't break your creative flow to type repetitive phrases. Stay focused on your ideas.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">✨</div>
+                    <h3>Consistent Voice</h3>
+                    <p>Your signatures, intros, and CTAs stay consistent across all your writing.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">📅</div>
+                    <h3>Dynamic Dates</h3>
+                    <p>Use {date} and {time} variables to automatically insert current timestamps.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">📝</div>
+                    <h3>Works Everywhere</h3>
+                    <p>Google Docs, Medium, WordPress, Notion - your shortcuts work in any text field.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="container">
+            <h2>Ready to Write Smarter?</h2>
+            <p>Join writers who spend more time creating and less time typing.</p>
+            <a href="../index.html#download" class="btn btn-primary btn-large">Download Fountain Free</a>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2025 Fountain. All rights reserved. <a href="../index.html" style="color: rgba(255,255,255,0.7);">Back to Home</a></p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+

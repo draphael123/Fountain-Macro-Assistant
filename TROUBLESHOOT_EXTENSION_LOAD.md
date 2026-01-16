@@ -154,3 +154,8 @@ If you're still having issues, check:
 - You're selecting the folder (not ZIP) when clicking "Load unpacked"
 - All required files are present
 
+
+
+
+
+

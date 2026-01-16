@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Share Macro - Fountain - Macro Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="auth.css">
+    <style>
+        .share-container {
+            max-width: 600px;
+            margin: 120px auto 80px;
+            padding: 40px;
+            background: var(--bg-white);
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+        }
+        .share-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .share-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+        }
+        .share-success {
+            text-align: center;
+            padding: 40px;
+        }
+        .share-code {
+            font-size: 48px;
+            font-weight: 700;
+            letter-spacing: 8px;
+            color: var(--primary-blue);
+            background: var(--light-blue);
+            padding: 24px;
+            border-radius: 12px;
+            margin: 24px 0;
+            font-family: monospace;
+        }
+        .share-url {
+            background: #f5f5f5;
+            padding: 12px;
+            border-radius: 8px;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 14px;
+            margin: 16px 0;
+        }
+        .copy-btn {
+            width: 100%;
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="index.html" style="text-decoration: none; display: flex; align-items: center; gap: 12px;">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 4L20 12L16 20L12 12L16 4Z" fill="#0066FF"/>
+                            <path d="M12 12L8 16L12 20L16 16L12 12Z" fill="#00B8FF"/>
+                            <path d="M20 12L24 16L20 20L16 16L20 12Z" fill="#00B8FF"/>
+                            <path d="M16 20L12 24L16 28L20 24L16 20Z" fill="#0066FF"/>
+                        </svg>
+                        <span class="logo-text">Fountain</span>
+                    </a>
+                </div>
+                <nav class="nav">
+                    <a href="index.html">Home</a>
+                    <a href="shared.html">Shared Macros</a>
+                    <a href="forum.html">Forum</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="share-container">
+        <div id="loading-state">
+            <div class="share-header">
+                <h1>Sharing Macro...</h1>
+                <p>Please wait while we prepare your macro for sharing.</p>
+            </div>
+        </div>
+
+        <div id="success-state" style="display: none;">
+            <div class="share-success">
+                <div style="font-size: 64px; margin-bottom: 24px;">✅</div>
+                <h2 style="margin-bottom: 16px; color: var(--text-dark);">Macro Shared Successfully!</h2>
+                <p style="color: var(--text-gray); margin-bottom: 24px;">Your macro has been added to the shared library.</p>
+                
+                <div class="share-code" id="share-code-display"></div>
+                
+                <p style="margin-bottom: 12px; font-weight: 600;">Share URL:</p>
+                <div class="share-url" id="share-url-display"></div>
+                
+                <button class="btn btn-primary copy-btn" onclick="copyShareCode()">Copy Share Code</button>
+                <button class="btn btn-secondary copy-btn" onclick="copyShareUrl()">Copy Share URL</button>
+                <button class="btn btn-secondary copy-btn" onclick="window.location.href='shared.html?code=' + document.getElementById('share-code-display').textContent">View in Library</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="shared-macros.js"></script>
+    <script src="auth.js"></script>
+    <script>
+        let shareCode = '';
+        let shareUrl = '';
+
+        async function loadPendingShare() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const dataParam = urlParams.get('data');
+
+                if (dataParam) {
+                    try {
+                        const shareData = JSON.parse(decodeURIComponent(dataParam));
+                        shareMacroData(shareData);
+                        return;
+                    } catch (e) {
+                        console.error('Error parsing share data:', e);
+                    }
+                }
+
+                // No data provided
+                document.getElementById('loading-state').innerHTML = `
+                    <div class="share-header">
+                        <h1>Share Your Macro</h1>
+                        <p>To share a macro, please use the extension's "Share Macro" button.</p>
+                        <button class="btn btn-primary" onclick="window.location.href='shared.html'">Browse Shared Macros</button>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error loading share:', error);
+                document.getElementById('loading-state').innerHTML = `
+                    <div class="share-header">
+                        <h1>Error</h1>
+                        <p>Unable to load share data. Please try again from the extension.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Function to share macro (called from extension message or directly)
+        function shareMacroData(shareData) {
+            try {
+                const result = sharedMacros.shareMacros(shareData.macros, shareData.metadata);
+                
+                if (result.success) {
+                    shareCode = result.shareCode;
+                    shareUrl = result.shareUrl;
+
+                    document.getElementById('loading-state').style.display = 'none';
+                    document.getElementById('success-state').style.display = 'block';
+                    document.getElementById('share-code-display').textContent = shareCode;
+                    document.getElementById('share-url-display').textContent = shareUrl;
+                } else {
+                    throw new Error(result.error || 'Failed to share macro');
+                }
+            } catch (error) {
+                console.error('Share error:', error);
+                document.getElementById('loading-state').innerHTML = `
+                    <div class="share-header">
+                        <h1>Error</h1>
+                        <p>Failed to share macro: ${error.message}</p>
+                        <button class="btn btn-primary" onclick="window.location.reload()">Try Again</button>
+                    </div>
+                `;
+            }
+        }
+
+        function copyShareCode() {
+            navigator.clipboard.writeText(shareCode).then(() => {
+                alert('Share code copied to clipboard!');
+            });
+        }
+
+        function copyShareUrl() {
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                alert('Share URL copied to clipboard!');
+            });
+        }
+
+        // Listen for messages from extension
+        window.addEventListener('message', (event) => {
+            if (event.data && event.data.type === 'SHARE_MACRO') {
+                shareMacroData(event.data.data);
+            }
+        });
+
+        // Initialize
+        loadPendingShare();
+
+        // Expose function globally for extension to call
+        window.shareMacroData = shareMacroData;
+    </script>
+</body>
+</html>
+

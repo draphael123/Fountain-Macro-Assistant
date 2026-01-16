@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Syncing Macros...</title>
+    <script src="auth.js"></script>
+</head>
+<body>
+    <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
+        <h2>Syncing Macros...</h2>
+        <p id="status">Please wait...</p>
+    </div>
+
+    <script>
+        (async function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get('userId');
+            const action = urlParams.get('action'); // 'get' or 'save'
+            const auth = new AuthSystem();
+
+            try {
+                if (action === 'get') {
+                    // Get macros from user account
+                    const macrosData = auth.getPersonalMacros(userId);
+                    
+                    if (macrosData) {
+                        // Send macros to extension
+                        chrome.runtime.sendMessage({
+                            type: 'MACROS_LOADED',
+                            userId: userId,
+                            macros: macrosData.macros || [],
+                            folders: macrosData.folders || [],
+                            macroStats: macrosData.macroStats || {},
+                            settings: macrosData.settings || {}
+                        });
+                        
+                        document.getElementById('status').textContent = 'Macros loaded successfully!';
+                        setTimeout(() => window.close(), 1000);
+                    } else {
+                        // No macros found - send empty data
+                        chrome.runtime.sendMessage({
+                            type: 'MACROS_LOADED',
+                            userId: userId,
+                            macros: [],
+                            folders: [],
+                            macroStats: {},
+                            settings: {}
+                        });
+                        
+                        document.getElementById('status').textContent = 'No macros found. Starting fresh!';
+                        setTimeout(() => window.close(), 1000);
+                    }
+                } else if (action === 'save') {
+                    // Get macros from URL or message
+                    const macrosData = JSON.parse(urlParams.get('data') || '{}');
+                    
+                    // Save to user account
+                    const result = auth.updatePersonalMacros(userId, {
+                        macros: macrosData.macros || [],
+                        folders: macrosData.folders || [],
+                        macroStats: macrosData.macroStats || {},
+                        settings: macrosData.settings || {},
+                        version: '1.0.1'
+                    });
+
+                    if (result.success) {
+                        chrome.runtime.sendMessage({
+                            type: 'MACROS_SAVED',
+                            userId: userId,
+                            success: true
+                        });
+                        
+                        document.getElementById('status').textContent = 'Macros saved successfully!';
+                        setTimeout(() => window.close(), 1000);
+                    } else {
+                        chrome.runtime.sendMessage({
+                            type: 'MACROS_SAVED',
+                            userId: userId,
+                            success: false,
+                            error: result.error
+                        });
+                        
+                        document.getElementById('status').textContent = 'Error saving macros: ' + result.error;
+                        setTimeout(() => window.close(), 2000);
+                    }
+                }
+            } catch (error) {
+                console.error('Sync error:', error);
+                document.getElementById('status').textContent = 'Error: ' + error.message;
+                setTimeout(() => window.close(), 2000);
+            }
+        })();
+    </script>
+</body>
+</html>
+
+
+
+
+

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Syncing Backup - Fountain</title>
+    <script src="auth.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .container {
+            text-align: center;
+            padding: 40px;
+        }
+        .success {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            margin: 0 0 10px 0;
+        }
+        p {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="success">✅</div>
+        <h1>Backup Synced!</h1>
+        <p>Your macros have been saved to your account.</p>
+        <p style="font-size: 14px; margin-top: 20px;">You can close this tab.</p>
+    </div>
+    <script>
+        // Get backup data from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('userId');
+        const dataParam = urlParams.get('data');
+        
+        if (userId && dataParam) {
+            try {
+                const backup = JSON.parse(decodeURIComponent(dataParam));
+                
+                // Store backup using auth system
+                if (typeof auth !== 'undefined') {
+                    const result = auth.saveMacroBackup(userId, backup);
+                    
+                    if (result.success) {
+                        // Send message to extension if it's open
+                        window.postMessage({
+                            type: 'BACKUP_SYNCED',
+                            userId: userId,
+                            success: true,
+                            timestamp: new Date().toISOString()
+                        }, '*');
+                        
+                        // Also try chrome.runtime message for extension
+                        if (typeof chrome !== 'undefined' && chrome.runtime) {
+                            chrome.runtime.sendMessage({
+                                type: 'BACKUP_SYNCED',
+                                userId: userId,
+                                success: true,
+                                timestamp: new Date().toISOString()
+                            }).catch(() => {
+                                // Extension may not be listening, that's okay
+                            });
+                        }
+                    }
+                } else {
+                    // Fallback: store directly
+                    localStorage.setItem(`fountain_backup_${userId}`, JSON.stringify(backup));
+                }
+            } catch (error) {
+                console.error('Error syncing backup:', error);
+                document.querySelector('.success').textContent = '❌';
+                document.querySelector('h1').textContent = 'Sync Failed';
+                document.querySelector('p').textContent = 'Please try again.';
+            }
+        }
+        
+        // Close tab after 1 second
+        setTimeout(() => {
+            window.close();
+        }, 1000);
+    </script>
+</body>
+</html>

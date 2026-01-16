@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Extension - Fountain - Macro Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .download-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 40px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+        }
+        .download-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .download-options {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .download-option {
+            padding: 20px;
+            background: var(--bg-light);
+            border-radius: 8px;
+            border: 2px solid var(--border-color);
+        }
+        .download-option h3 {
+            margin-top: 0;
+            color: var(--primary-blue);
+        }
+        .file-list {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .file-item {
+            padding: 5px 0;
+            color: var(--text-gray);
+        }
+    </style>
+</head>
+<body>
+    <div class="download-container">
+        <div class="download-header">
+            <h1>Download Fountain - Macro Assistant</h1>
+            <p>Version 1.0.1 - Latest with expansion bug fix</p>
+        </div>
+
+        <div class="download-options">
+            <div class="download-option">
+                <h3>📦 Download Extension (All Files)</h3>
+                <p>Download all extension files in a single ZIP file. Extract and load in Chrome - it's that simple!</p>
+                <a href="/extension.zip" class="btn btn-primary btn-large" download style="width: 100%; margin-top: 20px; font-size: 18px; padding: 15px 30px;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 10px; vertical-align: middle;">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    Download Extension ZIP (All Files)
+                </a>
+                <p style="font-size: 13px; color: var(--text-gray); margin-top: 15px;">
+                    <strong>What's included:</strong> All extension files (manifest.json, popup files, content.js, background.js, options files, icons, README.md)
+                </p>
+                <p style="font-size: 13px; color: var(--text-gray); margin-top: 10px;">
+                    <strong>Version:</strong> 1.0.1 - Latest with expansion bug fix
+                </p>
+            </div>
+
+            <div class="download-option">
+                <h3>📥 Installation Instructions</h3>
+                <ol style="line-height: 1.8;">
+                    <li>Download the extension files (use the link above or browse to <code>/extension/</code>)</li>
+                    <li>Extract the files to a folder on your computer</li>
+                    <li>Open Chrome and go to <code>chrome://extensions/</code></li>
+                    <li>Enable "Developer mode" (toggle in top right)</li>
+                    <li>Click "Load unpacked"</li>
+                    <li>Select the folder containing the extension files</li>
+                    <li>Done! The extension is now installed.</li>
+                </ol>
+            </div>
+
+            <div class="download-option">
+                <h3>📋 Files Included</h3>
+                <div class="file-list">
+                    <div class="file-item">✓ manifest.json</div>
+                    <div class="file-item">✓ popup.html, popup.css, popup.js</div>
+                    <div class="file-item">✓ content.js</div>
+                    <div class="file-item">✓ background.js</div>
+                    <div class="file-item">✓ options.html, options.css, options.js</div>
+                    <div class="file-item">✓ icons/ (icon16.png, icon48.png, icon128.png)</div>
+                    <div class="file-item">✓ README.md</div>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px;">
+            <a href="/" class="btn btn-secondary">← Back to Home</a>
+        </div>
+    </div>
+</body>
+</html>
+

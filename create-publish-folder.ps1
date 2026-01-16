@@ -64,3 +64,8 @@ Write-Host "  1. Right-click the folder → Send to → Compressed (zipped) fold
 Write-Host "  2. Or use: Compress-Archive -Path '$folderName\*' -DestinationPath '$extensionName-extension.zip'" -ForegroundColor White
 
 
+
+
+
+
+

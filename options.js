@@ -249,5 +249,102 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Clear all button
   document.getElementById('clearAllBtn').addEventListener('click', clearAllMacros);
+
+  // Account and Cloud Backup functionality
+  async function checkAccountStatus() {
+    const isLoggedIn = await extensionAuth.checkAuth();
+    const accountSection = document.getElementById('accountSection');
+    const loginSection = document.getElementById('loginSection');
+
+    if (isLoggedIn && extensionAuth.currentUser) {
+      accountSection.style.display = 'block';
+      loginSection.style.display = 'none';
+      document.getElementById('accountEmailDisplay').textContent = extensionAuth.currentUser.email;
+      
+      // Check last backup time
+      const lastBackup = await chrome.storage.local.get(['lastBackupTime']);
+      if (lastBackup.lastBackupTime) {
+        const backupDate = new Date(lastBackup.lastBackupTime);
+        const now = new Date();
+        const hoursAgo = Math.floor((now - backupDate) / (1000 * 60 * 60));
+        document.getElementById('lastBackupTime').textContent = 
+          hoursAgo < 1 ? 'Last backup: Just now' : `Last backup: ${hoursAgo} hour(s) ago`;
+      } else {
+        document.getElementById('lastBackupTime').textContent = 'Never backed up';
+      }
+
+      // Check auto-backup setting
+      const autoBackup = await chrome.storage.local.get(['autoBackupEnabled']);
+      document.getElementById('autoBackupCheck').checked = autoBackup.autoBackupEnabled || false;
+    } else {
+      accountSection.style.display = 'none';
+      loginSection.style.display = 'block';
+    }
+  }
+
+  // Login button
+  document.getElementById('loginSettingsBtn')?.addEventListener('click', () => {
+    chrome.tabs.create({
+      url: 'https://fountain-macro-assistant.vercel.app/login.html?extension=true'
+    });
+  });
+
+  // Backup now button
+  document.getElementById('backupNowSettingsBtn')?.addEventListener('click', async () => {
+    const btn = document.getElementById('backupNowSettingsBtn');
+    btn.disabled = true;
+    btn.textContent = 'Backing up...';
+    
+    const result = await extensionAuth.backupMacros();
+    if (result.success) {
+      alert('Macros backed up successfully!');
+      checkAccountStatus();
+    } else {
+      alert('Backup failed: ' + (result.error || 'Unknown error'));
+    }
+    
+    btn.disabled = false;
+    btn.textContent = 'Backup to Cloud';
+  });
+
+  // Restore from cloud button
+  document.getElementById('restoreFromCloudBtn')?.addEventListener('click', async () => {
+    if (confirm('This will replace your current macros with the cloud backup. Continue?')) {
+      const btn = document.getElementById('restoreFromCloudBtn');
+      btn.disabled = true;
+      btn.textContent = 'Restoring...';
+      
+      const result = await extensionAuth.restoreMacros();
+      if (result.success) {
+        alert('Macros restored successfully! Please reload the extension popup.');
+        window.location.reload(); // Reload options page
+      } else {
+        alert('Restore failed: ' + (result.error || 'Unknown error'));
+      }
+      
+      btn.disabled = false;
+      btn.textContent = 'Restore from Cloud';
+    }
+  });
+
+  // Logout button
+  document.getElementById('logoutSettingsBtn')?.addEventListener('click', async () => {
+    if (confirm('Logout? Your macros will still be backed up in the cloud.')) {
+      await extensionAuth.logout();
+      checkAccountStatus();
+    }
+  });
+
+  // Auto-backup checkbox
+  document.getElementById('autoBackupCheck')?.addEventListener('change', async (e) => {
+    await chrome.storage.local.set({ autoBackupEnabled: e.target.checked });
+    if (e.target.checked) {
+      // Do initial backup
+      extensionAuth.autoBackup().catch(console.error);
+    }
+  });
+
+  // Check account status on load
+  checkAccountStatus();
 });
 

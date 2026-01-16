@@ -35,3 +35,8 @@ https://github.com/draphael123/Fountain-Macro-Assistant
 ## Recommended Repository Name
 - `fountain-macro-assistant-extension` (matches the folder name)
 
+
+
+
+
+

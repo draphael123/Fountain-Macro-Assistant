@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum - Fountain - Macro Assistant</title>
+    <meta name="description" content="Community forum for Fountain Macro Assistant users">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="auth.css">
+    <link rel="stylesheet" href="forum.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="index.html" style="text-decoration: none; display: flex; align-items: center; gap: 12px;">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 4L20 12L16 20L12 12L16 4Z" fill="#0066FF"/>
+                            <path d="M12 12L8 16L12 20L16 16L12 12Z" fill="#00B8FF"/>
+                            <path d="M20 12L24 16L20 20L16 16L20 12Z" fill="#00B8FF"/>
+                            <path d="M16 20L12 24L16 28L20 24L16 20Z" fill="#0066FF"/>
+                        </svg>
+                        <span class="logo-text">Fountain</span>
+                    </a>
+                </div>
+                <nav class="nav">
+                    <a href="index.html">Home</a>
+                    <a href="index.html#features">Features</a>
+                    <a href="index.html#guide">Guide</a>
+                    <a href="forum.html" class="active">Forum</a>
+                    <a href="dashboard.html">Dashboard</a>
+                    <span id="auth-nav" style="display: none;">
+                        <span id="user-name-nav"></span>
+                        <button id="logout-btn-nav" class="btn btn-secondary" style="display: none; padding: 8px 16px; margin-left: 8px;">Logout</button>
+                    </span>
+                    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+                        <svg class="theme-icon sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="5"/>
+                            <line x1="12" y1="1" x2="12" y2="3"/>
+                            <line x1="12" y1="21" x2="12" y2="23"/>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                            <line x1="1" y1="12" x2="3" y2="12"/>
+                            <line x1="21" y1="12" x2="23" y2="12"/>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                        </svg>
+                        <svg class="theme-icon moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                        </svg>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Forum Container -->
+    <div class="forum-container">
+        <div class="container">
+            <!-- Forum Header -->
+            <div class="forum-header">
+                <div>
+                    <h1>Community Forum</h1>
+                    <p>Discuss, share tips, and get help from the Fountain community</p>
+                </div>
+                <button id="new-post-btn" class="btn btn-primary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"/>
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                    New Post
+                </button>
+            </div>
+
+            <!-- Categories -->
+            <div class="forum-categories">
+                <div class="category-tab active" data-category="all">All Posts</div>
+                <div class="category-tab" data-category="general">General</div>
+                <div class="category-tab" data-category="tips">Tips & Tricks</div>
+                <div class="category-tab" data-category="support">Support</div>
+                <div class="category-tab" data-category="suggestions">Suggestions</div>
+            </div>
+
+            <!-- Posts List -->
+            <div id="posts-container" class="posts-container">
+                <!-- Posts will be loaded here -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="empty-state" class="empty-state" style="display: none;">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                </svg>
+                <h3>No posts yet</h3>
+                <p>Be the first to start a discussion!</p>
+                <button class="btn btn-primary" onclick="document.getElementById('new-post-btn').click()">Create First Post</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Post Modal -->
+    <div id="new-post-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create New Post</h2>
+                <button class="modal-close" id="close-modal">&times;</button>
+            </div>
+            <form id="new-post-form">
+                <div class="form-group">
+                    <label for="post-title">Title</label>
+                    <input type="text" id="post-title" required placeholder="Enter post title...">
+                </div>
+                <div class="form-group">
+                    <label for="post-category">Category</label>
+                    <select id="post-category" required>
+                        <option value="general">General</option>
+                        <option value="tips">Tips & Tricks</option>
+                        <option value="support">Support</option>
+                        <option value="suggestions">Suggestions</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="post-content">Content</label>
+                    <textarea id="post-content" rows="8" required placeholder="Write your post here..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancel-post">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Post</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Post Detail Modal -->
+    <div id="post-detail-modal" class="modal" style="display: none;">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2 id="post-detail-title"></h2>
+                <button class="modal-close" id="close-detail-modal">&times;</button>
+            </div>
+            <div id="post-detail-content" class="post-detail-content">
+                <!-- Post and replies will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="auth.js"></script>
+    <script src="forum.js"></script>
+    <script>
+        // Check authentication before loading forum
+        if (!auth.checkSession() || !auth.getCurrentUser()) {
+            window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.pathname);
+        }
+
+        // Initialize forum
+        document.addEventListener('DOMContentLoaded', () => {
+            forum.init();
+            
+            // Update navigation
+            updateAuthNav();
+            
+            // Setup logout button
+            const logoutBtn = document.getElementById('logout-btn-nav');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    auth.logout();
+                    window.location.href = 'index.html';
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+

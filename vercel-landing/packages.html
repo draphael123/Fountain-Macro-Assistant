@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Macro Packages - Fountain | Pre-built Macro Collections</title>
+    <meta name="description" content="Download pre-built macro packages for Fountain. Get started quickly with curated collections for developers, email, customer support, sales, and more.">
+    <meta name="keywords" content="text expansion, macro packages, productivity templates, fountain extension, developer snippets, email templates">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <meta name="theme-color" content="#1e40af">
+    
+    <style>
+        .packages-hero {
+            background: linear-gradient(135deg, #1e3a8a 0%, #6366f1 35%, #8b5cf6 65%, #ec4899 100%);
+            padding: 120px 0 80px;
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .packages-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(236, 72, 153, 0.3) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(6, 182, 212, 0.2) 0%, transparent 40%);
+            pointer-events: none;
+        }
+        
+        [data-theme="dark"] .packages-hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 35%, #312e81 65%, #581c87 100%);
+        }
+        
+        .packages-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: white;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .packages-hero p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .packages-section {
+            padding: 80px 0;
+        }
+        
+        .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+        
+        .package-card {
+            background: var(--bg-white, #fff);
+            border-radius: 16px;
+            padding: 28px;
+            border: 1px solid var(--border-color, #e2e8f0);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .package-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--card-gradient, linear-gradient(90deg, #6366f1, #8b5cf6));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .package-card:nth-child(1)::before { --card-gradient: linear-gradient(90deg, #6366f1, #8b5cf6); }
+        .package-card:nth-child(2)::before { --card-gradient: linear-gradient(90deg, #3b82f6, #06b6d4); }
+        .package-card:nth-child(3)::before { --card-gradient: linear-gradient(90deg, #ec4899, #f43f5e); }
+        .package-card:nth-child(4)::before { --card-gradient: linear-gradient(90deg, #f97316, #f59e0b); }
+        .package-card:nth-child(5)::before { --card-gradient: linear-gradient(90deg, #10b981, #06b6d4); }
+        .package-card:nth-child(6)::before { --card-gradient: linear-gradient(90deg, #8b5cf6, #ec4899); }
+        .package-card:nth-child(7)::before { --card-gradient: linear-gradient(90deg, #06b6d4, #3b82f6); }
+        
+        .package-card:hover::before {
+            opacity: 1;
+        }
+        
+        .package-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.15);
+            border-color: var(--primary-light, #818cf8);
+        }
+        
+        [data-theme="dark"] .package-card {
+            background: var(--bg-light, #1e293b);
+        }
+        
+        [data-theme="dark"] .package-card:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .package-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .package-icon {
+            font-size: 2.5rem;
+            width: 64px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            border-radius: 12px;
+        }
+        
+        [data-theme="dark"] .package-icon {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(139, 92, 246, 0.15) 100%);
+        }
+        
+        .package-info h3 {
+            font-size: 1.35rem;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+        
+        .package-category {
+            font-size: 0.85rem;
+            color: var(--primary);
+            font-weight: 600;
+            background: var(--light-blue);
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        
+        [data-theme="dark"] .package-category {
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--accent-blue);
+        }
+        
+        .package-description {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            flex-grow: 1;
+            line-height: 1.6;
+        }
+        
+        .package-stats {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            padding: 16px;
+            background: var(--bg);
+            border-radius: 10px;
+        }
+        
+        .package-stat {
+            text-align: center;
+        }
+        
+        .package-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        [data-theme="dark"] .package-stat-value {
+            color: var(--accent-blue);
+        }
+        
+        .package-stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .package-preview {
+            margin-bottom: 20px;
+        }
+        
+        .package-preview-title {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .package-preview-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .preview-shortcut {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 6px 10px;
+            border-radius: 6px;
+            color: var(--primary);
+        }
+        
+        [data-theme="dark"] .preview-shortcut {
+            color: var(--accent-blue);
+        }
+        
+        .package-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .package-actions .btn {
+            flex: 1;
+            text-align: center;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-download {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+        
+        .btn-download:hover {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+        
+        .btn-preview {
+            background: var(--bg);
+            color: var(--primary);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-preview:hover {
+            border-color: var(--primary);
+            background: var(--light-blue);
+        }
+        
+        [data-theme="dark"] .btn-preview {
+            color: var(--accent-blue);
+        }
+        
+        [data-theme="dark"] .btn-preview:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: var(--accent-blue);
+        }
+        
+        /* Instructions Section */
+        .instructions-section {
+            background: var(--bg-alt);
+            padding: 80px 0;
+        }
+        
+        [data-theme="dark"] .instructions-section {
+            background: var(--bg-card);
+        }
+        
+        .instructions-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .instructions-content h2 {
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--text);
+        }
+        
+        .instruction-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        
+        .instruction-step {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            background: var(--bg-card);
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+        
+        [data-theme="dark"] .instruction-step {
+            background: var(--bg);
+        }
+        
+        .step-number {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+        
+        .instruction-step:nth-child(1) .step-number { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3); }
+        .instruction-step:nth-child(2) .step-number { background: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%); box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3); }
+        .instruction-step:nth-child(3) .step-number { background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%); box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3); }
+        .instruction-step:nth-child(4) .step-number { background: linear-gradient(135deg, #f97316 0%, #f59e0b 100%); box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3); }
+        .instruction-step:nth-child(5) .step-number { background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
+            flex-shrink: 0;
+        }
+        
+        .step-content h3 {
+            color: var(--text);
+            margin-bottom: 8px;
+            font-size: 1.15rem;
+        }
+        
+        .step-content p {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+        
+        .step-content code {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: var(--primary);
+        }
+        
+        [data-theme="dark"] .step-content code {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--accent-blue);
+        }
+        
+        .instruction-image {
+            margin-top: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            max-width: 100%;
+        }
+        
+        /* Package Modal */
+        .package-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .package-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .package-modal {
+            background: var(--bg-card);
+            border-radius: 16px;
+            max-width: 700px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+        
+        .package-modal-overlay.active .package-modal {
+            transform: translateY(0);
+        }
+        
+        .package-modal-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: var(--bg-card);
+            z-index: 1;
+        }
+        
+        .package-modal-header h3 {
+            font-size: 1.35rem;
+            color: var(--text);
+        }
+        
+        .package-modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .package-modal-close:hover {
+            background: var(--bg);
+            color: var(--text);
+        }
+        
+        .package-modal-body {
+            padding: 24px;
+        }
+        
+        .macro-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .macro-item {
+            background: var(--bg);
+            border-radius: 10px;
+            padding: 16px;
+            border: 1px solid var(--border);
+        }
+        
+        .macro-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .macro-shortcut {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--primary);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        
+        .macro-tags {
+            display: flex;
+            gap: 6px;
+        }
+        
+        .macro-tag {
+            font-size: 0.75rem;
+            background: var(--light-blue);
+            color: var(--primary);
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+        
+        [data-theme="dark"] .macro-tag {
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--accent-blue);
+        }
+        
+        .macro-expansion {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            white-space: pre-wrap;
+            word-break: break-word;
+            background: var(--bg-card);
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            max-height: 120px;
+            overflow-y: auto;
+        }
+        
+        [data-theme="dark"] .macro-expansion {
+            background: var(--bg-alt);
+        }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--text);
+            color: var(--bg);
+            padding: 16px 24px;
+            border-radius: 10px;
+            font-weight: 500;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .toast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        .toast-icon {
+            font-size: 1.25rem;
+        }
+        
+        @media (max-width: 768px) {
+            .packages-hero h1 {
+                font-size: 2rem;
+            }
+            
+            .packages-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .package-stats {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .instruction-step {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">
+                    <svg class="logo-img" width="36" height="36" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="50" fill="#64748b"/>
+                        <ellipse cx="38" cy="50" rx="8" ry="20" fill="white" transform="rotate(-10 38 50)"/>
+                        <ellipse cx="50" cy="50" rx="6" ry="18" fill="#3b82f6"/>
+                        <ellipse cx="62" cy="50" rx="8" ry="20" fill="white" transform="rotate(10 62 50)"/>
+                    </svg>
+                    <span class="logo-text">Fountain</span>
+                </a>
+                <nav class="nav">
+                    <a href="index.html#features">Features</a>
+                    <a href="index.html#demo">Demo</a>
+                    <a href="packages.html" class="active">Packages</a>
+                    <a href="index.html#download">Download</a>
+                    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+                        <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                        <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main id="main-content">
+        <!-- Hero -->
+        <section class="packages-hero">
+            <div class="container">
+                <h1>Macro Packages</h1>
+                <p>Get started instantly with pre-built macro collections. Download, import, and start typing faster.</p>
+            </div>
+        </section>
+
+        <!-- Packages Grid -->
+        <section class="packages-section">
+            <div class="container">
+                <div class="packages-grid" id="packages-grid">
+                    <!-- Packages will be loaded dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Instructions -->
+        <section class="instructions-section">
+            <div class="container">
+                <div class="instructions-content">
+                    <h2>How to Import Packages</h2>
+                    <div class="instruction-steps">
+                        <div class="instruction-step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h3>Download a Package</h3>
+                                <p>Click the <strong>"Download"</strong> button on any package card above. The file will be saved as a <code>.json</code> file to your downloads folder.</p>
+                            </div>
+                        </div>
+                        <div class="instruction-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h3>Open Fountain Extension</h3>
+                                <p>Click the Fountain icon in your Chrome toolbar to open the extension popup. You can also use the keyboard shortcut <code>Alt+Shift+F</code>.</p>
+                            </div>
+                        </div>
+                        <div class="instruction-step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h3>Access Import</h3>
+                                <p>In the extension popup, click the <strong>"••• More"</strong> button in the header, then select <strong>"Import"</strong> from the dropdown menu.</p>
+                            </div>
+                        </div>
+                        <div class="instruction-step">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <h3>Select the Package File</h3>
+                                <p>In the Import modal, click <strong>"Choose File"</strong> or <strong>"Import from File"</strong> and navigate to your downloaded <code>.json</code> package file. Select it and click <strong>"Open"</strong>.</p>
+                            </div>
+                        </div>
+                        <div class="instruction-step">
+                            <div class="step-number">5</div>
+                            <div class="step-content">
+                                <h3>Confirm Import</h3>
+                                <p>Review the macros to be imported and click <strong>"Import"</strong>. Your new macros are now ready to use! Test them by typing any shortcut followed by <code>Space</code> or <code>Tab</code>.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tips Section -->
+        <section class="packages-section">
+            <div class="container">
+                <div class="instructions-content">
+                    <h2>💡 Tips</h2>
+                    <div class="instruction-steps">
+                        <div class="instruction-step">
+                            <div class="step-number">✏️</div>
+                            <div class="step-content">
+                                <h3>Customize After Import</h3>
+                                <p>Many packages include placeholder text (like "Your Name" or "your.email@example.com"). After importing, edit these macros to personalize them with your actual information.</p>
+                            </div>
+                        </div>
+                        <div class="instruction-step">
+                            <div class="step-number">📁</div>
+                            <div class="step-content">
+                                <h3>Organize with Folders</h3>
+                                <p>Imported macros are added to your main list. Consider creating folders (e.g., "Email", "Code", "Support") to organize them for easy access.</p>
+                            </div>
+                        </div>
+                        <div class="instruction-step">
+                            <div class="step-number">🔄</div>
+                            <div class="step-content">
+                                <h3>Merge or Replace</h3>
+                                <p>When importing, existing macros with the same shortcuts will be merged or you'll be prompted. Your existing macros are safe!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <svg class="logo-img" width="28" height="28" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="50" fill="#64748b"/>
+                            <ellipse cx="38" cy="50" rx="8" ry="20" fill="white" transform="rotate(-10 38 50)"/>
+                            <ellipse cx="50" cy="50" rx="6" ry="18" fill="#3b82f6"/>
+                            <ellipse cx="62" cy="50" rx="8" ry="20" fill="white" transform="rotate(10 62 50)"/>
+                        </svg>
+                        <span class="logo-text">Fountain</span>
+                    </div>
+                    <p>Type faster with intelligent text expansion.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Product</h4>
+                        <a href="index.html#features">Features</a>
+                        <a href="index.html#guide">User Guide</a>
+                        <a href="index.html#download">Download</a>
+                        <a href="packages.html">Packages</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Use Cases</h4>
+                        <a href="use-cases/developers.html">For Developers</a>
+                        <a href="use-cases/customer-support.html">For Support Teams</a>
+                        <a href="use-cases/writers.html">For Writers</a>
+                        <a href="use-cases/sales.html">For Sales</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <a href="https://github.com/draphael123/Fountain-Macro-Assistant" target="_blank" rel="noopener">GitHub</a>
+                        <a href="index.html#faq">FAQ</a>
+                        <a href="roadmap.html">Roadmap</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Fountain. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Package Modal -->
+    <div class="package-modal-overlay" id="package-modal">
+        <div class="package-modal">
+            <div class="package-modal-header">
+                <h3 id="modal-title">Package Preview</h3>
+                <button class="package-modal-close" id="modal-close">&times;</button>
+            </div>
+            <div class="package-modal-body">
+                <div class="macro-list" id="modal-macros">
+                    <!-- Macros will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <span class="toast-icon">✓</span>
+        <span class="toast-text">Package downloaded!</span>
+    </div>
+
+    <script>
+        // Package data
+        const packages = [
+            {
+                id: 'developer-essentials',
+                name: 'Developer Essentials',
+                description: 'Essential code snippets and shortcuts for developers. Includes JavaScript functions, React hooks, SQL queries, Git commands, and debug helpers.',
+                category: 'Development',
+                icon: '👨‍💻',
+                file: 'packages/developer-essentials.json'
+            },
+            {
+                id: 'email-professional',
+                name: 'Email & Professional',
+                description: 'Professional email templates and business communication shortcuts. Perfect for quick responses, meeting requests, and formal correspondence.',
+                category: 'Business',
+                icon: '📧',
+                file: 'packages/email-professional.json'
+            },
+            {
+                id: 'customer-support',
+                name: 'Customer Support',
+                description: 'Ready-to-use responses for customer service teams. Includes greetings, troubleshooting steps, escalation templates, and closing messages.',
+                category: 'Support',
+                icon: '🎧',
+                file: 'packages/customer-support.json'
+            },
+            {
+                id: 'sales-outreach',
+                name: 'Sales & Outreach',
+                description: 'Templates for sales prospecting, follow-ups, and deal closing. Includes cold outreach, demo scheduling, objection handling, and proposals.',
+                category: 'Sales',
+                icon: '💼',
+                file: 'packages/sales-outreach.json'
+            },
+            {
+                id: 'content-writing',
+                name: 'Content & Writing',
+                description: 'Templates and shortcuts for content creators. Includes Markdown formatting, blog templates, social media posts, and writing callouts.',
+                category: 'Writing',
+                icon: '✍️',
+                file: 'packages/content-writing.json'
+            },
+            {
+                id: 'common-typos',
+                name: 'Common Typos & AutoCorrect',
+                description: 'Auto-correct common typing mistakes automatically. Includes 40+ frequently misspelled words and missing apostrophes.',
+                category: 'Productivity',
+                icon: '🔤',
+                file: 'packages/common-typos.json'
+            },
+            {
+                id: 'personal-info',
+                name: 'Personal Info Shortcuts',
+                description: 'Quick access to frequently-used personal information. Email, phone, address, social links, and signatures. Customize after import!',
+                category: 'Productivity',
+                icon: '👤',
+                file: 'packages/personal-info.json'
+            }
+        ];
+
+        // Cache for loaded package data
+        const packageCache = {};
+
+        // Load package data
+        async function loadPackageData(packageInfo) {
+            if (packageCache[packageInfo.id]) {
+                return packageCache[packageInfo.id];
+            }
+            
+            try {
+                const response = await fetch(packageInfo.file);
+                const data = await response.json();
+                packageCache[packageInfo.id] = data;
+                return data;
+            } catch (error) {
+                console.error('Error loading package:', error);
+                return null;
+            }
+        }
+
+        // Render packages grid
+        async function renderPackages() {
+            const grid = document.getElementById('packages-grid');
+            
+            for (const pkg of packages) {
+                const data = await loadPackageData(pkg);
+                const macroCount = data ? data.macros.length : '—';
+                const previewMacros = data ? data.macros.slice(0, 5) : [];
+                
+                const card = document.createElement('div');
+                card.className = 'package-card';
+                card.innerHTML = `
+                    <div class="package-header">
+                        <div class="package-icon">${pkg.icon}</div>
+                        <div class="package-info">
+                            <h3>${pkg.name}</h3>
+                            <span class="package-category">${pkg.category}</span>
+                        </div>
+                    </div>
+                    <p class="package-description">${pkg.description}</p>
+                    <div class="package-stats">
+                        <div class="package-stat">
+                            <div class="package-stat-value">${macroCount}</div>
+                            <div class="package-stat-label">Macros</div>
+                        </div>
+                        <div class="package-stat">
+                            <div class="package-stat-value">v${data?.version || '1.0'}</div>
+                            <div class="package-stat-label">Version</div>
+                        </div>
+                    </div>
+                    <div class="package-preview">
+                        <div class="package-preview-title">Sample shortcuts:</div>
+                        <div class="package-preview-items">
+                            ${previewMacros.map(m => `<span class="preview-shortcut">${m.shortcut}</span>`).join('')}
+                        </div>
+                    </div>
+                    <div class="package-actions">
+                        <button class="btn btn-preview" data-package="${pkg.id}">Preview</button>
+                        <button class="btn btn-download" data-package="${pkg.id}">Download</button>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            }
+            
+            // Add event listeners
+            document.querySelectorAll('.btn-preview').forEach(btn => {
+                btn.addEventListener('click', () => showPreview(btn.dataset.package));
+            });
+            
+            document.querySelectorAll('.btn-download').forEach(btn => {
+                btn.addEventListener('click', () => downloadPackage(btn.dataset.package));
+            });
+        }
+
+        // Show package preview modal
+        async function showPreview(packageId) {
+            const pkg = packages.find(p => p.id === packageId);
+            const data = await loadPackageData(pkg);
+            
+            if (!data) return;
+            
+            document.getElementById('modal-title').textContent = data.name;
+            
+            const macrosHtml = data.macros.map(macro => `
+                <div class="macro-item">
+                    <div class="macro-item-header">
+                        <span class="macro-shortcut">${macro.shortcut}</span>
+                        <div class="macro-tags">
+                            ${(macro.tags || []).map(tag => `<span class="macro-tag">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                    <div class="macro-expansion">${escapeHtml(macro.expansion)}</div>
+                </div>
+            `).join('');
+            
+            document.getElementById('modal-macros').innerHTML = macrosHtml;
+            document.getElementById('package-modal').classList.add('active');
+        }
+
+        // Download package
+        async function downloadPackage(packageId) {
+            const pkg = packages.find(p => p.id === packageId);
+            const data = await loadPackageData(pkg);
+            
+            if (!data) return;
+            
+            // Create download blob
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            // Create download link
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `fountain-${packageId}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            // Show toast
+            showToast('Package downloaded! Follow the import instructions below.');
+        }
+
+        // Show toast notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.querySelector('.toast-text').textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Modal close handlers
+        document.getElementById('modal-close').addEventListener('click', () => {
+            document.getElementById('package-modal').classList.remove('active');
+        });
+
+        document.getElementById('package-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'package-modal') {
+                document.getElementById('package-modal').classList.remove('active');
+            }
+        });
+
+        // Theme toggle
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        }
+
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+
+        // Initialize
+        initTheme();
+        renderPackages();
+    </script>
+</body>
+</html>
+

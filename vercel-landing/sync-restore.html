@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restoring Backup - Fountain</title>
+    <script src="auth.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .container {
+            text-align: center;
+            padding: 40px;
+        }
+        .loading {
+            font-size: 48px;
+            margin-bottom: 20px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .success {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            margin: 0 0 10px 0;
+        }
+        p {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="status" class="loading">⏳</div>
+        <h1 id="title">Restoring Backup...</h1>
+        <p id="message">Please wait while we restore your macros.</p>
+    </div>
+    <script>
+        // Get userId from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('userId');
+        
+        if (userId && typeof auth !== 'undefined') {
+            // Get backup from auth system
+            const backup = auth.getMacroBackup(userId);
+            
+            if (backup) {
+                // Update UI
+                document.getElementById('status').className = 'success';
+                document.getElementById('status').textContent = '✅';
+                document.getElementById('title').textContent = 'Backup Found!';
+                document.getElementById('message').textContent = 'Sending to extension...';
+                
+                // Send message to extension
+                window.postMessage({
+                    type: 'RESTORE_SUCCESS',
+                    userId: userId,
+                    backup: backup,
+                    timestamp: new Date().toISOString()
+                }, '*');
+                
+                // Also try chrome.runtime message
+                if (typeof chrome !== 'undefined' && chrome.runtime) {
+                    chrome.runtime.sendMessage({
+                        type: 'RESTORE_SUCCESS',
+                        userId: userId,
+                        backup: backup,
+                        timestamp: new Date().toISOString()
+                    }).catch(() => {
+                        // Extension may not be listening, that's okay
+                    });
+                }
+            } else {
+                // No backup found
+                document.getElementById('status').className = 'success';
+                document.getElementById('status').textContent = '❌';
+                document.getElementById('title').textContent = 'No Backup Found';
+                document.getElementById('message').textContent = 'No backup found for your account. Please create a backup first.';
+                
+                if (typeof chrome !== 'undefined' && chrome.runtime) {
+                    chrome.runtime.sendMessage({
+                        type: 'RESTORE_FAILED',
+                        userId: userId,
+                        error: 'No backup found'
+                    }).catch(() => {});
+                }
+            }
+        } else {
+            document.getElementById('status').className = 'success';
+            document.getElementById('status').textContent = '❌';
+            document.getElementById('title').textContent = 'Error';
+            document.getElementById('message').textContent = 'Invalid user ID or auth system not loaded.';
+        }
+        
+        // Close tab after 2 seconds
+        setTimeout(() => {
+            window.close();
+        }, 2000);
+    </script>
+</body>
+</html>

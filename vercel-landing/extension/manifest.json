@@ -1,0 +1,58 @@
+{
+  "manifest_version": 3,
+  "name": "Fountain - Macro Assistant",
+  "version": "3.0.0",
+  "description": "💧 Type faster with smart text expansion! Create shortcuts, use variables like {cursor}, {input:Name}, {date:FORMAT}, regex patterns, JavaScript snippets, and more.",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "contextMenus",
+    "clipboardRead",
+    "notifications",
+    "scripting"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_end",
+      "all_frames": true
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "options_page": "options.html",
+  "background": {
+    "service_worker": "background.js"
+  },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+M",
+        "mac": "Command+Shift+M"
+      },
+      "description": "Open Fountain Macro Assistant"
+    },
+    "create_macro": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+N",
+        "mac": "Command+Shift+N"
+      },
+      "description": "Quick create a new macro"
+    }
+  }
+}

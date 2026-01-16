@@ -1,0 +1,2006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shared Macros Library - Fountain - Macro Assistant</title>
+    <meta name="description" content="Browse and import macros shared by the Fountain community">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="auth.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .shared-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--section-padding) var(--spacing-lg);
+        }
+        .shared-header {
+            text-align: center;
+            margin-bottom: var(--spacing-3xl);
+        }
+        .shared-header h1 {
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+        }
+        .shared-header p {
+            font-size: 18px;
+            color: var(--text-gray);
+            margin-bottom: 32px;
+        }
+        .search-bar {
+            max-width: 600px;
+            margin: 0 auto 40px;
+            position: relative;
+        }
+        .search-bar input {
+            width: 100%;
+            padding: 14px 20px 14px 48px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 16px;
+            background: var(--bg-white);
+            color: var(--text-dark);
+        }
+        .search-bar svg {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            color: var(--text-gray);
+        }
+        .tabs {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        .tab {
+            padding: 10px 24px;
+            background: transparent;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-gray);
+            transition: all 0.2s;
+        }
+        .tab.active {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+        .folders-section {
+            margin-bottom: 40px;
+        }
+        .folders-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: 24px;
+        }
+        .folder-card {
+            background: var(--gradient-card);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            text-align: center;
+        }
+        .folder-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-blue);
+        }
+        .folder-card.active {
+            border-color: var(--primary-blue);
+            background: rgba(0, 102, 255, 0.1);
+        }
+        .folder-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        .folder-name {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+        .folder-count {
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+        .create-folder-btn {
+            background: var(--bg-light);
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            text-align: center;
+            color: var(--text-gray);
+        }
+        .create-folder-btn:hover {
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+        }
+        .shared-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-2xl);
+        }
+        .shared-card {
+            background: var(--gradient-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-base);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        .shared-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform var(--transition-base);
+        }
+        .shared-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: var(--shadow-colored);
+            border-color: var(--primary-blue);
+        }
+        .shared-card:hover::before {
+            transform: scaleX(1);
+        }
+        .shared-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        .shared-card-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin: 0 0 8px 0;
+        }
+        .shared-card-description {
+            color: var(--text-gray);
+            line-height: 1.6;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+        .shared-card-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+            color: var(--text-gray);
+            margin-bottom: 16px;
+        }
+        .shared-card-stats {
+            display: flex;
+            gap: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .stat-item svg {
+            width: 16px;
+            height: 16px;
+        }
+        .share-code {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--light-blue);
+            border-radius: 6px;
+            font-family: monospace;
+            font-weight: 600;
+            color: var(--primary-blue);
+            font-size: 14px;
+        }
+        .import-btn {
+            width: 100%;
+            margin-top: 16px;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-gray);
+        }
+        .import-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        .import-modal.active {
+            display: flex;
+        }
+        .import-modal-content {
+            background: var(--bg-white);
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .import-code-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: monospace;
+            text-align: center;
+            letter-spacing: 4px;
+            margin-bottom: 20px;
+        }
+        .share-macro-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        .share-macro-modal.active {
+            display: flex;
+        }
+        .share-macro-content {
+            background: var(--bg-white);
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            background: var(--bg-white);
+            color: var(--text-dark);
+            box-sizing: border-box;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .form-group small {
+            display: block;
+            color: var(--text-gray);
+            margin-top: 4px;
+            font-size: 12px;
+        }
+        .macro-item {
+            background: var(--bg-light);
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border-color);
+        }
+        .macro-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .macro-item-header h4 {
+            margin: 0;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+        .remove-macro-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 4px 12px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .add-macro-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--bg-light);
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            color: var(--text-gray);
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 20px;
+            transition: all 0.2s;
+        }
+        .add-macro-btn:hover {
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+        }
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: none;
+        }
+        .success-message {
+            background: #efe;
+            color: #3c3;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: none;
+        }
+        .manual-macro-form {
+            animation: slideDown 0.3s ease-out;
+        }
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Auth Buttons in Header */
+        .auth-buttons {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-left: 16px;
+        }
+        .auth-buttons .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary-blue);
+            color: var(--primary-blue);
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .auth-buttons .btn-outline:hover {
+            background: var(--primary-blue);
+            color: white;
+        }
+        .auth-buttons .btn-primary {
+            background: var(--primary-blue);
+            border: 2px solid var(--primary-blue);
+            color: white;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .auth-buttons .btn-primary:hover {
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+        .user-menu {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-left: 16px;
+        }
+        .user-name {
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+        .user-menu .btn-small {
+            padding: 6px 12px;
+            font-size: 13px;
+        }
+
+        /* Auth Modal */
+        .auth-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+        }
+        .auth-modal.active {
+            display: flex;
+        }
+        .auth-modal-content {
+            background: var(--bg-white);
+            border-radius: 16px;
+            padding: 40px;
+            width: 100%;
+            max-width: 420px;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .auth-modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--text-gray);
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+        .auth-modal-close:hover {
+            background: var(--bg-light);
+        }
+        .auth-modal h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 0 0 8px;
+        }
+        .auth-subtitle {
+            color: var(--text-gray);
+            margin: 0 0 24px;
+            font-size: 15px;
+        }
+        .auth-modal .form-group {
+            margin-bottom: 20px;
+        }
+        .auth-modal .form-group label {
+            display: block;
+            font-weight: 500;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .auth-modal .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.2s;
+            background: var(--bg-white);
+            color: var(--text-dark);
+        }
+        .auth-modal .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+        .auth-error {
+            background: #fef2f2;
+            color: #dc2626;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: none;
+        }
+        .auth-error.show {
+            display: block;
+        }
+        .btn-full {
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .auth-switch {
+            text-align: center;
+            margin-top: 24px;
+            color: var(--text-gray);
+            font-size: 14px;
+        }
+        .auth-switch a {
+            color: var(--primary-blue);
+            font-weight: 500;
+            text-decoration: none;
+        }
+        .auth-switch a:hover {
+            text-decoration: underline;
+        }
+
+        /* Dark mode auth styles */
+        [data-theme="dark"] .auth-modal-content {
+            background: var(--bg-dark);
+        }
+        [data-theme="dark"] .auth-error {
+            background: #4c1d1d;
+            color: #fca5a5;
+        }
+
+        /* My Macros Section */
+        .my-macros-section {
+            margin-bottom: 40px;
+        }
+        .my-macros-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .my-macro-card {
+            background: var(--bg-white);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.2s;
+        }
+        .my-macro-card:hover {
+            border-color: var(--primary-blue);
+            box-shadow: 0 4px 12px rgba(0, 102, 255, 0.1);
+        }
+        .my-macro-shortcut {
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-blue);
+            margin-bottom: 8px;
+        }
+        .my-macro-expansion {
+            color: var(--text-gray);
+            font-size: 14px;
+            line-height: 1.5;
+            max-height: 80px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 12px;
+        }
+        .my-macro-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+        .my-macros-empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-gray);
+        }
+        .my-macros-empty a {
+            color: var(--primary-blue);
+        }
+        
+        /* My Macros Tab highlight */
+        .tab[data-tab="my-macros"] {
+            background: linear-gradient(135deg, var(--primary-blue), #00B8FF);
+            color: white;
+            border-color: transparent;
+        }
+        .tab[data-tab="my-macros"]:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="index.html" style="text-decoration: none; display: flex; align-items: center; gap: 12px;">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 4L20 12L16 20L12 12L16 4Z" fill="#0066FF"/>
+                            <path d="M12 12L8 16L12 20L16 16L12 12Z" fill="#00B8FF"/>
+                            <path d="M20 12L24 16L20 20L16 16L20 12Z" fill="#00B8FF"/>
+                            <path d="M16 20L12 24L16 28L20 24L16 20Z" fill="#0066FF"/>
+                        </svg>
+                        <span class="logo-text">Fountain</span>
+                    </a>
+                </div>
+                <nav class="nav">
+                    <a href="index.html">Home</a>
+                    <a href="index.html#features">Features</a>
+                    <a href="forum.html">Forum</a>
+                    <a href="shared.html" class="active">Shared Macros</a>
+                    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+                        <svg class="theme-icon sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="5"/>
+                            <line x1="12" y1="1" x2="12" y2="3"/>
+                            <line x1="12" y1="21" x2="12" y2="23"/>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                            <line x1="1" y1="12" x2="3" y2="12"/>
+                            <line x1="21" y1="12" x2="23" y2="12"/>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                        </svg>
+                        <svg class="theme-icon moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                        </svg>
+                    </button>
+                    <div class="auth-buttons" id="auth-buttons">
+                        <button class="btn btn-outline" id="login-btn">Log In</button>
+                        <button class="btn btn-primary" id="signup-btn">Sign Up</button>
+                    </div>
+                    <div class="user-menu" id="user-menu" style="display: none;">
+                        <span class="user-name" id="user-name"></span>
+                        <button class="btn btn-outline btn-small" id="logout-btn">Log Out</button>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="auth-modal">
+        <div class="auth-modal-content">
+            <button class="auth-modal-close" id="auth-modal-close">&times;</button>
+            
+            <div id="login-form-container">
+                <h2>Log In</h2>
+                <p class="auth-subtitle">Welcome back! Sign in to your account.</p>
+                
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-email">Email</label>
+                        <input type="email" id="login-email" placeholder="you@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" placeholder="Your password" required>
+                    </div>
+                    <div id="login-error" class="auth-error"></div>
+                    <button type="submit" class="btn btn-primary btn-full" id="login-submit">
+                        <span class="btn-text">Log In</span>
+                        <span class="btn-loading" style="display: none;">Logging in...</span>
+                    </button>
+                </form>
+                
+                <p class="auth-switch">
+                    Don't have an account? <a href="#" id="show-signup">Sign up</a>
+                </p>
+            </div>
+            
+            <div id="signup-form-container" style="display: none;">
+                <h2>Create Account</h2>
+                <p class="auth-subtitle">Sign up to share and save your macros.</p>
+                
+                <form id="signup-form">
+                    <div class="form-group">
+                        <label for="signup-name">Display Name</label>
+                        <input type="text" id="signup-name" placeholder="Your name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-email">Email</label>
+                        <input type="email" id="signup-email" placeholder="you@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-password">Password</label>
+                        <input type="password" id="signup-password" placeholder="At least 6 characters" minlength="6" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-confirm">Confirm Password</label>
+                        <input type="password" id="signup-confirm" placeholder="Confirm your password" required>
+                    </div>
+                    <div id="signup-error" class="auth-error"></div>
+                    <button type="submit" class="btn btn-primary btn-full" id="signup-submit">
+                        <span class="btn-text">Create Account</span>
+                        <span class="btn-loading" style="display: none;">Creating account...</span>
+                    </button>
+                </form>
+                
+                <p class="auth-switch">
+                    Already have an account? <a href="#" id="show-login">Log in</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="shared-container">
+        <div class="shared-header">
+            <h1>Shared Macros Library</h1>
+            <p>Discover and import macros shared by the Fountain community</p>
+            <div class="search-bar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"/>
+                    <path d="M21 21l-4.35-4.35"/>
+                </svg>
+                <input type="text" id="search-input" placeholder="Search shared macros...">
+            </div>
+            <div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 24px; flex-wrap: wrap;">
+                <button class="btn btn-primary" id="add-macro-manual-btn" style="display: inline-flex; align-items: center; gap: 8px;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"/>
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                    Add Macro Manually
+                </button>
+                <button class="btn btn-secondary" id="share-macro-btn" style="display: inline-flex; align-items: center; gap: 8px;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                        <polyline points="16 6 12 2 8 6"/>
+                        <line x1="12" y1="2" x2="12" y2="15"/>
+                    </svg>
+                    Share Multiple Macros
+                </button>
+            </div>
+            
+            <!-- Manual Macro Entry Form -->
+            <div id="manual-macro-form" class="manual-macro-form" style="display: none; background: var(--bg-white); border: 2px solid var(--primary-blue); border-radius: 12px; padding: 24px; margin-bottom: 32px; box-shadow: 0 4px 12px rgba(0, 102, 255, 0.1);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3 style="margin: 0; color: var(--text-dark); font-size: 20px;">Add a Macro</h3>
+                    <button onclick="closeManualForm()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-gray); padding: 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: background 0.2s;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='none'">&times;</button>
+                </div>
+                
+                <form id="manual-macro-entry-form">
+                    <div class="form-group">
+                        <label for="manual-shortcut">Shortcut *</label>
+                        <input type="text" id="manual-shortcut" placeholder="e.g., /email" required>
+                        <small>The text shortcut that triggers this macro</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="manual-expansion">Expansion *</label>
+                        <textarea id="manual-expansion" placeholder="The text that will be inserted when you type the shortcut..." required></textarea>
+                        <small>The text that will replace the shortcut</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="manual-title">Title (optional)</label>
+                        <input type="text" id="manual-title" placeholder="e.g., Email Template">
+                        <small>Give your macro a descriptive title</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="manual-description">Description (optional)</label>
+                        <textarea id="manual-description" placeholder="Describe what this macro does..."></textarea>
+                        <small>Help others understand what this macro is for</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="manual-tags">Tags (optional, comma-separated)</label>
+                        <input type="text" id="manual-tags" placeholder="email, template, productivity">
+                        <small>Add tags to help others find your macro</small>
+                    </div>
+
+                    <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px;">
+                        <button type="button" class="btn btn-secondary" onclick="closeManualForm()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Add Macro</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="tabs">
+                <button class="tab active" data-tab="popular">Popular</button>
+                <button class="tab" data-tab="recent">Recent</button>
+                <button class="tab" data-tab="folders">Folders</button>
+                <button class="tab" data-tab="code">Import by Code</button>
+                <button class="tab" data-tab="my-macros" id="my-macros-tab" style="display: none;">My Macros</button>
+            </div>
+
+            <!-- My Macros Section (for logged-in users) -->
+            <div class="my-macros-section" id="my-macros-section" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                    <h2 style="margin: 0; font-size: 24px; font-weight: 600; color: var(--text-dark);">My Synced Macros</h2>
+                    <div style="display: flex; gap: 12px; align-items: center;">
+                        <span id="my-macros-sync-status" style="font-size: 14px; color: var(--text-gray);"></span>
+                        <button class="btn btn-secondary" id="refresh-my-macros-btn">🔄 Refresh</button>
+                    </div>
+                </div>
+                <p style="color: var(--text-gray); margin-bottom: 24px;">These are your personal macros synced from the Fountain extension. Install the extension and sign in with the same account to sync.</p>
+                <div class="my-macros-grid" id="my-macros-grid">
+                    <div class="my-macros-empty" id="my-macros-empty">
+                        <p>No synced macros yet.</p>
+                        <p>Install the <a href="index.html#install">Fountain extension</a> and sign in to sync your macros.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Folders Section -->
+            <div class="folders-section" id="folders-section" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                    <h2 style="margin: 0; font-size: 24px; font-weight: 600; color: var(--text-dark);">Public Folders</h2>
+                    <button class="btn btn-primary" id="create-folder-btn">+ Create Folder</button>
+                </div>
+                <div class="folders-grid" id="folders-grid"></div>
+            </div>
+        </div>
+
+        <div id="shared-grid" class="shared-grid">
+            <!-- Shared macros will be loaded here -->
+        </div>
+
+        <div id="empty-state" class="empty-state" style="display: none;">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity: 0.5; margin-bottom: 24px;">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            <h3>No shared macros found</h3>
+            <p>Be the first to share your macros with the community!</p>
+        </div>
+
+        <!-- Import by Code Modal -->
+        <div id="import-code-modal" class="import-modal">
+            <div class="import-modal-content">
+                <h2 style="margin-bottom: 20px; color: var(--text-dark);">Import by Share Code</h2>
+                <p style="color: var(--text-gray); margin-bottom: 20px;">Enter the 6-character share code to import macros:</p>
+                <input type="text" id="import-code-input" class="import-code-input" placeholder="ABCD12" maxlength="6" style="text-transform: uppercase;">
+                <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                    <button class="btn btn-secondary" onclick="document.getElementById('import-code-modal').classList.remove('active')">Cancel</button>
+                    <button class="btn btn-primary" id="import-code-btn">Import</button>
+                </div>
+                <div id="import-code-error" style="color: #dc3545; margin-top: 12px; display: none;"></div>
+            </div>
+        </div>
+
+        <!-- Share Macro Modal -->
+        <div id="share-macro-modal" class="share-macro-modal">
+            <div class="share-macro-content">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                    <h2 style="margin: 0; color: var(--text-dark);">Share a Macro</h2>
+                    <button onclick="closeShareModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-gray);">&times;</button>
+                </div>
+                
+                <div id="share-error" class="error-message"></div>
+                <div id="share-success" class="success-message"></div>
+
+                <form id="share-macro-form">
+                    <div class="form-group">
+                        <label for="share-title">Title *</label>
+                        <input type="text" id="share-title" placeholder="e.g., Email Templates" required>
+                        <small>Give your shared macro collection a descriptive title</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="share-description">Description</label>
+                        <textarea id="share-description" placeholder="Describe what these macros do..."></textarea>
+                        <small>Optional: Help others understand what these macros are for</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="share-folder-select">Folder (optional)</label>
+                        <select id="share-folder-select" style="width: 100%; padding: 12px; border: 2px solid var(--border-color); border-radius: 8px; font-size: 14px; background: var(--bg-white); color: var(--text-dark);">
+                            <option value="">No Folder</option>
+                        </select>
+                        <small>Organize your shared macros into folders</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="share-tags">Tags (comma-separated)</label>
+                        <input type="text" id="share-tags" placeholder="email, templates, productivity">
+                        <small>Optional: Add tags to help others find your macros</small>
+                    </div>
+
+                    <div id="macros-list">
+                        <h3 style="font-size: 16px; color: var(--text-dark); margin-bottom: 12px;">Macros</h3>
+                        <div id="macro-items"></div>
+                        <button type="button" class="add-macro-btn" onclick="addMacroField()">
+                            + Add Another Macro
+                        </button>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeShareModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Share Macros</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 4L20 12L16 20L12 12L16 4Z" fill="#0066FF"/>
+                            <path d="M12 12L8 16L12 20L16 16L12 12Z" fill="#00B8FF"/>
+                            <path d="M20 12L24 16L20 20L16 16L20 12Z" fill="#00B8FF"/>
+                            <path d="M16 20L12 24L16 28L20 24L16 20Z" fill="#0066FF"/>
+                        </svg>
+                        <span class="logo-text">Fountain</span>
+                    </div>
+                    <p>Type faster with intelligent text expansion.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Product</h4>
+                        <a href="index.html#features">Features</a>
+                        <a href="index.html#guide">User Guide</a>
+                        <a href="index.html#download">Download</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <a href="https://github.com/draphael123/Fountain-Macro-Assistant" target="_blank" rel="noopener">GitHub</a>
+                        <a href="shared.html">Shared Macros</a>
+                        <a href="roadmap.html">Roadmap</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Fountain. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="auth.js"></script>
+    <script src="shared-macros.js"></script>
+    <script>
+        let currentTab = 'popular';
+        let allSharedMacros = [];
+        let selectedFolderId = null;
+        let currentUser = null;
+
+        // ========== AUTH FUNCTIONALITY ==========
+        const API_BASE = '/api';
+        
+        // DOM Elements for auth
+        const authModal = document.getElementById('auth-modal');
+        const authButtons = document.getElementById('auth-buttons');
+        const userMenu = document.getElementById('user-menu');
+        const userNameEl = document.getElementById('user-name');
+        const loginBtn = document.getElementById('login-btn');
+        const signupBtn = document.getElementById('signup-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const authModalClose = document.getElementById('auth-modal-close');
+        const loginFormContainer = document.getElementById('login-form-container');
+        const signupFormContainer = document.getElementById('signup-form-container');
+        const showSignupLink = document.getElementById('show-signup');
+        const showLoginLink = document.getElementById('show-login');
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+        const loginError = document.getElementById('login-error');
+        const signupError = document.getElementById('signup-error');
+
+        // Check if user is logged in on page load
+        function checkAuthStatus() {
+            const token = localStorage.getItem('fountain_auth_token');
+            const userData = localStorage.getItem('fountain_user');
+            
+            if (token && userData) {
+                try {
+                    currentUser = JSON.parse(userData);
+                    showLoggedInState();
+                } catch (e) {
+                    console.error('Error parsing user data:', e);
+                    logout();
+                }
+            } else {
+                showLoggedOutState();
+            }
+        }
+
+        function showLoggedInState() {
+            if (authButtons) authButtons.style.display = 'none';
+            if (userMenu) userMenu.style.display = 'flex';
+            if (userNameEl && currentUser) {
+                userNameEl.textContent = currentUser.displayName || currentUser.email;
+            }
+            // Show My Macros tab
+            const myMacrosTab = document.getElementById('my-macros-tab');
+            if (myMacrosTab) myMacrosTab.style.display = 'inline-block';
+        }
+
+        function showLoggedOutState() {
+            if (authButtons) authButtons.style.display = 'flex';
+            if (userMenu) userMenu.style.display = 'none';
+            currentUser = null;
+            // Hide My Macros tab
+            const myMacrosTab = document.getElementById('my-macros-tab');
+            if (myMacrosTab) myMacrosTab.style.display = 'none';
+            // Switch away from my-macros tab if currently on it
+            if (currentTab === 'my-macros') {
+                document.querySelector('[data-tab="popular"]')?.click();
+            }
+        }
+
+        // Load user's synced macros from cloud
+        async function loadMyMacros() {
+            const token = localStorage.getItem('fountain_auth_token');
+            if (!token) {
+                document.getElementById('my-macros-empty').style.display = 'block';
+                return;
+            }
+
+            const syncStatus = document.getElementById('my-macros-sync-status');
+            if (syncStatus) syncStatus.textContent = 'Loading...';
+
+            try {
+                const response = await fetch(`${API_BASE}/sync/get`, {
+                    method: 'GET',
+                    headers: { 
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (data.success && data.data) {
+                    const macros = data.data.macros || [];
+                    displayMyMacros(macros, data.data.lastSync);
+                } else {
+                    if (syncStatus) syncStatus.textContent = 'Failed to load';
+                    document.getElementById('my-macros-empty').innerHTML = 
+                        '<p>Could not load your macros.</p><p>Please try again later.</p>';
+                }
+            } catch (error) {
+                console.error('Error loading my macros:', error);
+                if (syncStatus) syncStatus.textContent = 'Error';
+            }
+        }
+
+        function displayMyMacros(macros, lastSync) {
+            const grid = document.getElementById('my-macros-grid');
+            const empty = document.getElementById('my-macros-empty');
+            const syncStatus = document.getElementById('my-macros-sync-status');
+
+            if (syncStatus) {
+                syncStatus.textContent = lastSync ? 
+                    `Last synced: ${new Date(lastSync).toLocaleString()}` : '';
+            }
+
+            if (!macros || macros.length === 0) {
+                empty.style.display = 'block';
+                empty.innerHTML = `
+                    <p>No synced macros yet.</p>
+                    <p>Install the <a href="index.html#install">Fountain extension</a> and sign in to sync your macros.</p>
+                `;
+                return;
+            }
+
+            empty.style.display = 'none';
+            
+            // Clear existing cards (but not empty message)
+            const existingCards = grid.querySelectorAll('.my-macro-card');
+            existingCards.forEach(card => card.remove());
+
+            macros.forEach(macro => {
+                const card = document.createElement('div');
+                card.className = 'my-macro-card';
+                card.innerHTML = `
+                    <div class="my-macro-shortcut">${escapeHtml(macro.shortcut)}</div>
+                    <div class="my-macro-expansion">${escapeHtml(macro.expansion)}</div>
+                    <div class="my-macro-meta">
+                        <span>${macro.usageCount || 0} uses</span>
+                        <span>${macro.folder || 'No folder'}</span>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function openAuthModal(mode = 'login') {
+            if (authModal) {
+                authModal.classList.add('active');
+                if (mode === 'signup') {
+                    loginFormContainer.style.display = 'none';
+                    signupFormContainer.style.display = 'block';
+                } else {
+                    loginFormContainer.style.display = 'block';
+                    signupFormContainer.style.display = 'none';
+                }
+                // Clear errors
+                if (loginError) loginError.classList.remove('show');
+                if (signupError) signupError.classList.remove('show');
+            }
+        }
+
+        function closeAuthModal() {
+            if (authModal) {
+                authModal.classList.remove('active');
+            }
+        }
+
+        // Login handler
+        async function handleLogin(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+            const submitBtn = document.getElementById('login-submit');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const btnLoading = submitBtn.querySelector('.btn-loading');
+
+            // Show loading state
+            btnText.style.display = 'none';
+            btnLoading.style.display = 'inline';
+            submitBtn.disabled = true;
+            loginError.classList.remove('show');
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Save auth data
+                    localStorage.setItem('fountain_auth_token', data.token);
+                    localStorage.setItem('fountain_user', JSON.stringify(data.user));
+                    currentUser = data.user;
+                    
+                    closeAuthModal();
+                    showLoggedInState();
+                    loginForm.reset();
+                    
+                    // Show success message
+                    alert(`Welcome back, ${data.user.displayName}!`);
+                } else {
+                    loginError.textContent = data.error || 'Login failed. Please try again.';
+                    loginError.classList.add('show');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                loginError.textContent = 'Connection error. Please try again.';
+                loginError.classList.add('show');
+            } finally {
+                btnText.style.display = 'inline';
+                btnLoading.style.display = 'none';
+                submitBtn.disabled = false;
+            }
+        }
+
+        // Signup handler
+        async function handleSignup(e) {
+            e.preventDefault();
+            
+            const displayName = document.getElementById('signup-name').value.trim();
+            const email = document.getElementById('signup-email').value.trim();
+            const password = document.getElementById('signup-password').value;
+            const confirmPassword = document.getElementById('signup-confirm').value;
+            const submitBtn = document.getElementById('signup-submit');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const btnLoading = submitBtn.querySelector('.btn-loading');
+
+            // Validate passwords match
+            if (password !== confirmPassword) {
+                signupError.textContent = 'Passwords do not match.';
+                signupError.classList.add('show');
+                return;
+            }
+
+            // Show loading state
+            btnText.style.display = 'none';
+            btnLoading.style.display = 'inline';
+            submitBtn.disabled = true;
+            signupError.classList.remove('show');
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password, displayName })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Save auth data
+                    localStorage.setItem('fountain_auth_token', data.token);
+                    localStorage.setItem('fountain_user', JSON.stringify(data.user));
+                    currentUser = data.user;
+                    
+                    closeAuthModal();
+                    showLoggedInState();
+                    signupForm.reset();
+                    
+                    // Show success message
+                    alert(`Welcome to Fountain, ${data.user.displayName}! Your account has been created.`);
+                } else {
+                    signupError.textContent = data.error || 'Registration failed. Please try again.';
+                    signupError.classList.add('show');
+                }
+            } catch (error) {
+                console.error('Signup error:', error);
+                signupError.textContent = 'Connection error. Please try again.';
+                signupError.classList.add('show');
+            } finally {
+                btnText.style.display = 'inline';
+                btnLoading.style.display = 'none';
+                submitBtn.disabled = false;
+            }
+        }
+
+        // Logout handler
+        function logout() {
+            localStorage.removeItem('fountain_auth_token');
+            localStorage.removeItem('fountain_user');
+            currentUser = null;
+            showLoggedOutState();
+        }
+
+        // Set up auth event listeners
+        if (loginBtn) loginBtn.addEventListener('click', () => openAuthModal('login'));
+        if (signupBtn) signupBtn.addEventListener('click', () => openAuthModal('signup'));
+        if (logoutBtn) logoutBtn.addEventListener('click', logout);
+        if (authModalClose) authModalClose.addEventListener('click', closeAuthModal);
+        if (showSignupLink) showSignupLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginFormContainer.style.display = 'none';
+            signupFormContainer.style.display = 'block';
+        });
+        if (showLoginLink) showLoginLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginFormContainer.style.display = 'block';
+            signupFormContainer.style.display = 'none';
+        });
+        if (loginForm) loginForm.addEventListener('submit', handleLogin);
+        if (signupForm) signupForm.addEventListener('submit', handleSignup);
+        
+        // Refresh My Macros button
+        const refreshMyMacrosBtn = document.getElementById('refresh-my-macros-btn');
+        if (refreshMyMacrosBtn) {
+            refreshMyMacrosBtn.addEventListener('click', loadMyMacros);
+        }
+        
+        // Close modal on outside click
+        if (authModal) {
+            authModal.addEventListener('click', (e) => {
+                if (e.target === authModal) closeAuthModal();
+            });
+        }
+
+        // Check auth status on load
+        checkAuthStatus();
+
+        // ========== END AUTH FUNCTIONALITY ==========
+
+        // Load and display shared macros
+        function loadSharedMacros() {
+            if (currentTab === 'popular') {
+                allSharedMacros = sharedMacros.getPopularMacros(50, selectedFolderId);
+            } else if (currentTab === 'recent') {
+                allSharedMacros = sharedMacros.getRecentMacros(50, selectedFolderId);
+            } else if (currentTab === 'folders') {
+                loadFolders();
+                return;
+            }
+
+            displaySharedMacros(allSharedMacros);
+        }
+
+        // Load and display folders
+        function loadFolders() {
+            const foldersSection = document.getElementById('folders-section');
+            const foldersGrid = document.getElementById('folders-grid');
+            const sharedGrid = document.getElementById('shared-grid');
+            
+            if (!foldersSection || !foldersGrid) return;
+            
+            foldersSection.style.display = 'block';
+            if (sharedGrid) sharedGrid.style.display = 'none';
+            
+            // Update folder counts before displaying
+            sharedMacros.updateFolderCounts();
+            
+            const folders = sharedMacros.getSharedFolders();
+            
+            if (folders.length === 0) {
+                foldersGrid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-gray);">
+                        <p>No folders yet. Create one to organize shared macros!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            foldersGrid.innerHTML = folders.map(folder => `
+                <div class="folder-card ${selectedFolderId === folder.id ? 'active' : ''}" data-folder-id="${folder.id}">
+                    <div class="folder-icon">📁</div>
+                    <div class="folder-name">${escapeHtml(folder.name)}</div>
+                    <div class="folder-count">${folder.macroCount || 0} macro${(folder.macroCount || 0) !== 1 ? 's' : ''}</div>
+                    ${folder.description ? `<div style="font-size: 12px; color: var(--text-gray); margin-top: 8px;">${escapeHtml(folder.description)}</div>` : ''}
+                </div>
+            `).join('') + `
+                <div class="create-folder-btn" id="create-folder-btn-inline">
+                    <div style="font-size: 24px; margin-bottom: 8px;">+</div>
+                    <div style="font-weight: 600; color: var(--text-gray);">Create Folder</div>
+                </div>
+            `;
+            
+            // Add click handlers
+            foldersGrid.querySelectorAll('.folder-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const folderId = card.dataset.folderId;
+                    if (selectedFolderId === folderId) {
+                        selectedFolderId = null;
+                        loadFolders();
+                        loadSharedMacros();
+                    } else {
+                        selectedFolderId = folderId;
+                        loadFolders();
+                        // Switch to popular tab and filter by folder
+                        currentTab = 'popular';
+                        document.querySelectorAll('.tab').forEach(tab => {
+                            tab.classList.remove('active');
+                            if (tab.dataset.tab === 'popular') {
+                                tab.classList.add('active');
+                            }
+                        });
+                        loadSharedMacros();
+                    }
+                });
+            });
+            
+            // Create folder button handlers
+            const createBtn = document.getElementById('create-folder-btn');
+            const createBtnInline = document.getElementById('create-folder-btn-inline');
+            if (createBtn) {
+                createBtn.onclick = showCreateFolderModal;
+            }
+            if (createBtnInline) {
+                createBtnInline.onclick = showCreateFolderModal;
+            }
+        }
+
+        // Show create folder modal
+        function showCreateFolderModal() {
+            const name = prompt('Enter folder name:');
+            if (!name || name.trim() === '') {
+                return;
+            }
+            
+            const description = prompt('Enter folder description (optional):') || '';
+            
+            // Use global auth from auth.js
+            currentUser = auth.getCurrentUser();
+            
+            const result = sharedMacros.createFolder(
+                name.trim(),
+                description.trim(),
+                currentUser ? (currentUser.name || currentUser.email) : 'Anonymous',
+                currentUser ? currentUser.id : null
+            );
+            
+            if (result.success) {
+                alert('Folder created successfully!');
+                loadFolders();
+                // Update folder select in share modal if open
+                const folderSelect = document.getElementById('share-folder-select');
+                if (folderSelect) {
+                    const folders = sharedMacros.getSharedFolders();
+                    folderSelect.innerHTML = '<option value="">No Folder</option>' + 
+                        folders.map(f => `<option value="${f.id}">${escapeHtml(f.name)}</option>`).join('');
+                }
+            } else {
+                alert('Error: ' + result.error);
+            }
+        }
+
+        // Display shared macros in grid
+        function displaySharedMacros(macros) {
+            const grid = document.getElementById('shared-grid');
+            const emptyState = document.getElementById('empty-state');
+
+            if (macros.length === 0) {
+                grid.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            grid.style.display = 'grid';
+            emptyState.style.display = 'none';
+
+            grid.innerHTML = macros.map(macro => {
+                const date = new Date(macro.metadata.createdAt).toLocaleDateString();
+                const views = macro.metadata.views || 0;
+                const imports = macro.metadata.imports || 0;
+                const folder = macro.metadata.folderId ? sharedMacros.getFolder(macro.metadata.folderId) : null;
+
+                return `
+                    <div class="shared-card" data-code="${macro.shareCode}">
+                        <div class="shared-card-header">
+                            <div style="flex: 1;">
+                                <h3 class="shared-card-title">${escapeHtml(macro.metadata.title)}</h3>
+                                <span class="share-code">${macro.shareCode}</span>
+                            </div>
+                        </div>
+                        <p class="shared-card-description">${escapeHtml(macro.metadata.description || 'No description')}</p>
+                        <div class="shared-card-meta">
+                            <span>By ${escapeHtml(macro.metadata.author)}</span>
+                            <span>•</span>
+                            <span>${date}</span>
+                            <span>•</span>
+                            <span>${macro.macros.length} macro${macro.macros.length > 1 ? 's' : ''}</span>
+                            ${folder ? `<span>•</span><span style="color: var(--primary-blue);">📁 ${escapeHtml(folder.name)}</span>` : ''}
+                        </div>
+                        <div class="shared-card-stats">
+                            <div class="stat-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                </svg>
+                                <span>${views}</span>
+                            </div>
+                            <div class="stat-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="7 10 12 15 17 10"/>
+                                    <line x1="12" y1="15" x2="12" y2="3"/>
+                                </svg>
+                                <span>${imports}</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary import-btn" data-share-code="${macro.shareCode}" type="button">Import Macros</button>
+                    </div>
+                `;
+            }).join('');
+
+            // Add click handlers using event delegation (simpler and more reliable)
+            grid.addEventListener('click', (e) => {
+                // Check if import button was clicked
+                const importBtn = e.target.closest('.import-btn');
+                if (importBtn) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    const code = importBtn.dataset.shareCode || importBtn.getAttribute('data-share-code');
+                    if (code && typeof window.importSharedMacro === 'function') {
+                        window.importSharedMacro(code);
+                    } else if (code && typeof importSharedMacro === 'function') {
+                        importSharedMacro(code);
+                    }
+                    return;
+                }
+                
+                // Check if card was clicked (but not a button)
+                const card = e.target.closest('.shared-card');
+                if (card && !e.target.classList.contains('btn') && !e.target.closest('.btn')) {
+                    const code = card.dataset.code;
+                    if (code && typeof window.importSharedMacro === 'function') {
+                        window.importSharedMacro(code);
+                    } else if (code && typeof importSharedMacro === 'function') {
+                        importSharedMacro(code);
+                    }
+                }
+            });
+        }
+
+        // Import shared macro - make sure it's in global scope
+        function importSharedMacro(shareCode) {
+            if (!shareCode) {
+                console.error('No share code provided');
+                alert('Error: No share code provided');
+                return;
+            }
+            
+            try {
+                const result = sharedMacros.importSharedMacro(shareCode);
+                
+                if (result.success) {
+                    // Store macros in a way extension can access
+                    const importData = {
+                        macros: result.macros,
+                        metadata: result.metadata,
+                        shareCode: shareCode,
+                        importedAt: new Date().toISOString()
+                    };
+
+                    // Store in localStorage for extension to pick up
+                    localStorage.setItem('fountain_import_shared', JSON.stringify(importData));
+
+                    // Show success message
+                    alert(`Successfully imported ${result.macros.length} macro(s)! Open the extension and click "Import Shared Macros" to add them.`);
+
+                    // Increment views
+                    sharedMacros.incrementViews(shareCode);
+                    
+                    // Reload if on recent/popular tab
+                    if (currentTab !== 'code') {
+                        loadSharedMacros();
+                    }
+                } else {
+                    alert('Error: ' + result.error);
+                }
+            } catch (error) {
+                console.error('Error importing shared macro:', error);
+                alert('Error importing macro: ' + error.message);
+            }
+        }
+        
+        // Make function globally accessible
+        window.importSharedMacro = importSharedMacro;
+
+        // Escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentTab = tab.dataset.tab;
+
+                // Hide all sections first
+                const foldersSection = document.getElementById('folders-section');
+                const myMacrosSection = document.getElementById('my-macros-section');
+                const sharedGrid = document.getElementById('shared-grid');
+                const emptyState = document.getElementById('empty-state');
+                
+                if (foldersSection) foldersSection.style.display = 'none';
+                if (myMacrosSection) myMacrosSection.style.display = 'none';
+                document.getElementById('import-code-modal').classList.remove('active');
+
+                if (currentTab === 'code') {
+                    if (sharedGrid) sharedGrid.style.display = 'none';
+                    if (emptyState) emptyState.style.display = 'none';
+                    document.getElementById('import-code-modal').classList.add('active');
+                    return;
+                }
+
+                if (currentTab === 'my-macros') {
+                    if (sharedGrid) sharedGrid.style.display = 'none';
+                    if (emptyState) emptyState.style.display = 'none';
+                    if (myMacrosSection) myMacrosSection.style.display = 'block';
+                    loadMyMacros();
+                    return;
+                }
+
+                if (currentTab === 'folders') {
+                    if (foldersSection) foldersSection.style.display = 'block';
+                    if (sharedGrid) sharedGrid.style.display = 'none';
+                } else {
+                    if (sharedGrid) sharedGrid.style.display = 'grid';
+                }
+
+                loadSharedMacros();
+            });
+        });
+        
+        // Create folder button
+        const createFolderBtn = document.getElementById('create-folder-btn');
+        if (createFolderBtn) {
+            createFolderBtn.addEventListener('click', showCreateFolderModal);
+        }
+        
+        // Get current user (auth is global from auth.js)
+        currentUser = auth.getCurrentUser();
+
+        // Search functionality
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.trim();
+                if (query === '') {
+                    loadSharedMacros();
+                    return;
+                }
+
+                const results = sharedMacros.searchSharedMacros(query, selectedFolderId);
+                displaySharedMacros(results);
+            });
+        }
+
+        // Import by code
+        const importCodeBtn = document.getElementById('import-code-btn');
+        if (importCodeBtn) {
+            importCodeBtn.addEventListener('click', () => {
+                const code = document.getElementById('import-code-input').value.trim().toUpperCase();
+                const errorEl = document.getElementById('import-code-error');
+                
+                if (code.length !== 6) {
+                    if (errorEl) {
+                        errorEl.textContent = 'Please enter a 6-character code';
+                        errorEl.style.display = 'block';
+                    }
+                    return;
+                }
+
+                if (errorEl) {
+                    errorEl.style.display = 'none';
+                }
+                importSharedMacro(code);
+                const importModal = document.getElementById('import-code-modal');
+                if (importModal) {
+                    importModal.classList.remove('active');
+                }
+                const importInput = document.getElementById('import-code-input');
+                if (importInput) {
+                    importInput.value = '';
+                }
+            });
+        }
+
+        // Check for share code in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const codeParam = urlParams.get('code');
+        if (codeParam) {
+            const importInput = document.getElementById('import-code-input');
+            if (importInput) {
+                importInput.value = codeParam.toUpperCase();
+            }
+            const codeTab = document.querySelector('[data-tab="code"]');
+            if (codeTab) {
+                codeTab.click();
+            }
+        }
+        
+        // Define functions first before setting up event listeners
+        
+        // Manual macro entry functions
+        function openManualForm() {
+            console.log('Opening manual form');
+            const form = document.getElementById('manual-macro-form');
+            if (form) {
+                form.style.display = 'block';
+                document.getElementById('manual-shortcut')?.focus();
+            }
+        }
+
+        function closeManualForm() {
+            const form = document.getElementById('manual-macro-form');
+            if (form) {
+                form.style.display = 'none';
+            }
+            document.getElementById('manual-macro-entry-form')?.reset();
+        }
+
+        // Share modal functions
+        function openShareModal() {
+            console.log('Opening share modal');
+            const modal = document.getElementById('share-macro-modal');
+            if (modal) {
+                modal.classList.add('active');
+                // Reset form
+                document.getElementById('share-macro-form')?.reset();
+                const macroItems = document.getElementById('macro-items');
+                if (macroItems) macroItems.innerHTML = '';
+                macroFieldsCount = 0;
+                addMacroField();
+                
+                // Load folders into select
+                const folderSelect = document.getElementById('share-folder-select');
+                if (folderSelect && typeof sharedMacros !== 'undefined') {
+                    const folders = sharedMacros.getSharedFolders();
+                    folderSelect.innerHTML = '<option value="">No Folder</option>' + 
+                        folders.map(f => `<option value="${f.id}">${escapeHtml(f.name)}</option>`).join('');
+                }
+                
+                // Hide messages
+                const errorEl = document.getElementById('share-error');
+                const successEl = document.getElementById('share-success');
+                if (errorEl) errorEl.style.display = 'none';
+                if (successEl) successEl.style.display = 'none';
+            }
+        }
+
+        function closeShareModal() {
+            const modal = document.getElementById('share-macro-modal');
+            if (modal) {
+                modal.classList.remove('active');
+            }
+        }
+        
+        // Add manual macro button
+        const addMacroManualBtn = document.getElementById('add-macro-manual-btn');
+        if (addMacroManualBtn) {
+            addMacroManualBtn.addEventListener('click', openManualForm);
+            console.log('Add manual macro button listener attached');
+        } else {
+            console.error('add-macro-manual-btn not found');
+        }
+        
+        // Share macro button
+        const shareMacroBtn = document.getElementById('share-macro-btn');
+        if (shareMacroBtn) {
+            shareMacroBtn.addEventListener('click', openShareModal);
+            console.log('Share macro button listener attached');
+        } else {
+            console.error('share-macro-btn not found');
+        }
+        
+        // Load initial macros
+        loadSharedMacros();
+
+        // Share macro functionality
+        let macroFieldsCount = 0;
+
+        function addMacroField(macro = null) {
+            macroFieldsCount++;
+            const macroItems = document.getElementById('macro-items');
+            const macroId = macro ? macro.id : `macro_${macroFieldsCount}`;
+            
+            const macroItem = document.createElement('div');
+            macroItem.className = 'macro-item';
+            macroItem.id = `macro-item-${macroId}`;
+            macroItem.innerHTML = `
+                <div class="macro-item-header">
+                    <h4>Macro ${macroItems.children.length + 1}</h4>
+                    ${macroItems.children.length > 0 ? '<button type="button" class="remove-macro-btn" onclick="removeMacroField(\'' + macroId + '\')">Remove</button>' : ''}
+                </div>
+                <div class="form-group">
+                    <label>Shortcut *</label>
+                    <input type="text" class="macro-shortcut" placeholder="e.g., /email" value="${macro ? escapeHtml(macro.shortcut || '') : ''}" required>
+                    <small>The text shortcut that triggers this macro</small>
+                </div>
+                <div class="form-group">
+                    <label>Expansion *</label>
+                    <textarea class="macro-expansion" placeholder="The text that will be inserted..." required>${macro ? escapeHtml(macro.expansion || '') : ''}</textarea>
+                    <small>The text that will replace the shortcut</small>
+                </div>
+            `;
+            macroItems.appendChild(macroItem);
+            
+            // Update remove buttons visibility
+            updateRemoveButtons();
+        }
+
+        function removeMacroField(macroId) {
+            const macroItem = document.getElementById(`macro-item-${macroId}`);
+            if (macroItem) {
+                macroItem.remove();
+                updateRemoveButtons();
+            }
+        }
+
+        function updateRemoveButtons() {
+            const macroItems = document.getElementById('macro-items');
+            const items = macroItems.querySelectorAll('.macro-item');
+            items.forEach((item, index) => {
+                const header = item.querySelector('.macro-item-header');
+                const removeBtn = header.querySelector('.remove-macro-btn');
+                if (items.length > 1 && !removeBtn) {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'remove-macro-btn';
+                    btn.textContent = 'Remove';
+                    btn.onclick = () => removeMacroField(item.id.replace('macro-item-', ''));
+                    header.appendChild(btn);
+                } else if (items.length === 1 && removeBtn) {
+                    removeBtn.remove();
+                }
+            });
+        }
+
+        // Share macro form submission (openShareModal and closeShareModal defined above)
+        document.getElementById('share-macro-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const errorEl = document.getElementById('share-error');
+            const successEl = document.getElementById('share-success');
+            errorEl.style.display = 'none';
+            successEl.style.display = 'none';
+
+            // Get form data
+            const title = document.getElementById('share-title').value.trim();
+            const description = document.getElementById('share-description').value.trim();
+            const tags = document.getElementById('share-tags').value.trim().split(',').map(t => t.trim()).filter(t => t);
+            
+            // Get macros
+            const macroItems = document.querySelectorAll('.macro-item');
+            const macros = [];
+            
+            macroItems.forEach((item, index) => {
+                const shortcut = item.querySelector('.macro-shortcut').value.trim();
+                const expansion = item.querySelector('.macro-expansion').value.trim();
+                
+                if (!shortcut || !expansion) {
+                    errorEl.textContent = `Macro ${index + 1} is missing shortcut or expansion`;
+                    errorEl.style.display = 'block';
+                    return;
+                }
+                
+                macros.push({
+                    id: `macro_${Date.now()}_${index}`,
+                    shortcut: shortcut,
+                    expansion: expansion,
+                    caseSensitive: false,
+                    createdAt: new Date().toISOString()
+                });
+            });
+
+            if (macros.length === 0) {
+                errorEl.textContent = 'Please add at least one macro';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            // Get author info
+            const currentUser = auth.getCurrentUser();
+            const author = currentUser ? currentUser.name : 'Anonymous';
+            const authorId = currentUser ? currentUser.id : null;
+
+            // Get selected folder
+            const folderSelect = document.getElementById('share-folder-select');
+            const folderId = folderSelect && folderSelect.value ? folderSelect.value : null;
+            
+            // Share macros
+            const result = sharedMacros.shareMacros(macros, {
+                title: title,
+                description: description,
+                author: author,
+                authorId: authorId,
+                tags: tags,
+                folderId: folderId
+            });
+
+            if (result.success) {
+                successEl.textContent = `Macros shared successfully! Share code: ${result.shareCode}`;
+                successEl.style.display = 'block';
+                
+                // Clear form after a delay
+                setTimeout(() => {
+                    closeShareModal();
+                    // Reload shared macros
+                    if (currentTab === 'recent') {
+                        loadSharedMacros();
+                    } else {
+                        // Switch to recent tab to show the new macro
+                        document.querySelector('[data-tab="recent"]').click();
+                    }
+                }, 2000);
+            } else {
+                errorEl.textContent = result.error || 'Failed to share macros';
+                errorEl.style.display = 'block';
+            }
+        });
+
+        // Manual macro form submission
+        document.getElementById('manual-macro-entry-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const shortcut = document.getElementById('manual-shortcut').value.trim();
+            const expansion = document.getElementById('manual-expansion').value.trim();
+            const title = document.getElementById('manual-title').value.trim();
+            const description = document.getElementById('manual-description').value.trim();
+            const tags = document.getElementById('manual-tags').value.trim().split(',').map(t => t.trim()).filter(t => t);
+
+            if (!shortcut || !expansion) {
+                alert('Please fill in both shortcut and expansion fields.');
+                return;
+            }
+
+            // Create macro object
+            const macro = {
+                id: `macro_${Date.now()}`,
+                shortcut: shortcut,
+                expansion: expansion,
+                caseSensitive: false,
+                createdAt: new Date().toISOString()
+            };
+
+            // Get author info
+            const currentUser = auth.getCurrentUser();
+            const author = currentUser ? currentUser.name : 'Anonymous';
+            const authorId = currentUser ? currentUser.id : null;
+
+            // Share as a single macro collection
+            const result = sharedMacros.shareMacros([macro], {
+                title: title || shortcut,
+                description: description || `Macro: ${shortcut} → ${expansion.substring(0, 50)}${expansion.length > 50 ? '...' : ''}`,
+                author: author,
+                authorId: authorId,
+                tags: tags
+            });
+
+            if (result.success) {
+                alert(`Macro "${shortcut}" added successfully! Share code: ${result.shareCode}`);
+                closeManualForm();
+                
+                // Reload shared macros to show the new one
+                if (currentTab === 'recent') {
+                    loadSharedMacros();
+                } else {
+                    // Switch to recent tab to show the new macro
+                    document.querySelector('[data-tab="recent"]').click();
+                }
+            } else {
+                alert('Failed to add macro: ' + (result.error || 'Unknown error'));
+            }
+        });
+
+        // Event listeners already set up at the beginning of the script
+
+        // Close modal on outside click
+        const shareModal = document.getElementById('share-macro-modal');
+        if (shareModal) {
+            shareModal.addEventListener('click', (e) => {
+                if (e.target.id === 'share-macro-modal') {
+                    closeShareModal();
+                }
+            });
+        }
+
+        // Initialize - wait for DOM
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                loadSharedMacros();
+            });
+        } else {
+            loadSharedMacros();
+        }
+
+        // Increment views for macros in view
+        setTimeout(() => {
+            allSharedMacros.forEach(macro => {
+                sharedMacros.incrementViews(macro.shareCode);
+            });
+        }, 2000);
+    </script>
+</body>
+</html>
+
+
