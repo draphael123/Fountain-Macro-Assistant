@@ -17,39 +17,46 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { email, password } = req.body;
+  const { email, password, name } = req.body;
 
   if (!email || !password) {
     return res.status(400).json({ error: 'Email and password are required' });
   }
 
+  if (password.length < 6) {
+    return res.status(400).json({ error: 'Password must be at least 6 characters' });
+  }
+
   try {
     const supabase = createClient(supabaseUrl, supabaseAnonKey);
     
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signUp({
       email,
-      password
+      password,
+      options: {
+        data: {
+          name: name || email.split('@')[0]
+        }
+      }
     });
 
     if (error) {
-      return res.status(401).json({ error: error.message });
+      return res.status(400).json({ error: error.message });
     }
 
     return res.status(200).json({
       success: true,
+      message: 'Account created successfully! Please check your email to verify your account.',
       user: {
         id: data.user?.id,
         email: data.user?.email,
-        name: data.user?.user_metadata?.name || email.split('@')[0]
+        name: data.user?.user_metadata?.name
       },
-      session: {
-        access_token: data.session?.access_token,
-        refresh_token: data.session?.refresh_token,
-        expires_at: data.session?.expires_at
-      }
+      session: data.session
     });
   } catch (error) {
-    console.error('Login error:', error);
-    return res.status(500).json({ error: 'An error occurred during login' });
+    console.error('Signup error:', error);
+    return res.status(500).json({ error: 'An error occurred during signup' });
   }
 }
+

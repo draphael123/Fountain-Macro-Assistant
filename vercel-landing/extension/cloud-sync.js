@@ -1,11 +1,12 @@
 // Cloud Sync Module for Fountain Macro Assistant
-// Syncs macros to Upstash Redis via API
+// Uses Supabase authentication and API
 
 const CloudSync = {
   API_BASE: 'https://fountain-macro-assistant.vercel.app/api',
   
   // Storage keys
   TOKEN_KEY: 'fountain_auth_token',
+  REFRESH_TOKEN_KEY: 'fountain_refresh_token',
   USER_KEY: 'fountain_user',
   SYNC_ENABLED_KEY: 'fountain_sync_enabled',
   LAST_SYNC_KEY: 'fountain_last_sync',
@@ -25,30 +26,31 @@ const CloudSync = {
   // Check if user is logged in
   async isLoggedIn() {
     const token = await this.getToken();
-    return !!token;
+    const user = await this.getUser();
+    return !!(token && user);
   },
 
   // Register new user
-  async register(email, password, displayName) {
+  async register(email, password, name) {
     try {
-      const response = await fetch(`${this.API_BASE}/auth/register`, {
+      const response = await fetch(`${this.API_BASE}/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, displayName })
+        body: JSON.stringify({ email, password, name })
       });
 
       const data = await response.json();
       
-      if (data.success) {
+      if (data.success && data.session) {
         // Store token and user
         await chrome.storage.local.set({
-          [this.TOKEN_KEY]: data.token,
+          [this.TOKEN_KEY]: data.session.access_token,
+          [this.REFRESH_TOKEN_KEY]: data.session.refresh_token,
           [this.USER_KEY]: data.user,
           [this.SYNC_ENABLED_KEY]: true
         });
         
-        // Sync current macros to cloud
-        await this.syncToCloud();
+        return { success: true, user: data.user, message: data.message };
       }
 
       return data;
@@ -69,16 +71,19 @@ const CloudSync = {
 
       const data = await response.json();
       
-      if (data.success) {
+      if (data.success && data.session) {
         // Store token and user
         await chrome.storage.local.set({
-          [this.TOKEN_KEY]: data.token,
+          [this.TOKEN_KEY]: data.session.access_token,
+          [this.REFRESH_TOKEN_KEY]: data.session.refresh_token,
           [this.USER_KEY]: data.user,
           [this.SYNC_ENABLED_KEY]: true
         });
+        
+        return { success: true, user: data.user };
       }
 
-      return data;
+      return { success: false, error: data.error || 'Login failed' };
     } catch (error) {
       console.error('Login error:', error);
       return { success: false, error: error.message };
@@ -88,9 +93,11 @@ const CloudSync = {
   // Logout user
   async logout() {
     await chrome.storage.local.remove([
-      this.TOKEN_KEY, 
+      this.TOKEN_KEY,
+      this.REFRESH_TOKEN_KEY,
       this.USER_KEY, 
-      this.SYNC_ENABLED_KEY
+      this.SYNC_ENABLED_KEY,
+      this.LAST_SYNC_KEY
     ]);
     return { success: true };
   },
@@ -101,10 +108,9 @@ const CloudSync = {
     if (!token) return { success: false, error: 'No token' };
 
     try {
-      const response = await fetch(`${this.API_BASE}/auth/verify`, {
-        method: 'POST',
+      const response = await fetch(`${this.API_BASE}/auth/user`, {
+        method: 'GET',
         headers: { 
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         }
       });
@@ -114,9 +120,15 @@ const CloudSync = {
       if (!data.success) {
         // Token invalid, clear storage
         await this.logout();
+        return { success: false, error: 'Session expired' };
       }
 
-      return data;
+      // Update user info
+      await chrome.storage.local.set({
+        [this.USER_KEY]: data.user
+      });
+
+      return { success: true, user: data.user };
     } catch (error) {
       console.error('Token verification error:', error);
       return { success: false, error: error.message };
@@ -129,27 +141,27 @@ const CloudSync = {
     if (!token) return { success: false, error: 'Not logged in' };
 
     try {
-      // Get local macros from chrome.storage.sync (where popup.js saves them)
-      const result = await chrome.storage.sync.get(['macros', 'folders', 'settings']);
+      // Get local macros from chrome.storage.sync
+      const result = await chrome.storage.sync.get(['macros', 'folders']);
       const macros = result.macros || [];
-      const folders = result.folders || [];
-      const settings = result.settings || {};
 
-      const response = await fetch(`${this.API_BASE}/sync/save`, {
+      const response = await fetch(`${this.API_BASE}/macros/sync`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ macros, folders, settings })
+        body: JSON.stringify({ macros, mode: 'replace' })
       });
 
       const data = await response.json();
       
       if (data.success) {
+        const now = new Date().toISOString();
         await chrome.storage.local.set({
-          [this.LAST_SYNC_KEY]: data.lastSync
+          [this.LAST_SYNC_KEY]: now
         });
+        return { success: true, message: `Synced ${macros.length} macros to cloud`, lastSync: now };
       }
 
       return data;
@@ -165,7 +177,7 @@ const CloudSync = {
     if (!token) return { success: false, error: 'Not logged in' };
 
     try {
-      const response = await fetch(`${this.API_BASE}/sync/get`, {
+      const response = await fetch(`${this.API_BASE}/macros/sync`, {
         method: 'GET',
         headers: { 
           'Authorization': `Bearer ${token}`
@@ -174,17 +186,46 @@ const CloudSync = {
 
       const data = await response.json();
       
-      if (data.success && data.data) {
-        // Update chrome.storage.sync with cloud data (where popup.js reads from)
-        await chrome.storage.sync.set({
-          macros: data.data.macros || [],
-          folders: data.data.folders || [],
-          settings: data.data.settings || {}
-        });
-        // Store last sync time in local storage
+      if (data.success && data.macros) {
+        // Convert cloud macros to local format
+        const localMacros = data.macros.map(m => ({
+          id: m.id,
+          shortcut: m.shortcut,
+          expansion: m.expansion,
+          name: m.name,
+          folderId: m.folder,
+          tags: m.tags || [],
+          caseSensitive: m.case_sensitive || false,
+          createdAt: m.created_at,
+          lastUsed: null,
+          useCount: 0
+        }));
+
+        // Get current local macros
+        const localResult = await chrome.storage.sync.get(['macros']);
+        const existingMacros = localResult.macros || [];
+        
+        // Merge - cloud macros take precedence for matching shortcuts
+        const shortcutMap = new Map();
+        existingMacros.forEach(m => shortcutMap.set(m.shortcut, m));
+        localMacros.forEach(m => shortcutMap.set(m.shortcut, m));
+        
+        const mergedMacros = Array.from(shortcutMap.values());
+
+        // Update local storage
+        await chrome.storage.sync.set({ macros: mergedMacros });
+        
+        const now = new Date().toISOString();
         await chrome.storage.local.set({
-          [this.LAST_SYNC_KEY]: data.data.lastSync
+          [this.LAST_SYNC_KEY]: now
         });
+
+        return { 
+          success: true, 
+          message: `Downloaded ${data.macros.length} macros from cloud`,
+          macros: mergedMacros,
+          lastSync: now
+        };
       }
 
       return data;
@@ -192,6 +233,20 @@ const CloudSync = {
       console.error('Sync from cloud error:', error);
       return { success: false, error: error.message };
     }
+  },
+
+  // Full sync (push local, then pull cloud)
+  async fullSync() {
+    const uploadResult = await this.syncToCloud();
+    if (!uploadResult.success) {
+      return uploadResult;
+    }
+    
+    return { 
+      success: true, 
+      message: 'Macros synced successfully!',
+      lastSync: uploadResult.lastSync
+    };
   },
 
   // Get last sync time
@@ -212,6 +267,55 @@ const CloudSync = {
     if (enabled) {
       await this.syncToCloud();
     }
+  },
+
+  // Browse shared macros
+  async getSharedMacros(category = 'all', search = '') {
+    try {
+      let url = `${this.API_BASE}/macros/shared?limit=50`;
+      if (category && category !== 'all') {
+        url += `&category=${encodeURIComponent(category)}`;
+      }
+      if (search) {
+        url += `&search=${encodeURIComponent(search)}`;
+      }
+
+      const response = await fetch(url);
+      const data = await response.json();
+      
+      return data;
+    } catch (error) {
+      console.error('Get shared macros error:', error);
+      return { success: false, error: error.message, macros: [] };
+    }
+  },
+
+  // Share a macro to community
+  async shareMacro(macro) {
+    const token = await this.getToken();
+    if (!token) return { success: false, error: 'Not logged in' };
+
+    try {
+      const response = await fetch(`${this.API_BASE}/macros/shared`, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          shortcut: macro.shortcut,
+          expansion: macro.expansion,
+          name: macro.name || macro.shortcut,
+          description: macro.description || '',
+          category: macro.category || 'general'
+        })
+      });
+
+      return await response.json();
+    } catch (error) {
+      console.error('Share macro error:', error);
+      return { success: false, error: error.message };
+    }
   }
 };
 
@@ -224,4 +328,3 @@ if (typeof window !== 'undefined') {
 if (typeof self !== 'undefined') {
   self.CloudSync = CloudSync;
 }
-

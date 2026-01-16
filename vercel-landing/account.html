@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account | Fountain - Macro Assistant</title>
+    <meta name="description" content="Manage your Fountain account, synced macros, and shared macros.">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 4L20 12L16 20L12 12L16 4Z' fill='%230066FF'/%3E%3Cpath d='M12 12L8 16L12 20L16 16L12 12Z' fill='%2300B8FF'/%3E%3Cpath d='M20 12L24 16L20 20L16 16L20 12Z' fill='%2300B8FF'/%3E%3Cpath d='M16 20L12 24L16 28L20 24L16 20Z' fill='%230066FF'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        .account-page {
+            min-height: 100vh;
+            padding-top: 80px;
+            background: var(--bg-light);
+        }
+        .account-header {
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            padding: 60px 0;
+            color: white;
+        }
+        .account-header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 700;
+        }
+        .user-details h1 {
+            font-size: 28px;
+            margin-bottom: 4px;
+        }
+        .user-details p {
+            opacity: 0.8;
+        }
+        .account-actions {
+            display: flex;
+            gap: 12px;
+        }
+        .btn-logout {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-logout:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .account-content {
+            padding: 40px 0;
+        }
+        .account-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        .stat-card {
+            background: var(--bg-white);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid var(--border-color);
+        }
+        .stat-card h3 {
+            font-size: 14px;
+            color: var(--text-gray);
+            margin-bottom: 8px;
+        }
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        .account-section {
+            background: var(--bg-white);
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 24px;
+        }
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+        .section-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        .macros-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .macro-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            background: var(--bg-light);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+        .macro-info {
+            flex: 1;
+        }
+        .macro-shortcut {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            color: var(--primary-blue);
+            margin-bottom: 4px;
+        }
+        .macro-expansion {
+            font-size: 13px;
+            color: var(--text-gray);
+            max-width: 400px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-gray);
+        }
+        .empty-state h3 {
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-gray);
+        }
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--primary-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .account-grid {
+                grid-template-columns: 1fr;
+            }
+            .account-header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            .user-info {
+                flex-direction: column;
+            }
+        }
+
+        [data-theme="dark"] .account-section,
+        [data-theme="dark"] .stat-card {
+            background: var(--bg-white);
+        }
+    </style>
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16 4L20 12L16 20L12 12L16 4Z" fill="#0066FF"/>
+                        <path d="M12 12L8 16L12 20L16 16L12 12Z" fill="#00B8FF"/>
+                        <path d="M20 12L24 16L20 20L16 16L20 12Z" fill="#00B8FF"/>
+                        <path d="M16 20L12 24L16 28L20 24L16 20Z" fill="#0066FF"/>
+                    </svg>
+                    <span class="logo-text">Fountain</span>
+                </a>
+                <nav class="nav">
+                    <a href="/#features">Features</a>
+                    <a href="/#download">Download</a>
+                    <a href="/account.html" class="btn-download">My Account</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="account-page">
+        <div class="account-header">
+            <div class="container">
+                <div class="account-header-content">
+                    <div class="user-info">
+                        <div class="user-avatar" id="userAvatar">?</div>
+                        <div class="user-details">
+                            <h1 id="userName">Loading...</h1>
+                            <p id="userEmail">...</p>
+                        </div>
+                    </div>
+                    <div class="account-actions">
+                        <a href="/#download" class="btn-logout">Download Extension</a>
+                        <button class="btn-logout" id="logoutBtn">Sign Out</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="account-content">
+            <div class="container">
+                <div class="account-grid">
+                    <div class="stat-card">
+                        <h3>☁️ Cloud Macros</h3>
+                        <div class="stat-value" id="cloudMacroCount">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>📤 Shared by You</h3>
+                        <div class="stat-value" id="sharedMacroCount">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>📅 Member Since</h3>
+                        <div class="stat-value" id="memberSince">-</div>
+                    </div>
+                </div>
+
+                <div class="account-section">
+                    <div class="section-header">
+                        <h2>☁️ Your Cloud Macros</h2>
+                    </div>
+                    <div id="macrosList" class="macros-list">
+                        <div class="loading">
+                            <div class="loading-spinner"></div>
+                            <p>Loading your macros...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="account-section">
+                    <div class="section-header">
+                        <h2>🔗 How to Sync</h2>
+                    </div>
+                    <div style="color: var(--text-gray); line-height: 1.8;">
+                        <p><strong>To sync your macros from the extension:</strong></p>
+                        <ol style="margin: 16px 0; padding-left: 20px;">
+                            <li>Open the Fountain extension in Chrome</li>
+                            <li>Click the <strong>☁️ Sync</strong> button</li>
+                            <li>Sign in with your account email and password</li>
+                            <li>Your macros will automatically sync!</li>
+                        </ol>
+                        <p>Your macros are securely stored and will sync across all your devices.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '';
+        
+        // Check if logged in
+        const token = localStorage.getItem('fountain_token');
+        const user = JSON.parse(localStorage.getItem('fountain_user') || 'null');
+        
+        if (!token || !user) {
+            window.location.href = '/login.html';
+        }
+        
+        // Display user info
+        document.getElementById('userName').textContent = user?.name || 'User';
+        document.getElementById('userEmail').textContent = user?.email || '';
+        document.getElementById('userAvatar').textContent = (user?.name || user?.email || '?')[0].toUpperCase();
+        
+        // Format member since date
+        if (user?.created_at) {
+            const date = new Date(user.created_at);
+            document.getElementById('memberSince').textContent = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+        }
+        
+        // Load macros
+        async function loadMacros() {
+            try {
+                const response = await fetch(`${API_BASE}/api/macros/sync`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        // Token expired
+                        localStorage.removeItem('fountain_token');
+                        localStorage.removeItem('fountain_user');
+                        window.location.href = '/login.html';
+                        return;
+                    }
+                    throw new Error('Failed to load macros');
+                }
+                
+                const data = await response.json();
+                const macros = data.macros || [];
+                
+                document.getElementById('cloudMacroCount').textContent = macros.length;
+                
+                const listEl = document.getElementById('macrosList');
+                
+                if (macros.length === 0) {
+                    listEl.innerHTML = `
+                        <div class="empty-state">
+                            <h3>No macros synced yet</h3>
+                            <p>Open the Fountain extension and click "Sync" to backup your macros to the cloud.</p>
+                        </div>
+                    `;
+                } else {
+                    listEl.innerHTML = macros.map(macro => `
+                        <div class="macro-item">
+                            <div class="macro-info">
+                                <div class="macro-shortcut">${escapeHtml(macro.shortcut)}</div>
+                                <div class="macro-expansion">${escapeHtml(macro.expansion)}</div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Error loading macros:', error);
+                document.getElementById('macrosList').innerHTML = `
+                    <div class="empty-state">
+                        <h3>Could not load macros</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('fountain_token');
+            localStorage.removeItem('fountain_refresh_token');
+            localStorage.removeItem('fountain_user');
+            window.location.href = '/';
+        });
+        
+        // Load data
+        loadMacros();
+    </script>
+</body>
+</html>
+
