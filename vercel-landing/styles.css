@@ -1499,3 +1499,142 @@ body {
     }
 }
 
+/* ========================================
+   IMPORT/EXPORT SECTION
+   ======================================== */
+
+.import-export-section {
+    margin-top: 40px;
+    padding-top: 40px;
+    border-top: 2px solid var(--border-color);
+}
+
+.import-export-section h3 {
+    font-size: 28px;
+    margin-bottom: 12px;
+    color: var(--text-dark);
+}
+
+.section-intro {
+    color: var(--text-gray);
+    font-size: 16px;
+    margin-bottom: 32px;
+}
+
+.import-export-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+}
+
+.ie-card {
+    background: var(--bg-white);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow);
+}
+
+.ie-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-blue);
+}
+
+.ie-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 24px;
+    background: linear-gradient(135deg, var(--light-blue) 0%, rgba(0, 184, 255, 0.1) 100%);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.ie-icon {
+    font-size: 28px;
+}
+
+.ie-card-header h4 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.ie-card-body {
+    padding: 24px;
+}
+
+.ie-card-body > p {
+    color: var(--text-gray);
+    margin-bottom: 16px;
+    font-size: 14px;
+}
+
+.ie-steps {
+    margin: 0;
+    padding-left: 20px;
+    color: var(--text-dark);
+}
+
+.ie-steps li {
+    margin-bottom: 12px;
+    line-height: 1.6;
+}
+
+.ie-steps li:last-child {
+    margin-bottom: 0;
+}
+
+.ie-formats {
+    margin-top: 8px;
+    padding-left: 20px;
+    list-style: none;
+}
+
+.ie-formats li {
+    margin-bottom: 6px;
+    font-size: 13px;
+    color: var(--text-gray);
+}
+
+.ie-formats code {
+    background: var(--light-blue);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: inherit;
+    color: var(--primary-blue);
+    font-weight: 500;
+}
+
+.ie-note {
+    margin-top: 16px;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%);
+    border-left: 3px solid #10B981;
+    border-radius: 0 8px 8px 0;
+    font-size: 13px;
+    color: var(--text-dark);
+}
+
+.ie-note a {
+    color: var(--primary-blue);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.ie-note a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .import-export-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .import-export-section h3 {
+        font-size: 24px;
+    }
+}
+
