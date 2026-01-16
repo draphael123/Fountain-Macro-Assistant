@@ -27,6 +27,7 @@ node_modules/
 
 # Extension packaging
 *.zip
+!vercel-landing/extension.zip
 *.crx
 *.pem
 
