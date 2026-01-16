@@ -1,0 +1,71 @@
+{
+  "name": "Education & Teaching",
+  "description": "Templates for teachers and educators - feedback, grading, lesson planning, and student communication",
+  "author": "Fountain Team",
+  "version": "1.0.0",
+  "category": "Education",
+  "icon": "🎓",
+  "macros": [
+    {
+      "shortcut": "/feedback+",
+      "expansion": "Great work on this assignment! {input:Specific praise}. Your understanding of {input:Concept} is evident. {cursor}",
+      "tags": ["feedback", "positive"]
+    },
+    {
+      "shortcut": "/feedback-",
+      "expansion": "Thank you for your effort on this assignment. To improve, I'd suggest focusing on {input:Area}. {cursor} Please see me during office hours if you'd like to discuss further.",
+      "tags": ["feedback", "constructive"]
+    },
+    {
+      "shortcut": "/rubric",
+      "expansion": "**Grading Rubric - {input:Assignment}**\n\n| Criteria | Excellent (A) | Good (B) | Satisfactory (C) | Needs Work (D) |\n|----------|---------------|----------|------------------|----------------|\n| {input:Criteria 1} | | | | |\n| {input:Criteria 2} | | | | |\n| {input:Criteria 3} | | | | |\n\n**Total Points:** /100",
+      "tags": ["rubric", "grading"]
+    },
+    {
+      "shortcut": "/lesson",
+      "expansion": "**Lesson Plan**\n**Subject:** {input:Subject}\n**Grade:** {input:Grade}\n**Date:** {date:MMMM DD, YYYY}\n**Duration:** {input:Duration}\n\n**Learning Objectives:**\nStudents will be able to:\n- {cursor}\n\n**Materials Needed:**\n- \n\n**Procedure:**\n1. Opening ({input:time}): \n2. Direct Instruction ({input:time}): \n3. Guided Practice ({input:time}): \n4. Independent Practice ({input:time}): \n5. Closing ({input:time}): \n\n**Assessment:**\n\n**Differentiation:**",
+      "tags": ["lesson plan"]
+    },
+    {
+      "shortcut": "/syllabus",
+      "expansion": "**{input:Course Name}**\n**Instructor:** {input:Name}\n**Email:** {input:Email}\n**Office Hours:** {input:Hours}\n\n**Course Description:**\n{input:Description}\n\n**Learning Outcomes:**\n1. {cursor}\n\n**Required Materials:**\n- \n\n**Grading:**\n- Participation: %\n- Assignments: %\n- Exams: %\n- Final Project: %\n\n**Course Schedule:**\n| Week | Topic | Readings | Assignments |\n|------|-------|----------|-------------|\n| 1 | | | |",
+      "tags": ["syllabus"]
+    },
+    {
+      "shortcut": "/late",
+      "expansion": "Hi {input:Student Name},\n\nI noticed your {input:Assignment} hasn't been submitted yet. The deadline was {input:Date}.\n\nPer the syllabus, late work is accepted with a {input:Penalty} penalty. Please submit as soon as possible.\n\nIf you're experiencing difficulties, please reach out so we can discuss options.\n\nBest,\n{input:Your Name}",
+      "tags": ["late work", "email"]
+    },
+    {
+      "shortcut": "/parent",
+      "expansion": "Dear {input:Parent Name},\n\nI'm reaching out regarding {input:Student Name}'s progress in {input:Class}.\n\n{input:Positive observation}\n\n{input:Area of concern if any}\n\nI'd love to discuss this further. Would you be available for a {input:call/meeting} on {input:Date/Time}?\n\nBest regards,\n{input:Your Name}",
+      "tags": ["parent", "communication"]
+    },
+    {
+      "shortcut": "/rec",
+      "expansion": "To Whom It May Concern,\n\nI am pleased to recommend {input:Student Name} for {input:Program/Position}.\n\nI have known {input:Student Name} for {input:Duration} as their {input:Your Role} in {input:Class/Context}.\n\n{input:Student Name} has demonstrated {input:Qualities}. {cursor}\n\nI highly recommend {input:Student Name} without reservation.\n\nSincerely,\n{input:Your Name}\n{input:Your Title}",
+      "tags": ["recommendation"]
+    },
+    {
+      "shortcut": "/announce",
+      "expansion": "📢 **Class Announcement**\n\n**{input:Title}**\n\n{input:Details}\n\n**Important Dates:**\n- {cursor}\n\nQuestions? Email me or ask in class!",
+      "tags": ["announcement"]
+    },
+    {
+      "shortcut": "/absent",
+      "expansion": "Hi {input:Student Name},\n\nI noticed you were absent on {input:Date}. Here's what you missed:\n\n**Topics Covered:**\n- {cursor}\n\n**Homework:**\n\n**Upcoming:**\n\nPlease see me if you have questions about catching up.\n\nBest,\n{input:Your Name}",
+      "tags": ["absent", "makeup"]
+    },
+    {
+      "shortcut": "/directions",
+      "expansion": "**Assignment: {input:Title}**\n\n**Due:** {input:Date}\n**Points:** {input:Points}\n\n**Instructions:**\n1. {cursor}\n2. \n3. \n\n**Requirements:**\n- \n\n**Submission:**\nSubmit via {input:Platform} by {input:Time}.\n\n**Questions?** Ask in class or email me!",
+      "tags": ["assignment", "instructions"]
+    },
+    {
+      "shortcut": "/grade",
+      "expansion": "**{input:Assignment} - Grade Report**\n\nScore: {input:Score}/{input:Total} ({input:Percentage}%)\n\n**Strengths:**\n- {cursor}\n\n**Areas for Improvement:**\n- \n\n**Comments:**\n",
+      "tags": ["grade", "report"]
+    }
+  ]
+}
+

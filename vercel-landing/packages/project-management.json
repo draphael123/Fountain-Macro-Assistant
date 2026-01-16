@@ -1,0 +1,71 @@
+{
+  "name": "Project Management",
+  "description": "Templates for project managers - status updates, meeting notes, task tracking, and team communication",
+  "author": "Fountain Team",
+  "version": "1.0.0",
+  "category": "Business",
+  "icon": "📊",
+  "macros": [
+    {
+      "shortcut": "/status",
+      "expansion": "**Project Status Update**\n**Project:** {input:Project Name}\n**Date:** {date:MMMM DD, YYYY}\n**Status:** {input:🟢 On Track / 🟡 At Risk / 🔴 Blocked}\n\n**Completed This Week:**\n- {cursor}\n\n**In Progress:**\n- \n\n**Planned Next Week:**\n- \n\n**Blockers/Risks:**\n- ",
+      "tags": ["status", "update"]
+    },
+    {
+      "shortcut": "/standup",
+      "expansion": "**Daily Standup - {date:MMMM DD, YYYY}**\n\n**Yesterday:**\n- {cursor}\n\n**Today:**\n- \n\n**Blockers:**\n- None",
+      "tags": ["standup", "daily"]
+    },
+    {
+      "shortcut": "/meeting",
+      "expansion": "**Meeting Notes**\n**Date:** {date:MMMM DD, YYYY}\n**Attendees:** {input:Names}\n**Topic:** {input:Topic}\n\n**Agenda:**\n1. {cursor}\n\n**Discussion:**\n\n\n**Action Items:**\n- [ ] \n\n**Next Meeting:** {input:Date}",
+      "tags": ["meeting", "notes"]
+    },
+    {
+      "shortcut": "/retro",
+      "expansion": "**Sprint Retrospective**\n**Sprint:** {input:Sprint Number}\n**Date:** {date:MMMM DD, YYYY}\n\n**What went well? ✅**\n- {cursor}\n\n**What could be improved? 🔧**\n- \n\n**Action items for next sprint:**\n- [ ] ",
+      "tags": ["retrospective", "agile"]
+    },
+    {
+      "shortcut": "/kickoff",
+      "expansion": "**Project Kickoff**\n**Project:** {input:Project Name}\n**Date:** {date:MMMM DD, YYYY}\n\n**Objective:**\n{input:Objective}\n\n**Scope:**\n- {cursor}\n\n**Timeline:**\n- Start: {input:Start Date}\n- End: {input:End Date}\n\n**Team:**\n- PM: \n- Lead: \n- Members: \n\n**Success Criteria:**\n- \n\n**Risks:**\n- ",
+      "tags": ["kickoff", "planning"]
+    },
+    {
+      "shortcut": "/risk",
+      "expansion": "**Risk Identified**\n\n**Risk:** {input:Description}\n**Probability:** {input:High/Medium/Low}\n**Impact:** {input:High/Medium/Low}\n**Mitigation:** {input:Mitigation plan}\n**Owner:** {input:Name}",
+      "tags": ["risk", "management"]
+    },
+    {
+      "shortcut": "/blocker",
+      "expansion": "🚨 **Blocker Alert**\n\n**Issue:** {input:Description}\n**Impact:** {input:Impact}\n**Blocked Tasks:** {input:Tasks}\n**Help Needed:** {input:What's needed}\n**Owner:** {input:Name}",
+      "tags": ["blocker", "alert"]
+    },
+    {
+      "shortcut": "/task",
+      "expansion": "**Task:** {input:Task Name}\n**Assignee:** {input:Name}\n**Due:** {input:Date}\n**Priority:** {input:High/Medium/Low}\n**Description:**\n{cursor}\n\n**Acceptance Criteria:**\n- [ ] ",
+      "tags": ["task"]
+    },
+    {
+      "shortcut": "/epic",
+      "expansion": "**Epic:** {input:Epic Name}\n\n**Description:**\n{input:Description}\n\n**User Stories:**\n- [ ] {cursor}\n\n**Success Metrics:**\n- \n\n**Dependencies:**\n- ",
+      "tags": ["epic", "agile"]
+    },
+    {
+      "shortcut": "/userstory",
+      "expansion": "**As a** {input:user type}\n**I want** {input:goal}\n**So that** {input:benefit}\n\n**Acceptance Criteria:**\n- [ ] {cursor}",
+      "tags": ["user story", "agile"]
+    },
+    {
+      "shortcut": "/decision",
+      "expansion": "**Decision Log**\n**Date:** {date:MMMM DD, YYYY}\n**Decision:** {input:Decision}\n**Context:** {input:Why this decision was needed}\n**Options Considered:**\n1. {cursor}\n2. \n**Rationale:** {input:Why this option}\n**Decided By:** {input:Names}",
+      "tags": ["decision", "log"]
+    },
+    {
+      "shortcut": "/weekly",
+      "expansion": "**Weekly Update - Week of {date:MMMM DD, YYYY}**\n\n📊 **Metrics:**\n- Velocity: {input:points}\n- Completion: {input:percentage}%\n\n✅ **Highlights:**\n- {cursor}\n\n⚠️ **Concerns:**\n- \n\n📅 **Next Week Focus:**\n- ",
+      "tags": ["weekly", "update"]
+    }
+  ]
+}
+

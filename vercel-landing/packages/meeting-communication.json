@@ -1,0 +1,71 @@
+{
+  "name": "Meeting & Communication",
+  "description": "Meeting scheduling, agendas, follow-ups, and professional communication templates",
+  "author": "Fountain Team",
+  "version": "1.0.0",
+  "category": "Productivity",
+  "icon": "📅",
+  "macros": [
+    {
+      "shortcut": "/schedule",
+      "expansion": "Hi {input:Name},\n\nI'd like to schedule a meeting to discuss {input:Topic}.\n\n**Proposed times:**\n- {input:Option 1}\n- {input:Option 2}\n- {input:Option 3}\n\n**Duration:** {input:Duration}\n**Location:** {input:Location/Video Link}\n\nLet me know what works best!\n\nBest regards",
+      "tags": ["scheduling"]
+    },
+    {
+      "shortcut": "/agenda",
+      "expansion": "**Meeting Agenda**\n\n**Topic:** {input:Topic}\n**Date:** {input:Date}\n**Time:** {input:Time}\n**Attendees:** {input:Names}\n\n---\n\n**Agenda Items:**\n\n1. {cursor} ({input:time})\n2. ({input:time})\n3. ({input:time})\n\n**Action Items from Last Meeting:**\n- [ ] \n\n**Notes:**",
+      "tags": ["agenda"]
+    },
+    {
+      "shortcut": "/recap",
+      "expansion": "Hi all,\n\nThanks for joining today's meeting! Here's a quick recap:\n\n**Topic:** {input:Topic}\n**Date:** {date:MMMM DD, YYYY}\n**Attendees:** {input:Names}\n\n**Key Discussion Points:**\n- {cursor}\n\n**Decisions Made:**\n- \n\n**Action Items:**\n- [ ] {input:Task} - {input:Owner} - Due: {input:Date}\n\n**Next Meeting:** {input:Date/Time}\n\nLet me know if I missed anything!\n\nBest regards",
+      "tags": ["recap", "notes"]
+    },
+    {
+      "shortcut": "/cancel",
+      "expansion": "Hi {input:Name},\n\nI need to cancel our meeting scheduled for {input:Date/Time}.\n\n**Reason:** {input:Reason}\n\nI apologize for any inconvenience. Would any of these alternative times work?\n- {input:Option 1}\n- {input:Option 2}\n\nLet me know what works best.\n\nBest regards",
+      "tags": ["cancel", "reschedule"]
+    },
+    {
+      "shortcut": "/confirm",
+      "expansion": "Hi {input:Name},\n\nJust confirming our meeting:\n\n📅 **Date:** {input:Date}\n🕐 **Time:** {input:Time}\n📍 **Location:** {input:Location}\n📋 **Topic:** {input:Topic}\n\nLooking forward to it!\n\nBest regards",
+      "tags": ["confirmation"]
+    },
+    {
+      "shortcut": "/intro",
+      "expansion": "Hi {input:Person 1} and {input:Person 2},\n\nI wanted to introduce you two!\n\n**{input:Person 1}** - {input:Brief description of Person 1}\n\n**{input:Person 2}** - {input:Brief description of Person 2}\n\nI thought you should connect because {input:Reason}.\n\nI'll let you take it from here!\n\nBest regards",
+      "tags": ["introduction"]
+    },
+    {
+      "shortcut": "/decline",
+      "expansion": "Hi {input:Name},\n\nThank you for the invitation to {input:Event/Meeting}.\n\nUnfortunately, I won't be able to attend due to {input:Reason}.\n\n{input:Alternative if any}\n\nI appreciate you thinking of me!\n\nBest regards",
+      "tags": ["decline"]
+    },
+    {
+      "shortcut": "/1on1",
+      "expansion": "**1:1 Meeting Notes**\n\n**Date:** {date:MMMM DD, YYYY}\n**With:** {input:Name}\n\n**Check-in:**\n- How are you doing? (1-10)\n- Workload: \n\n**Wins Since Last Meeting:**\n- {cursor}\n\n**Challenges:**\n- \n\n**Topics to Discuss:**\n- \n\n**Action Items:**\n- [ ] \n\n**Next 1:1:** {input:Date}",
+      "tags": ["1on1", "notes"]
+    },
+    {
+      "shortcut": "/async",
+      "expansion": "Hi team,\n\nInstead of a meeting, let's handle this async:\n\n**Topic:** {input:Topic}\n\n**Context:**\n{input:Context}\n\n**Questions/Input Needed:**\n1. {cursor}\n\n**Please respond by:** {input:Deadline}\n\nLet me know if you'd prefer to discuss live instead.\n\nThanks!",
+      "tags": ["async", "communication"]
+    },
+    {
+      "shortcut": "/update",
+      "expansion": "Hi {input:Name},\n\nQuick update on {input:Topic}:\n\n**Status:** {input:Status}\n\n**Progress:**\n- ✅ {input:Completed}\n- 🔄 {input:In Progress}\n- ⏳ {input:Upcoming}\n\n**Blockers:** {input:Blockers or None}\n\n**Next Steps:** {input:Next Steps}\n\nQuestions? Let me know!\n\nBest regards",
+      "tags": ["update", "status"]
+    },
+    {
+      "shortcut": "/eod",
+      "expansion": "**End of Day Update - {date:MMMM DD, YYYY}**\n\n**Completed Today:**\n- ✅ {cursor}\n\n**In Progress:**\n- 🔄 \n\n**Blockers:**\n- \n\n**Tomorrow's Priorities:**\n- \n\nHave a great evening!",
+      "tags": ["eod", "daily"]
+    },
+    {
+      "shortcut": "/ooo",
+      "expansion": "Hi,\n\nThank you for your email. I'm currently out of the office from {input:Start Date} to {input:End Date} with limited access to email.\n\nFor urgent matters, please contact {input:Contact Name} at {input:Email/Phone}.\n\nI'll respond to your email when I return.\n\nBest regards,\n{input:Your Name}",
+      "tags": ["out of office", "auto-reply"]
+    }
+  ]
+}
+

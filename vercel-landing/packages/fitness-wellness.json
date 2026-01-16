@@ -1,0 +1,71 @@
+{
+  "name": "Fitness & Wellness",
+  "description": "Templates for fitness coaches, personal trainers, and wellness professionals",
+  "author": "Fountain Team",
+  "version": "1.0.0",
+  "category": "Health & Fitness",
+  "icon": "💪",
+  "macros": [
+    {
+      "shortcut": "/workout",
+      "expansion": "**{input:Workout Name}**\n📅 {date:dddd, MMMM DD}\n⏱️ Duration: {input:Duration}\n🔥 Focus: {input:Focus Area}\n\n**Warm-up (5-10 min)**\n- {cursor}\n\n**Main Workout**\n| Exercise | Sets | Reps | Rest |\n|----------|------|------|------|\n| | | | |\n\n**Cool-down (5-10 min)**\n- \n\n💡 **Tips:**",
+      "tags": ["workout", "program"]
+    },
+    {
+      "shortcut": "/meal",
+      "expansion": "**Meal Plan - {input:Day/Week}**\n\n🍳 **Breakfast**\n- {cursor}\n- Calories: \n- Protein: g\n\n🥗 **Lunch**\n- \n- Calories: \n- Protein: g\n\n🍽️ **Dinner**\n- \n- Calories: \n- Protein: g\n\n🍎 **Snacks**\n- \n\n**Daily Totals:**\n- Calories: \n- Protein: g\n- Carbs: g\n- Fat: g",
+      "tags": ["meal plan", "nutrition"]
+    },
+    {
+      "shortcut": "/checkin",
+      "expansion": "Hi {input:Name}! 👋\n\nTime for your weekly check-in!\n\n**Please share:**\n1. How did workouts go this week? (1-10)\n2. How's your nutrition been? (1-10)\n3. Sleep quality? (1-10)\n4. Stress level? (1-10)\n5. Current weight (if tracking):\n6. Wins this week:\n7. Challenges:\n\nLooking forward to hearing from you! 💪",
+      "tags": ["check-in"]
+    },
+    {
+      "shortcut": "/progress",
+      "expansion": "**Progress Update - {input:Client Name}**\n**Date:** {date:MMMM DD, YYYY}\n\n**Measurements:**\n- Weight: {input:Weight}\n- Change: {input:Change}\n\n**Fitness Progress:**\n- {cursor}\n\n**Goals Review:**\n- \n\n**Next Steps:**\n- \n\nGreat work! Keep it up! 🎯",
+      "tags": ["progress", "tracking"]
+    },
+    {
+      "shortcut": "/welcome",
+      "expansion": "Hi {input:Name}! 🎉\n\nWelcome to {input:Program/Gym}! I'm so excited to work with you!\n\n**Getting Started:**\n1. Complete your intake form\n2. Schedule your assessment\n3. Review your initial program\n\n**Your Goals:**\n{input:Goals}\n\n**Our First Session:** {input:Date/Time}\n\nQuestions? I'm here for you!\n\nLet's crush it! 💪",
+      "tags": ["welcome", "onboarding"]
+    },
+    {
+      "shortcut": "/motivation",
+      "expansion": "Hey {input:Name}! 💪\n\nJust checking in to remind you how far you've come!\n\n{input:Specific accomplishment or encouragement}\n\nRemember: Progress, not perfection. Every workout counts, every healthy meal matters.\n\nYou've got this! 🔥",
+      "tags": ["motivation"]
+    },
+    {
+      "shortcut": "/reschedule",
+      "expansion": "Hi {input:Name},\n\nNo problem! Let's reschedule your session.\n\n**Original:** {input:Original Date/Time}\n\n**Available times:**\n- {input:Option 1}\n- {input:Option 2}\n- {input:Option 3}\n\nLet me know what works!\n\nSee you soon! 💪",
+      "tags": ["reschedule"]
+    },
+    {
+      "shortcut": "/reminder",
+      "expansion": "Hey {input:Name}! 📅\n\nReminder: You have a session tomorrow!\n\n**When:** {input:Date/Time}\n**Where:** {input:Location}\n**What to bring:** {input:Items}\n\n**Focus:** {input:Today's Focus}\n\nSee you there! 🏋️",
+      "tags": ["reminder"]
+    },
+    {
+      "shortcut": "/exercise",
+      "expansion": "**{input:Exercise Name}**\n\n**Target Muscles:** {input:Muscles}\n**Equipment:** {input:Equipment}\n\n**Instructions:**\n1. {cursor}\n2. \n3. \n\n**Tips:**\n- \n\n**Common Mistakes:**\n- \n\n**Modifications:**\n- Easier: \n- Harder: ",
+      "tags": ["exercise", "instruction"]
+    },
+    {
+      "shortcut": "/goals",
+      "expansion": "**Goal Setting - {input:Name}**\n\n**Primary Goal:** {input:Goal}\n**Timeline:** {input:Timeframe}\n\n**Why this matters to you:**\n{input:Why}\n\n**Milestones:**\n- Week 4: {cursor}\n- Week 8: \n- Week 12: \n\n**Action Steps:**\n1. \n2. \n3. \n\n**Accountability:**",
+      "tags": ["goals"]
+    },
+    {
+      "shortcut": "/injury",
+      "expansion": "Hi {input:Name},\n\nSorry to hear about your {input:Injury}. Your health comes first!\n\n**Recommendations:**\n- Rest the affected area\n- Apply {input:ice/heat}\n- {input:Other recommendations}\n\n**Modified Workouts:**\nWe can focus on {input:Alternative areas} while you recover.\n\nIf symptoms persist, please see a medical professional.\n\nTake care! 🙏",
+      "tags": ["injury", "modification"]
+    },
+    {
+      "shortcut": "/results",
+      "expansion": "🎉 **{input:Name}'s Results!**\n\n**{input:Timeframe} Transformation:**\n\n📊 **Stats:**\n- Starting: {input:Starting}\n- Current: {input:Current}\n- Change: {input:Change}\n\n💪 **Achievements:**\n- {cursor}\n\n**Client Says:**\n\"{input:Testimonial}\"\n\nAmazing work! 🏆",
+      "tags": ["results", "transformation"]
+    }
+  ]
+}
+

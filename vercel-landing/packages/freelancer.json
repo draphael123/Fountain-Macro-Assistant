@@ -1,0 +1,71 @@
+{
+  "name": "Freelancer Essentials",
+  "description": "Proposals, contracts, client communication, and business templates for freelancers",
+  "author": "Fountain Team",
+  "version": "1.0.0",
+  "category": "Business",
+  "icon": "🎯",
+  "macros": [
+    {
+      "shortcut": "/proposal",
+      "expansion": "**Project Proposal**\n\n**Prepared for:** {input:Client Name}\n**Date:** {date:MMMM DD, YYYY}\n**Valid for:** 30 days\n\n---\n\n**Project Overview**\n{input:Brief Description}\n\n**Objectives**\n- {cursor}\n\n**Scope of Work**\n- \n\n**Timeline**\n- Start: {input:Start Date}\n- Completion: {input:End Date}\n\n**Investment**\n${input:Price}\n\n**Payment Terms**\n- 50% upfront\n- 50% upon completion\n\n**Next Steps**\nReply to accept this proposal, and I'll send over the contract.\n\nLooking forward to working together!\n\nBest regards,\n{input:Your Name}",
+      "tags": ["proposal"]
+    },
+    {
+      "shortcut": "/scope",
+      "expansion": "Hi {input:Name},\n\nThanks for reaching out about {input:Project}!\n\nTo provide an accurate quote, I'd love to learn more:\n\n1. What's the goal/purpose?\n2. Target audience?\n3. Timeline/deadline?\n4. Budget range?\n5. Examples you like?\n\nOnce I understand your needs, I'll send a detailed proposal.\n\nLooking forward to your response!\n\nBest,\n{input:Your Name}",
+      "tags": ["discovery", "scoping"]
+    },
+    {
+      "shortcut": "/rate",
+      "expansion": "Hi {input:Name},\n\nThanks for your interest! Here are my rates:\n\n**Hourly:** ${input:Hourly}/hour\n**Project-based:** Starting at ${input:Project}\n**Retainer:** ${input:Retainer}/month for {input:Hours} hours\n\nRates depend on scope and complexity. I'd love to discuss your specific needs to provide an accurate quote.\n\nWhen works for a quick call?\n\nBest,\n{input:Your Name}",
+      "tags": ["rates", "pricing"]
+    },
+    {
+      "shortcut": "/revision",
+      "expansion": "Hi {input:Name},\n\nThanks for your feedback on {input:Deliverable}!\n\n**Requested Changes:**\n{input:Changes}\n\n**Timeline:** I'll have the revisions ready by {input:Date}.\n\nNote: This project includes {input:Number} revision rounds. Additional revisions are ${input:Rate}/hour.\n\nLet me know if I've captured everything correctly!\n\nBest,\n{input:Your Name}",
+      "tags": ["revision"]
+    },
+    {
+      "shortcut": "/delivered",
+      "expansion": "Hi {input:Name}! 🎉\n\nGreat news - {input:Deliverable} is complete!\n\n**Included:**\n{input:What's included}\n\n**Access:** {input:Link/Attachment}\n\n**Next Steps:**\n{input:Next steps}\n\nPlease review and let me know if you have any questions or need adjustments.\n\nThanks for a great project!\n\nBest,\n{input:Your Name}",
+      "tags": ["delivery"]
+    },
+    {
+      "shortcut": "/unavail",
+      "expansion": "Hi {input:Name},\n\nThank you so much for thinking of me for {input:Project}!\n\nUnfortunately, I'm fully booked until {input:Date}. I'd love to work together when my schedule opens up.\n\n**Options:**\n1. I can add you to my waitlist\n2. Schedule to start in {input:Timeframe}\n3. I can recommend a colleague\n\nLet me know what works best!\n\nBest,\n{input:Your Name}",
+      "tags": ["unavailable", "booked"]
+    },
+    {
+      "shortcut": "/late",
+      "expansion": "Hi {input:Name},\n\nI wanted to give you a heads up - {input:Deliverable} will be delayed by {input:Time}.\n\n**Reason:** {input:Reason}\n**New Deadline:** {input:New Date}\n\nI apologize for any inconvenience. I want to ensure the quality meets our standards.\n\nPlease let me know if this timeline works or if we need to discuss alternatives.\n\nBest,\n{input:Your Name}",
+      "tags": ["delay", "communication"]
+    },
+    {
+      "shortcut": "/testimonial",
+      "expansion": "Hi {input:Name}!\n\nI really enjoyed working on {input:Project} with you!\n\nIf you're happy with the results, would you mind sharing a brief testimonial? It helps potential clients understand the value I provide.\n\nA few sentences about:\n- What we worked on\n- Your experience\n- Results achieved\n\nI'd really appreciate it! 🙏\n\nBest,\n{input:Your Name}",
+      "tags": ["testimonial", "request"]
+    },
+    {
+      "shortcut": "/referral",
+      "expansion": "Hi {input:Name}!\n\nI hope {input:Project} is serving you well!\n\nI'm currently taking on new clients, and referrals from great clients like you mean everything to me.\n\nIf you know anyone who could use {input:Your Service}, I'd be honored if you'd pass along my info.\n\nAs a thank you, I offer {input:Referral Bonus} for successful referrals.\n\nThanks so much!\n\n{input:Your Name}",
+      "tags": ["referral"]
+    },
+    {
+      "shortcut": "/contract",
+      "expansion": "Hi {input:Name},\n\nExcited to get started! Please find the contract attached.\n\n**Key Terms:**\n- Project: {input:Project}\n- Fee: ${input:Price}\n- Timeline: {input:Timeline}\n- Payment: {input:Payment Terms}\n\n**To proceed:**\n1. Review the contract\n2. Sign digitally\n3. Submit deposit of ${input:Deposit}\n\nQuestions? Let's hop on a call.\n\nLooking forward to working together!\n\n{input:Your Name}",
+      "tags": ["contract"]
+    },
+    {
+      "shortcut": "/offboard",
+      "expansion": "Hi {input:Name},\n\nIt's been wonderful working with you on {input:Project}! 🎉\n\n**Project Summary:**\n- Completed: {input:Deliverables}\n- Final files: {input:Location}\n\n**Handoff:**\n{input:Handoff details}\n\n**Support:**\nI offer {input:Support Terms} for any questions.\n\nThank you for trusting me with this project. I hope we can work together again!\n\nBest wishes,\n{input:Your Name}",
+      "tags": ["offboarding", "closing"]
+    },
+    {
+      "shortcut": "/follow",
+      "expansion": "Hi {input:Name},\n\nJust following up on my proposal for {input:Project} from {input:Date}.\n\nI know things get busy! Did you have any questions I could answer?\n\nI'm happy to:\n- Jump on a quick call\n- Adjust the scope\n- Discuss timeline\n\nLooking forward to hearing from you!\n\nBest,\n{input:Your Name}",
+      "tags": ["followup"]
+    }
+  ]
+}
+

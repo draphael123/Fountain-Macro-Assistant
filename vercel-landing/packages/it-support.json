@@ -1,0 +1,76 @@
+{
+  "name": "IT & Tech Support",
+  "description": "Troubleshooting templates, ticket responses, and technical documentation for IT professionals",
+  "author": "Fountain Team",
+  "version": "1.0.0",
+  "category": "Technology",
+  "icon": "🖥️",
+  "macros": [
+    {
+      "shortcut": "/ticket",
+      "expansion": "**Ticket #{counter:ticket}**\n**Created:** {date:YYYY-MM-DD HH:mm}\n**Priority:** {input:High/Medium/Low}\n**Category:** {input:Category}\n\n**Issue:**\n{input:Description}\n\n**Steps to Reproduce:**\n1. {cursor}\n\n**Expected Behavior:**\n\n**Actual Behavior:**\n\n**Environment:**\n- OS: \n- Browser: \n- Version: ",
+      "tags": ["ticket", "support"]
+    },
+    {
+      "shortcut": "/ack",
+      "expansion": "Hi {input:Name},\n\nThank you for contacting IT Support. Your ticket #{input:Number} has been received and assigned to our team.\n\n**Priority:** {input:Priority}\n**Estimated Response:** {input:Timeframe}\n\nWe'll be in touch shortly. For urgent issues, call {input:Phone}.\n\nBest regards,\nIT Support",
+      "tags": ["acknowledgment"]
+    },
+    {
+      "shortcut": "/resolved",
+      "expansion": "Hi {input:Name},\n\nGood news! Your ticket #{input:Number} has been resolved.\n\n**Solution:**\n{input:Solution}\n\nPlease verify the issue is fixed. If you experience any further problems, reply to this ticket or create a new one.\n\nThank you for your patience!\n\nBest regards,\nIT Support",
+      "tags": ["resolution"]
+    },
+    {
+      "shortcut": "/restart",
+      "expansion": "Please try the following:\n\n1. Save all your work\n2. Close all applications\n3. Restart your computer\n4. Wait for it to fully boot up\n5. Try again\n\nIf the issue persists after restarting, please let us know.",
+      "tags": ["troubleshooting"]
+    },
+    {
+      "shortcut": "/cache",
+      "expansion": "Please try clearing your browser cache:\n\n**Chrome:**\n1. Press Ctrl+Shift+Delete (Cmd+Shift+Delete on Mac)\n2. Select \"All time\"\n3. Check \"Cached images and files\"\n4. Click \"Clear data\"\n5. Restart your browser\n\n**Firefox:**\n1. Press Ctrl+Shift+Delete\n2. Select \"Everything\"\n3. Check \"Cache\"\n4. Click \"Clear Now\"",
+      "tags": ["browser", "cache"]
+    },
+    {
+      "shortcut": "/password",
+      "expansion": "To reset your password:\n\n1. Go to {input:URL}\n2. Click \"Forgot Password\"\n3. Enter your email address\n4. Check your inbox (and spam folder)\n5. Click the reset link\n6. Create a new password\n\n**Password Requirements:**\n- Minimum 8 characters\n- At least one uppercase letter\n- At least one number\n- At least one special character",
+      "tags": ["password", "reset"]
+    },
+    {
+      "shortcut": "/vpn",
+      "expansion": "To connect to VPN:\n\n1. Open {input:VPN Client}\n2. Select {input:Server/Profile}\n3. Enter your credentials\n4. Click Connect\n5. Wait for \"Connected\" status\n\n**Troubleshooting:**\n- Ensure you're connected to the internet\n- Try a different server\n- Restart the VPN client\n- Contact IT if issues persist",
+      "tags": ["vpn", "connection"]
+    },
+    {
+      "shortcut": "/outage",
+      "expansion": "🚨 **Service Outage Notification**\n\n**Affected Service:** {input:Service}\n**Status:** {input:Investigating/Identified/Monitoring/Resolved}\n**Start Time:** {input:Time}\n\n**Impact:**\n{input:Description}\n\n**Current Status:**\n{cursor}\n\n**Next Update:** {input:Time}\n\nWe apologize for the inconvenience.",
+      "tags": ["outage", "notification"]
+    },
+    {
+      "shortcut": "/maintenance",
+      "expansion": "📅 **Scheduled Maintenance**\n\n**Date:** {input:Date}\n**Time:** {input:Start} - {input:End}\n**Affected Systems:** {input:Systems}\n\n**What to Expect:**\n{input:Impact}\n\n**Action Required:**\nPlease save your work and log out before {input:Start Time}.\n\nQuestions? Contact IT Support.",
+      "tags": ["maintenance", "notification"]
+    },
+    {
+      "shortcut": "/access",
+      "expansion": "Hi {input:Name},\n\nYour access request has been {input:approved/denied}.\n\n**System:** {input:System}\n**Access Level:** {input:Level}\n**Effective:** {input:Date}\n\n{cursor}\n\nBest regards,\nIT Support",
+      "tags": ["access", "request"]
+    },
+    {
+      "shortcut": "/setup",
+      "expansion": "**New Employee IT Setup Checklist**\n\n**Employee:** {input:Name}\n**Start Date:** {input:Date}\n**Department:** {input:Department}\n**Manager:** {input:Manager}\n\n**Hardware:**\n- [ ] Laptop/Desktop\n- [ ] Monitor\n- [ ] Keyboard/Mouse\n- [ ] Headset\n\n**Accounts:**\n- [ ] Email\n- [ ] AD/Directory\n- [ ] VPN\n- [ ] {input:Other systems}\n\n**Completed By:** ___________\n**Date:** ___________",
+      "tags": ["onboarding", "setup"]
+    },
+    {
+      "shortcut": "/escalate",
+      "expansion": "**Escalation Notice**\n\n**Ticket:** #{input:Number}\n**Escalated To:** {input:Team/Person}\n**Reason:** {input:Reason}\n**Priority:** {input:Priority}\n\n**Summary:**\n{input:Summary}\n\n**Actions Taken:**\n{cursor}\n\n**Requested Action:**\n",
+      "tags": ["escalation"]
+    },
+    {
+      "shortcut": "/kb",
+      "expansion": "# {input:Article Title}\n\n**Last Updated:** {date:MMMM DD, YYYY}\n**Category:** {input:Category}\n\n## Problem\n{input:Description}\n\n## Solution\n1. {cursor}\n2. \n3. \n\n## Additional Notes\n\n## Related Articles\n- ",
+      "tags": ["knowledge base", "documentation"]
+    }
+  ]
+}
+
