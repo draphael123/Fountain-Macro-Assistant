@@ -8,26 +8,22 @@
       "includeFiles": "extension.zip"
     }
   },
-  "routes": [
+  "headers": [
     {
-      "src": "/api/download-zip",
-      "dest": "/api/download-zip.js"
+      "source": "/extension.zip",
+      "headers": [
+        { "key": "Content-Type", "value": "application/zip" },
+        { "key": "Content-Disposition", "value": "attachment; filename=\"fountain-extension.zip\"" }
+      ]
     },
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
-    },
-    {
-      "src": "/packages/(.*)\\.json",
-      "dest": "/packages/$1.json"
-    },
-    {
-      "src": "/(.*\\.(css|js|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot|json|zip|html))",
-      "dest": "/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "source": "/packages/(.*)",
+      "headers": [
+        { "key": "Content-Type", "value": "application/json" }
+      ]
     }
+  ],
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/$1" }
   ]
 }
