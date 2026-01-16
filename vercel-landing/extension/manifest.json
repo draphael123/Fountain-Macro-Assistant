@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Fountain - Macro Assistant",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "💧 Type faster with smart text expansion! Create shortcuts, use variables like {cursor}, {input:Name}, {date:FORMAT}, regex patterns, JavaScript snippets, and more.",
   "permissions": [
     "storage",
