@@ -3,12 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fountain - Macro Assistant | Chrome Extension</title>
-    <meta name="description" content="Fountain - Macro Assistant: Create text shortcuts that expand into longer snippets. Type faster with custom macros, aliases, and conditional expansions.">
+    <title>Fountain - Macro Assistant | Free Chrome Text Expansion Extension</title>
+    <meta name="description" content="Type faster with Fountain - the free Chrome extension for text expansion. Create shortcuts like /sig that instantly expand into full messages. Perfect for support, sales, developers & more.">
+    <meta name="keywords" content="text expansion, macro, Chrome extension, productivity, text shortcuts, auto-complete, typing assistant, customer support, developer tools">
+    <meta name="author" content="Fountain">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Fountain - Macro Assistant | Type Faster with Smart Text Expansion">
+    <meta property="og:description" content="Free Chrome extension that turns shortcuts into full messages. Create /sig and watch it expand into your signature. Used by support teams, developers, and professionals.">
+    <meta property="og:url" content="https://fountain-macro-assistant.vercel.app">
+    <meta property="og:site_name" content="Fountain Macro Assistant">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Fountain - Macro Assistant">
+    <meta name="twitter:description" content="Type faster with intelligent text expansion. Free Chrome extension.">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://fountain-macro-assistant.vercel.app">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Fountain - Macro Assistant",
+        "description": "Chrome extension for text expansion and macro shortcuts",
+        "applicationCategory": "BrowserApplication",
+        "operatingSystem": "Chrome",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "5",
+            "ratingCount": "1"
+        }
+    }
+    </script>
+    
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Header -->
@@ -26,9 +67,10 @@
                     <span class="logo-text">Fountain</span>
                 </div>
                 <nav class="nav">
-                    <a href="#signature-demo">Signatures</a>
-                    <a href="#video-demo">Video</a>
                     <a href="#features">Features</a>
+                    <a href="#use-cases">Use Cases</a>
+                    <a href="#packages">Packages</a>
+                    <a href="#pricing">Pricing</a>
                     <a href="#guide">Guide</a>
                     <a href="#download" class="btn-download">Download</a>
                 </nav>
@@ -42,6 +84,22 @@
             <div class="hero-content">
                 <h1 class="hero-title">Fountain - Macro Assistant</h1>
                 <p class="hero-subtitle">Type faster with intelligent text expansion. Create shortcuts that automatically expand into longer snippets.</p>
+                
+                <!-- Interactive Demo -->
+                <div class="hero-demo">
+                    <div class="demo-label">✨ Try it now! Type <kbd>/hello</kbd> and press <kbd>Space</kbd></div>
+                    <div class="demo-input-wrapper">
+                        <input type="text" id="heroDemoInput" class="demo-input" placeholder="Start typing here..." autocomplete="off">
+                        <div class="demo-hint" id="demoHint"></div>
+                    </div>
+                    <div class="demo-shortcuts">
+                        <span class="demo-shortcut" data-shortcut="/hello">👋 /hello</span>
+                        <span class="demo-shortcut" data-shortcut="/date">📅 /date</span>
+                        <span class="demo-shortcut" data-shortcut="/sig">✍️ /sig</span>
+                        <span class="demo-shortcut" data-shortcut="/shrug">🤷 /shrug</span>
+                    </div>
+                </div>
+
                 <div class="hero-buttons">
                     <a href="#download" class="btn btn-primary">Download for Chrome</a>
                     <a href="#guide" class="btn btn-secondary">View Guide</a>
@@ -243,6 +301,200 @@
                     <div class="feature-icon">⌨️</div>
                     <h3>Keyboard Shortcuts</h3>
                     <p>Power user features with keyboard shortcuts. Work faster with hotkeys.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Time Saved Comparison Section -->
+    <section class="comparison-section">
+        <div class="container">
+            <h2 class="section-title">See How Much Time You'll Save</h2>
+            <p class="section-subtitle">The average person types 40 words per minute. With Fountain, you can expand shortcuts instantly.</p>
+            
+            <div class="comparison-grid">
+                <div class="comparison-card comparison-without">
+                    <div class="comparison-header">
+                        <span class="comparison-icon">⌨️</span>
+                        <h3>Without Fountain</h3>
+                    </div>
+                    <div class="comparison-example">
+                        <div class="typing-simulation" id="typingWithout">
+                            <span class="typed-char"></span>
+                        </div>
+                        <div class="comparison-text">"Thank you for contacting us. I'll look into this and get back to you shortly."</div>
+                    </div>
+                    <div class="comparison-stats">
+                        <div class="stat-item"><strong>76</strong> characters</div>
+                        <div class="stat-item"><strong>~19</strong> seconds</div>
+                    </div>
+                </div>
+
+                <div class="comparison-vs">VS</div>
+
+                <div class="comparison-card comparison-with">
+                    <div class="comparison-header">
+                        <span class="comparison-icon">💧</span>
+                        <h3>With Fountain</h3>
+                    </div>
+                    <div class="comparison-example">
+                        <div class="typing-simulation">
+                            <code class="shortcut-demo">/thanks</code> → <span class="expansion-preview">Full message!</span>
+                        </div>
+                        <div class="comparison-text">Same message, typed instantly</div>
+                    </div>
+                    <div class="comparison-stats">
+                        <div class="stat-item"><strong>7</strong> characters</div>
+                        <div class="stat-item"><strong>~1</strong> second</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="savings-calculator">
+                <h3>📊 Your Potential Savings</h3>
+                <div class="calculator-row">
+                    <label>How many repetitive messages do you type daily?</label>
+                    <input type="range" id="messagesPerDay" min="5" max="100" value="20">
+                    <span id="messagesValue">20</span>
+                </div>
+                <div class="savings-result">
+                    <div class="savings-item">
+                        <div class="savings-number" id="dailySavings">6</div>
+                        <div class="savings-label">minutes saved daily</div>
+                    </div>
+                    <div class="savings-item">
+                        <div class="savings-number" id="weeklySavings">30</div>
+                        <div class="savings-label">minutes saved weekly</div>
+                    </div>
+                    <div class="savings-item">
+                        <div class="savings-number" id="yearlySavings">26</div>
+                        <div class="savings-label">hours saved yearly</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases Section -->
+    <section id="use-cases" class="use-cases-section">
+        <div class="container">
+            <h2 class="section-title">Built for Every Professional</h2>
+            <p class="section-subtitle">See how Fountain helps different teams work faster</p>
+            
+            <div class="use-cases-grid">
+                <div class="use-case-card">
+                    <div class="use-case-icon">🎧</div>
+                    <h3>Customer Support</h3>
+                    <p>Respond to tickets faster with templated replies, personalized greetings, and consistent messaging.</p>
+                    <div class="use-case-examples">
+                        <code>/greeting</code> <code>/resolved</code> <code>/escalate</code>
+                    </div>
+                </div>
+                
+                <div class="use-case-card">
+                    <div class="use-case-icon">💻</div>
+                    <h3>Developers</h3>
+                    <p>Code snippets, commit messages, PR templates, and documentation shortcuts at your fingertips.</p>
+                    <div class="use-case-examples">
+                        <code>//todo</code> <code>/commit</code> <code>/pr</code>
+                    </div>
+                </div>
+                
+                <div class="use-case-card">
+                    <div class="use-case-icon">💰</div>
+                    <h3>Sales Teams</h3>
+                    <p>Personalized outreach, follow-up sequences, and proposal templates that close deals faster.</p>
+                    <div class="use-case-examples">
+                        <code>/intro</code> <code>/followup</code> <code>/pricing</code>
+                    </div>
+                </div>
+                
+                <div class="use-case-card">
+                    <div class="use-case-icon">📣</div>
+                    <h3>Marketing</h3>
+                    <p>Social media templates, email campaigns, and content snippets for consistent brand voice.</p>
+                    <div class="use-case-examples">
+                        <code>/social</code> <code>/cta</code> <code>/newsletter</code>
+                    </div>
+                </div>
+                
+                <div class="use-case-card">
+                    <div class="use-case-icon">📋</div>
+                    <h3>HR & Recruiting</h3>
+                    <p>Candidate communications, offer letters, onboarding messages, and policy responses.</p>
+                    <div class="use-case-examples">
+                        <code>/interview</code> <code>/offer</code> <code>/welcome</code>
+                    </div>
+                </div>
+                
+                <div class="use-case-card">
+                    <div class="use-case-icon">🎓</div>
+                    <h3>Education</h3>
+                    <p>Student feedback, assignment instructions, grading comments, and course announcements.</p>
+                    <div class="use-case-examples">
+                        <code>/feedback</code> <code>/rubric</code> <code>/office</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Packages Library Section -->
+    <section id="packages" class="packages-section">
+        <div class="container">
+            <h2 class="section-title">📦 Ready-to-Use Macro Packages</h2>
+            <p class="section-subtitle">Get started instantly with pre-built macro collections</p>
+            
+            <div class="packages-grid" id="websitePackagesGrid">
+                <!-- Packages will be loaded by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="pricing-section">
+        <div class="container">
+            <h2 class="section-title">Simple, Transparent Pricing</h2>
+            <p class="section-subtitle">Start free and upgrade when you need more</p>
+            
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-badge">Most Popular</div>
+                    <h3 class="pricing-plan">Free</h3>
+                    <div class="pricing-price">
+                        <span class="price">$0</span>
+                        <span class="period">forever</span>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>✅ Unlimited macros</li>
+                        <li>✅ All expansion features</li>
+                        <li>✅ Variables & dynamic content</li>
+                        <li>✅ Regex patterns</li>
+                        <li>✅ JavaScript snippets</li>
+                        <li>✅ Import/Export</li>
+                        <li>✅ Cloud sync</li>
+                        <li>✅ Shared macros library</li>
+                        <li>✅ All macro packages</li>
+                    </ul>
+                    <a href="#download" class="btn btn-primary pricing-btn">Get Started Free</a>
+                    <p class="pricing-note">No credit card required</p>
+                </div>
+                
+                <div class="pricing-card pricing-coming-soon">
+                    <h3 class="pricing-plan">Team</h3>
+                    <div class="pricing-price">
+                        <span class="price">Coming Soon</span>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>🔜 Everything in Free</li>
+                        <li>🔜 Team macro sharing</li>
+                        <li>🔜 Admin dashboard</li>
+                        <li>🔜 Usage analytics</li>
+                        <li>🔜 SSO integration</li>
+                        <li>🔜 Priority support</li>
+                    </ul>
+                    <button class="btn btn-secondary pricing-btn" disabled>Join Waitlist</button>
+                    <p class="pricing-note">For teams of 5+</p>
                 </div>
             </div>
         </div>

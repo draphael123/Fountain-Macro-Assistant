@@ -55,7 +55,194 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Signature Demo Animation
     initSignatureDemo();
+    
+    // Initialize Hero Demo
+    initHeroDemo();
+    
+    // Initialize Savings Calculator
+    initSavingsCalculator();
+    
+    // Initialize Packages Grid
+    initPackagesGrid();
 });
+
+// ========================================
+// HERO INTERACTIVE DEMO
+// ========================================
+
+function initHeroDemo() {
+    const input = document.getElementById('heroDemoInput');
+    const hint = document.getElementById('demoHint');
+    const shortcuts = document.querySelectorAll('.demo-shortcut');
+    
+    if (!input) return;
+    
+    // Demo macros
+    const demoMacros = {
+        '/hello': 'Hello! Thanks for trying Fountain. This is an example of text expansion! 👋',
+        '/date': new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
+        '/sig': 'Best regards,\nJohn Doe\nSoftware Engineer\njohn@example.com',
+        '/shrug': '¯\\_(ツ)_/¯'
+    };
+    
+    let lastValue = '';
+    
+    input.addEventListener('input', function() {
+        const value = this.value;
+        
+        // Check if user typed a space after a shortcut
+        for (const [shortcut, expansion] of Object.entries(demoMacros)) {
+            if (lastValue === shortcut && value === shortcut + ' ') {
+                // Expand!
+                this.value = expansion;
+                this.classList.add('expanded');
+                setTimeout(() => this.classList.remove('expanded'), 1000);
+                break;
+            }
+        }
+        
+        // Show hint if typing a shortcut
+        let showHint = false;
+        for (const [shortcut, expansion] of Object.entries(demoMacros)) {
+            if (shortcut.startsWith(value) && value.length > 0 && value !== shortcut) {
+                hint.textContent = `💡 Type "${shortcut}" + Space to expand`;
+                hint.classList.add('show');
+                showHint = true;
+                break;
+            }
+        }
+        
+        if (!showHint) {
+            hint.classList.remove('show');
+        }
+        
+        lastValue = value;
+    });
+    
+    // Click on shortcut buttons to insert them
+    shortcuts.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const shortcut = this.dataset.shortcut;
+            input.value = shortcut;
+            input.focus();
+            lastValue = shortcut;
+            
+            // Show hint
+            hint.textContent = `💡 Press Space to expand "${shortcut}"`;
+            hint.classList.add('show');
+        });
+    });
+}
+
+// ========================================
+// SAVINGS CALCULATOR
+// ========================================
+
+function initSavingsCalculator() {
+    const slider = document.getElementById('messagesPerDay');
+    const messagesValue = document.getElementById('messagesValue');
+    const dailySavings = document.getElementById('dailySavings');
+    const weeklySavings = document.getElementById('weeklySavings');
+    const yearlySavings = document.getElementById('yearlySavings');
+    
+    if (!slider) return;
+    
+    function calculateSavings() {
+        const messages = parseInt(slider.value);
+        messagesValue.textContent = messages;
+        
+        // Average: 18 seconds saved per message (19 - 1)
+        const secondsPerDay = messages * 18;
+        const minutesPerDay = Math.round(secondsPerDay / 60);
+        const minutesPerWeek = minutesPerDay * 5; // Work days
+        const hoursPerYear = Math.round((minutesPerDay * 250) / 60); // 250 work days
+        
+        dailySavings.textContent = minutesPerDay;
+        weeklySavings.textContent = minutesPerWeek;
+        yearlySavings.textContent = hoursPerYear;
+    }
+    
+    slider.addEventListener('input', calculateSavings);
+    calculateSavings(); // Initial calculation
+}
+
+// ========================================
+// PACKAGES GRID
+// ========================================
+
+const WEBSITE_PACKAGES = [
+    { 
+        id: 'customer-service', 
+        icon: '🎧', 
+        name: 'Customer Service', 
+        desc: 'Support replies & templates',
+        macroCount: 8,
+        preview: ['/csgreeting', '/cshold', '/csapology']
+    },
+    { 
+        id: 'marketing', 
+        icon: '📣', 
+        name: 'Marketing', 
+        desc: 'CTAs, social posts, email templates',
+        macroCount: 8,
+        preview: ['/mktcta', '/mktsocial', '/mktpromo']
+    },
+    { 
+        id: 'developer', 
+        icon: '💻', 
+        name: 'Developer Kit', 
+        desc: 'Code snippets & comments',
+        macroCount: 8,
+        preview: ['/devtodo', '/devclog', '/devpr']
+    },
+    { 
+        id: 'sales', 
+        icon: '💰', 
+        name: 'Sales', 
+        desc: 'Cold outreach, follow-ups, closing',
+        macroCount: 6,
+        preview: ['/salesintro', '/salesfollowup', '/salesdemo']
+    },
+    { 
+        id: 'hr', 
+        icon: '📋', 
+        name: 'HR & Recruiting', 
+        desc: 'Screening, offers, onboarding',
+        macroCount: 6,
+        preview: ['/hrack', '/hrinterview', '/hroffer']
+    },
+    { 
+        id: 'education', 
+        icon: '🎓', 
+        name: 'Education', 
+        desc: 'Feedback, citations, grading',
+        macroCount: 6,
+        preview: ['/edfeedback', '/edcitation', '/edgrade']
+    }
+];
+
+function initPackagesGrid() {
+    const grid = document.getElementById('websitePackagesGrid');
+    if (!grid) return;
+    
+    grid.innerHTML = WEBSITE_PACKAGES.map(pkg => `
+        <div class="web-package-card" data-id="${pkg.id}">
+            <div class="web-package-icon">${pkg.icon}</div>
+            <h4>${pkg.name}</h4>
+            <p>${pkg.desc}</p>
+            <div class="web-package-stats">
+                <span>📝 ${pkg.macroCount} macros</span>
+                <span>👤 Fountain</span>
+            </div>
+            <div class="web-package-preview">
+                ${pkg.preview.map(p => `<code>${p}</code>`).join('')}
+            </div>
+            <div class="web-package-actions">
+                <a href="#download" class="btn btn-primary">Get Extension</a>
+            </div>
+        </div>
+    `).join('');
+}
 
 // Signature typing animation
 function initSignatureDemo() {
