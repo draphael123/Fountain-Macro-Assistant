@@ -12,7 +12,28 @@ document.addEventListener('DOMContentLoaded', function() {
     initPackagesGrid();
     initGuideSearch();
     initMacroBuilder();
+    initDownloadVersion();
 });
+
+// ========================================
+// DOWNLOAD VERSION INFO
+// ========================================
+
+async function initDownloadVersion() {
+    const versionEl = document.getElementById('downloadVersion');
+    if (!versionEl) return;
+    
+    try {
+        const response = await fetch('/api/extension-info');
+        if (response.ok) {
+            const data = await response.json();
+            versionEl.textContent = `Version ${data.version} • ${data.downloadSize}`;
+        }
+    } catch (e) {
+        // Keep default text on error
+        console.log('Could not fetch version info');
+    }
+}
 
 // ========================================
 // FAQ TOGGLE
