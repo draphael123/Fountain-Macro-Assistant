@@ -2,7 +2,7 @@
 
 /**
  * Extension Sync Script for Vercel Deployment
- * Build ID: 2026-01-16-v2
+ * Build ID: 2026-01-16-v3
  * 
  * This script runs during build to ensure the website's extension folder
  * is synced with the main extension folder (fountain-macro-assistant-extension).
@@ -228,6 +228,14 @@ async function main() {
   const finalManifest = readManifest(WEBSITE_EXTENSION_DIR);
   console.log('\n' + '═'.repeat(60));
   console.log(`✨ Deployment ready with extension v${finalManifest?.version || 'unknown'}`);
+  
+  // Log zip file details
+  if (fs.existsSync(OUTPUT_ZIP)) {
+    const stats = fs.statSync(OUTPUT_ZIP);
+    console.log(`📦 ZIP file: ${OUTPUT_ZIP}`);
+    console.log(`   Size: ${stats.size} bytes (${(stats.size / 1024).toFixed(1)} KB)`);
+  }
+  
   console.log('═'.repeat(60) + '\n');
 }
 
