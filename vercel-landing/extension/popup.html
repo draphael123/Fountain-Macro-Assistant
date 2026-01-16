@@ -9,33 +9,16 @@
 <body>
   <div class="container">
     <header>
-      <h1>
-        <svg class="logo-img" width="28" height="28" viewBox="0 0 100 100">
-          <circle cx="50" cy="50" r="50" fill="#4b5563"/>
-          <ellipse cx="38" cy="50" rx="8" ry="20" fill="#fff" transform="rotate(-10 38 50)"/>
-          <ellipse cx="50" cy="50" rx="6" ry="18" fill="#3b82f6"/>
-          <ellipse cx="62" cy="50" rx="8" ry="20" fill="#fff" transform="rotate(10 62 50)"/>
-        </svg>
-        <span>Fountain</span>
-        <span class="version-badge">v3.1</span>
-      </h1>
+      <h1>💧 Fountain</h1>
       <div class="header-actions">
+        <button id="syncBtn" class="btn btn-sync" title="Sign in to sync your macros across devices">☁️ Sync</button>
         <button id="themeToggle" class="btn btn-icon" title="Toggle Theme">🌙</button>
-        <button id="dashboardBtn" class="btn btn-icon" title="Stats">📊</button>
-        <button id="settingsBtn" class="btn btn-icon" title="Settings">⚙️</button>
-        <button id="moreBtn" class="btn btn-icon" title="More Options">•••</button>
-        <button id="addMacroBtn" class="btn btn-primary">+ New</button>
-      </div>
-      
-      <!-- More Options Dropdown -->
-      <div id="moreDropdown" class="more-dropdown" style="display:none;">
-        <button class="dropdown-item" id="quickCreateBtn">📋 Quick Create</button>
-        <button class="dropdown-item" id="templatesBtn">📄 Templates</button>
-        <button class="dropdown-item" id="packagesBtn">📦 Packages</button>
-        <button class="dropdown-item" id="importBtn">📥 Import</button>
-        <button class="dropdown-item" id="addFolderBtn">📁 New Folder</button>
-        <button class="dropdown-item" id="trashBtn">🗑️ Trash</button>
-        <button class="dropdown-item" id="helpBtn">❓ Help</button>
+        <button id="dashboardBtn" class="btn btn-icon" title="Dashboard">📊</button>
+        <button id="packagesBtn" class="btn btn-icon" title="Packages">📦</button>
+        <button id="templatesBtn" class="btn btn-icon" title="Templates">📋</button>
+        <button id="addFolderBtn" class="btn btn-icon" title="New Folder">📁</button>
+        <button id="helpBtn" class="btn btn-icon" title="Help">❓</button>
+        <button id="addMacroBtn" class="btn btn-primary">✨ New</button>
       </div>
     </header>
 
@@ -58,15 +41,6 @@
       </div>
     </div>
 
-    <!-- Pinned Section -->
-    <div class="pinned-section" id="pinnedSection" style="display: none;">
-      <div class="section-header">
-        <span class="section-title"><span class="icon">📌</span> Pinned</span>
-        <span class="pinned-count" id="pinnedCount">0/5</span>
-      </div>
-      <div class="pinned-macros" id="pinnedMacros"></div>
-    </div>
-
     <!-- Favorites Section -->
     <div class="favorites-section" id="favoritesSection" style="display: none;">
       <div class="section-header">
@@ -79,53 +53,24 @@
     <div class="recent-section" id="recentSection" style="display: none;">
       <div class="section-header">
         <span class="section-title"><span class="icon">🕐</span> Recent</span>
-        <button id="clearRecentBtn" class="btn btn-sm btn-secondary" style="display: none;">Clear</button>
       </div>
       <div class="recent-macros" id="recentMacros"></div>
-    </div>
-    
-    <!-- Domain Suggestions -->
-    <div class="domain-suggestions-section" id="domainSuggestionsSection" style="display: none;">
-      <div class="section-header">
-        <span class="section-title"><span class="icon">🌐</span> Suggested for <span id="currentDomainName"></span></span>
-      </div>
-      <div class="suggested-macros" id="suggestedMacros"></div>
     </div>
 
     <!-- Search & Filter -->
     <div class="controls-row">
       <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Search macros... (Press / to focus)" autocomplete="off" aria-label="Search macros" aria-describedby="search-help">
-        <span id="search-help" class="sr-only">Type to search macros. Press / to focus, use :sig for signatures, :fav for favorites</span>
-        <div id="searchSuggestions" class="search-suggestions" style="display: none;"></div>
+        <input type="text" id="searchInput" placeholder="Search macros...">
       </div>
-      <div class="filter-buttons">
-        <button id="filterPinnedBtn" class="filter-btn" data-filter="pinned" title="Show pinned only">📌</button>
-        <button id="filterFavoritesBtn" class="filter-btn" data-filter="favorites" title="Show favorites only">⭐</button>
-        <button id="filterRecentBtn" class="filter-btn" data-filter="recent" title="Show recent">🕐</button>
-        <button id="filterTagsBtn" class="filter-btn" data-filter="tags" title="Filter by tags">🏷️</button>
-      </div>
-      <select id="folderFilter" class="filter-select" aria-label="Filter by folder">
-        <option value="all">All Folders</option>
+      <select id="folderFilter" class="filter-select">
+        <option value="all">All</option>
       </select>
-      <select id="sortSelect" class="filter-select" aria-label="Sort macros">
+      <select id="sortSelect" class="filter-select">
         <option value="name">A-Z</option>
         <option value="usage">Most Used</option>
         <option value="recent">Recent</option>
         <option value="created">Newest</option>
       </select>
-      <div class="view-toggle">
-        <button id="viewListBtn" class="view-btn active" data-view="list" title="List view" aria-label="List view">☰</button>
-        <button id="viewGridBtn" class="view-btn" data-view="grid" title="Grid view" aria-label="Grid view">⊞</button>
-        <button id="viewCompactBtn" class="view-btn" data-view="compact" title="Compact view" aria-label="Compact view">▸</button>
-      </div>
-    </div>
-    
-    <!-- Active Filters Display -->
-    <div id="activeFilters" class="active-filters" style="display: none;">
-      <span class="active-filter-label">Active filters:</span>
-      <div id="activeFiltersList" class="active-filters-list"></div>
-      <button id="clearFiltersBtn" class="btn btn-sm btn-secondary">Clear All</button>
     </div>
 
     <!-- Bulk Actions -->
@@ -133,7 +78,6 @@
       <span class="bulk-count"><span id="selectedCount">0</span> selected</span>
       <div class="bulk-buttons">
         <button id="bulkFavoriteBtn" class="btn btn-sm">⭐</button>
-        <button id="bulkPinBtn" class="btn btn-sm" title="Pin selected">📌</button>
         <button id="bulkMoveBtn" class="btn btn-sm">📁 Move</button>
         <button id="bulkExportBtn" class="btn btn-sm">📤</button>
         <button id="bulkDeleteBtn" class="btn btn-sm">🗑️</button>
@@ -142,26 +86,14 @@
     </div>
 
     <!-- Macros List -->
-    <div id="macrosList" class="macros-list" role="list" aria-label="Macros list"></div>
+    <div id="macrosList" class="macros-list"></div>
 
     <!-- Empty State -->
     <div id="emptyState" class="empty-state hidden">
       <div class="empty-state-icon">💧</div>
       <h3>No macros yet!</h3>
       <p>Create your first shortcut and start typing faster</p>
-      <div class="empty-state-actions">
-        <button id="emptyAddBtn" class="btn btn-primary">✨ Create Macro</button>
-        <button id="emptyTemplateBtn" class="btn btn-secondary">📋 Use Template</button>
-        <button id="emptySampleBtn" class="btn btn-secondary">🎯 Add Samples</button>
-      </div>
-      <div class="empty-state-tips">
-        <p><strong>💡 Quick Tips:</strong></p>
-        <ul>
-          <li>Press <kbd>/</kbd> to quickly search</li>
-          <li>Use <kbd>Ctrl+N</kbd> to create a new macro</li>
-          <li>Try templates for common use cases</li>
-        </ul>
-      </div>
+      <button id="emptyAddBtn" class="btn btn-primary">✨ Create Macro</button>
     </div>
   </div>
 
@@ -233,17 +165,6 @@
               <tr><td><code>{time}</code></td><td>Current time</td></tr>
               <tr><td><code>{date:YYYY-MM-DD}</code></td><td>Custom format</td></tr>
               <tr><td><code>{datetime}</code></td><td>Date and time</td></tr>
-              <tr><td><code>{weekday}</code></td><td>Day name (Monday, etc.)</td></tr>
-              <tr><td><code>{iso}</code></td><td>ISO date format</td></tr>
-            </table>
-            
-            <h4>Smart Dates</h4>
-            <table class="help-table">
-              <tr><td><code>{date:tomorrow}</code></td><td>Tomorrow's date</td></tr>
-              <tr><td><code>{date:+3 days}</code></td><td>3 days from now</td></tr>
-              <tr><td><code>{date:next monday}</code></td><td>Next Monday</td></tr>
-              <tr><td><code>{date:end of month}</code></td><td>Last day of month</td></tr>
-              <tr><td><code>{smartdate:+1 week|YYYY-MM-DD}</code></td><td>With format</td></tr>
             </table>
             
             <h4>Special</h4>
@@ -251,50 +172,15 @@
               <tr><td><code>{cursor}</code></td><td>Place cursor here after expansion</td></tr>
               <tr><td><code>{input:Label}</code></td><td>Prompt for input</td></tr>
               <tr><td><code>{clipboard}</code></td><td>Paste clipboard content</td></tr>
-              <tr><td><code>{selection}</code></td><td>Current page selection</td></tr>
               <tr><td><code>{counter:name}</code></td><td>Auto-incrementing counter</td></tr>
               <tr><td><code>{random:a|b|c}</code></td><td>Random selection</td></tr>
-              <tr><td><code>{randomnum:1-100}</code></td><td>Random number range</td></tr>
               <tr><td><code>{macro:/other}</code></td><td>Nest another macro</td></tr>
-              <tr><td><code>{uuid}</code></td><td>Generate UUID</td></tr>
-              <tr><td><code>{url}</code></td><td>Current page URL</td></tr>
-              <tr><td><code>{domain}</code></td><td>Current domain</td></tr>
-              <tr><td><code>{title}</code></td><td>Page title</td></tr>
-            </table>
-            
-            <h4>Math & Calculations</h4>
-            <table class="help-table">
-              <tr><td><code>{calc:5+3*2}</code></td><td>Math expression → 11</td></tr>
-              <tr><td><code>{calc:sqrt(16)}</code></td><td>Functions: sqrt, abs, round</td></tr>
-              <tr><td><code>{calc:floor(3.7)}</code></td><td>Floor: 3</td></tr>
-            </table>
-            
-            <h4>Case Transformations</h4>
-            <table class="help-table">
-              <tr><td><code>{upper:text}</code></td><td>TEXT</td></tr>
-              <tr><td><code>{lower:TEXT}</code></td><td>text</td></tr>
-              <tr><td><code>{title:hello world}</code></td><td>Hello World</td></tr>
-            </table>
-            
-            <h4>Lists & Loops</h4>
-            <table class="help-table">
-              <tr><td><code>{list:a,b,c}</code></td><td>• a<br>• b<br>• c</td></tr>
-              <tr><td><code>{numlist:a,b,c}</code></td><td>1. a<br>2. b<br>3. c</td></tr>
-              <tr><td><code>{repeat:3}★{/repeat}</code></td><td>★★★</td></tr>
-            </table>
-            
-            <h4>Conditionals</h4>
-            <table class="help-table">
-              <tr><td><code>{if:isMorning}Hello!{else}Hi!{endif}</code></td><td>Time-based</td></tr>
-              <tr><td><code>{if:isWeekday}Work{else}Relax{endif}</code></td><td>Day-based</td></tr>
-              <tr><td><code>{if:hour<12}AM{else}PM{endif}</code></td><td>Custom condition</td></tr>
             </table>
             
             <div class="help-example">
               <p><strong>Example:</strong></p>
               <pre>Invoice #{counter:invoice}
 Date: {date:YYYY-MM-DD}
-Due: {date:+30 days|YYYY-MM-DD}
 Client: {input:Client Name}
 {cursor}</pre>
             </div>
@@ -563,7 +449,7 @@ Evening (18-24): "Good evening!"</pre>
         <div class="form-group">
           <label>Color</label>
           <div class="folder-color-picker" id="folderColorPicker">
-            <div class="color-option selected" data-color="#3b82f6" style="background: #3b82f6;"></div>
+            <div class="color-option selected" data-color="#00b3b3" style="background: #00b3b3;"></div>
             <div class="color-option" data-color="#3b82f6" style="background: #3b82f6;"></div>
             <div class="color-option" data-color="#8b5cf6" style="background: #8b5cf6;"></div>
             <div class="color-option" data-color="#ec4899" style="background: #ec4899;"></div>
@@ -683,11 +569,6 @@ Evening (18-24): "Good evening!"</pre>
           <div class="chart-title">🏆 Top 5 Macros</div>
           <div class="bar-chart" id="topMacrosChart"></div>
         </div>
-        
-        <div class="insights-container" style="margin-top: 16px;">
-          <div class="chart-title">💡 Usage Insights</div>
-          <div id="usageInsights"></div>
-        </div>
       </div>
       <div class="modal-footer">
         <div class="modal-footer-left">
@@ -724,125 +605,93 @@ Evening (18-24): "Good evening!"</pre>
     </div>
   </div>
 
-  <!-- Quick Create Modal -->
-  <div id="quickCreateModal" class="modal">
-    <div class="modal-content" style="max-width: 400px;">
+  <!-- Cloud Sync Modal -->
+  <div id="syncModal" class="modal">
+    <div class="modal-content" style="max-width: 420px;">
       <div class="modal-header">
-        <h2>⚡ Quick Create</h2>
-        <button class="close-btn" id="closeQuickCreateModal">&times;</button>
+        <h2>☁️ Cloud Sync</h2>
+        <button class="close-btn" id="closeSyncModal">&times;</button>
       </div>
       <div class="modal-body">
-        <div class="form-group">
-          <label for="quickShortcutInput">Shortcut</label>
-          <input type="text" id="quickShortcutInput" placeholder="/shortcut" autofocus>
+        <!-- Login/Register Form (shown when not logged in) -->
+        <div id="syncAuthForm">
+          <div class="sync-tabs">
+            <button class="sync-tab active" data-tab="login">Sign In</button>
+            <button class="sync-tab" data-tab="register">Register</button>
+          </div>
+          
+          <div id="loginForm" class="sync-form">
+            <div class="form-group">
+              <label for="loginEmail">Email</label>
+              <input type="email" id="loginEmail" placeholder="your@email.com">
+            </div>
+            <div class="form-group">
+              <label for="loginPassword">Password</label>
+              <input type="password" id="loginPassword" placeholder="Password">
+            </div>
+            <button id="loginBtn" class="btn btn-primary" style="width: 100%;">Sign In</button>
+            <a href="https://fountain-macro-assistant.vercel.app/forgot-password.html" target="_blank" class="forgot-password-link">Forgot password?</a>
+          </div>
+          
+          <div id="registerForm" class="sync-form" style="display: none;">
+            <div class="form-group">
+              <label for="registerEmail">Email</label>
+              <input type="email" id="registerEmail" placeholder="your@email.com">
+            </div>
+            <div class="form-group">
+              <label for="registerDisplayName">Display Name</label>
+              <input type="text" id="registerDisplayName" placeholder="Your Name">
+            </div>
+            <div class="form-group">
+              <label for="registerPassword">Password</label>
+              <input type="password" id="registerPassword" placeholder="Min 6 characters">
+            </div>
+            <button id="registerBtn" class="btn btn-primary" style="width: 100%;">Create Account</button>
+          </div>
+          
+          <div id="syncError" class="sync-error" style="display: none;"></div>
         </div>
-        <div class="form-group">
-          <label for="quickExpansionInput">Expansion</label>
-          <textarea id="quickExpansionInput" rows="3" placeholder="Expansion text..."></textarea>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <div class="modal-footer-right">
-          <button id="cancelQuickCreateBtn" class="btn btn-secondary">Cancel</button>
-          <button id="saveQuickCreateBtn" class="btn btn-primary">Save</button>
+        
+        <!-- Sync Status (shown when logged in) -->
+        <div id="syncStatus" style="display: none;">
+          <div class="sync-user-info">
+            <div class="sync-avatar">👤</div>
+            <div class="sync-user-details">
+              <div class="sync-user-name" id="syncUserName">User</div>
+              <div class="sync-user-email" id="syncUserEmail">user@email.com</div>
+            </div>
+          </div>
+          
+          <div class="sync-info">
+            <div class="sync-info-item">
+              <span class="sync-info-label">Last Sync:</span>
+              <span class="sync-info-value" id="lastSyncTime">Never</span>
+            </div>
+            <div class="sync-info-item">
+              <span class="sync-info-label">Macros Synced:</span>
+              <span class="sync-info-value" id="syncedMacroCount">0</span>
+            </div>
+          </div>
+          
+          <div class="sync-actions">
+            <button id="syncNowBtn" class="btn btn-primary" style="flex: 1;">🔄 Sync Now</button>
+            <button id="downloadFromCloudBtn" class="btn btn-secondary" style="flex: 1;">⬇️ Download</button>
+          </div>
+          
+          <div class="sync-toggle">
+            <label class="toggle-label">
+              <input type="checkbox" id="autoSyncToggle" checked>
+              <span>Auto-sync when macros change</span>
+            </label>
+          </div>
+          
+          <button id="logoutBtn" class="btn btn-danger btn-sm" style="width: 100%; margin-top: 16px;">Sign Out</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Context Menu -->
-  <div id="contextMenu" class="context-menu" style="display: none;" role="menu" aria-label="Macro context menu">
-    <button class="context-menu-item" data-action="edit" role="menuitem">
-      <span>✏️ Edit</span>
-      <kbd>Enter</kbd>
-    </button>
-    <button class="context-menu-item" data-action="duplicate" role="menuitem">
-      <span>📋 Duplicate</span>
-    </button>
-    <button class="context-menu-item" data-action="favorite" role="menuitem">
-      <span>⭐ Favorite</span>
-    </button>
-    <button class="context-menu-item" data-action="pin" role="menuitem">
-      <span>📌 Pin to Top</span>
-    </button>
-    <button class="context-menu-item" data-action="copy-shortcut" role="menuitem">
-      <span>📝 Copy Shortcut</span>
-    </button>
-    <button class="context-menu-item" data-action="copy-expansion" role="menuitem">
-      <span>📄 Copy Expansion</span>
-    </button>
-    <hr class="context-menu-divider">
-    <button class="context-menu-item danger" data-action="delete" role="menuitem">
-      <span>🗑️ Delete</span>
-      <kbd>Del</kbd>
-    </button>
-  </div>
-
-  <!-- Trash Modal -->
-  <div id="trashModal" class="modal">
-    <div class="modal-content" style="max-width: 500px;">
-      <div class="modal-header">
-        <h2>🗑️ Trash <span class="trash-count-badge" id="trashCount">0</span></h2>
-        <button class="close-btn" id="closeTrashModal">&times;</button>
-      </div>
-      <div class="modal-body">
-        <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 12px;">
-          Deleted macros are kept for 30 days before permanent deletion.
-        </p>
-        <div id="trashList" class="trash-list"></div>
-      </div>
-      <div class="modal-footer">
-        <div class="modal-footer-left">
-          <button id="emptyTrashBtn" class="btn btn-danger btn-sm">🗑️ Empty Trash</button>
-        </div>
-        <div class="modal-footer-right">
-          <button id="closeTrashBtn" class="btn btn-secondary">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Import Modal -->
-  <div id="importModal" class="modal">
-    <div class="modal-content" style="max-width: 500px;">
-      <div class="modal-header">
-        <h2>📥 Import Macros</h2>
-        <button class="close-btn" id="closeImportModal">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="import-options">
-          <div class="import-option" id="importFountainBtn">
-            <div class="import-icon">💧</div>
-            <div class="import-info">
-              <div class="import-title">Fountain JSON</div>
-              <div class="import-desc">Import from Fountain backup file</div>
-            </div>
-          </div>
-          <div class="import-option" id="importTextExpanderBtn">
-            <div class="import-icon">📋</div>
-            <div class="import-info">
-              <div class="import-title">TextExpander CSV</div>
-              <div class="import-desc">Import from TextExpander export</div>
-            </div>
-          </div>
-          <div class="import-option" id="importATextBtn">
-            <div class="import-icon">📝</div>
-            <div class="import-info">
-              <div class="import-title">aText CSV</div>
-              <div class="import-desc">Import from aText export</div>
-            </div>
-          </div>
-        </div>
-        <input type="file" id="importFileInput" accept=".json,.csv" style="display: none;">
-      </div>
-      <div class="modal-footer">
-        <div class="modal-footer-right">
-          <button id="closeImportBtn" class="btn btn-secondary">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
+  <script src="cloud-sync.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

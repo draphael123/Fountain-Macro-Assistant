@@ -1,56 +1,7 @@
 // Fountain - Macro Assistant v3.0 - Background Service Worker
 
-// Auto-backup on update
-chrome.runtime.onInstalled.addListener(async (details) => {
-  if (details.reason === 'update') {
-    console.log('💧 Fountain updated! Creating automatic backup...');
-    
-    try {
-      // Check if auto-backup is enabled
-      const result = await chrome.storage.sync.get(['settings', 'macros', 'folders', 'counters', 'signatureSettings']);
-      const settings = result.settings || {};
-      
-      // Create backup if auto-backup is enabled (default: true)
-      if (settings.autoBackup !== false) {
-        const backupData = {
-          macros: result.macros || [],
-          folders: result.folders || [],
-          counters: result.counters || {},
-          signatureSettings: result.signatureSettings || {},
-          backedUpAt: new Date().toISOString(),
-          extensionVersion: chrome.runtime.getManifest().version,
-          reason: 'automatic_update_backup'
-        };
-        
-        // Store backup in local storage (has more space than sync)
-        const backupKey = `auto_backup_${Date.now()}`;
-        await chrome.storage.local.set({ [backupKey]: backupData });
-        
-        // Keep only last 5 backups
-        const allKeys = Object.keys(await chrome.storage.local.get(null));
-        const backupKeys = allKeys.filter(k => k.startsWith('auto_backup_')).sort().reverse();
-        if (backupKeys.length > 5) {
-          for (let i = 5; i < backupKeys.length; i++) {
-            await chrome.storage.local.remove(backupKeys[i]);
-          }
-        }
-        
-        // Show notification
-        chrome.notifications.create({
-          type: 'basic',
-          iconUrl: 'icons/icon48.png',
-          title: '💧 Fountain Updated',
-          message: `Your macros were automatically backed up (${backupData.macros.length} macros saved)`,
-          buttons: [{ title: 'Export Backup' }]
-        });
-        
-        console.log('💧 Automatic backup created:', backupKey);
-      }
-    } catch (error) {
-      console.error('💧 Backup error:', error);
-    }
-  }
-  
+// Context menu setup
+chrome.runtime.onInstalled.addListener(() => {
   console.log('💧 Fountain installed!');
   
   // Create context menus
@@ -141,24 +92,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     sendResponse({ success: true });
   }
   return true;
-});
-
-// Handle backup notification click
-chrome.notifications.onButtonClicked.addListener(async (notificationId, buttonIndex) => {
-  if (buttonIndex === 0) {
-    // User clicked "Export Backup"
-    // Get the latest backup
-    const allData = await chrome.storage.local.get(null);
-    const backupKeys = Object.keys(allData).filter(k => k.startsWith('auto_backup_')).sort().reverse();
-    
-    if (backupKeys.length > 0) {
-      const latestBackup = allData[backupKeys[0]];
-      // Trigger download (this would need to be handled by opening options page)
-      chrome.runtime.openOptionsPage();
-    }
-  }
-  
-  chrome.notifications.clear(notificationId);
 });
 
 async function handleStatsUpdate(macroId) {

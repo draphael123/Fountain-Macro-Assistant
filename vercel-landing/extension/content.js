@@ -3,27 +3,10 @@
 
 let macros = [];
 let counters = {};
-let autoCorrections = {};
-let settings = { autoExpand: true, enableNotifications: false, showSuggestions: true, autoCorrect: true };
+let settings = { autoExpand: true, enableNotifications: false, showSuggestions: true };
 let isExpanding = false;
 let expansionHistory = [];
 const MAX_HISTORY = 10;
-
-// Common auto-corrections (built-in)
-const COMMON_TYPOS = {
-  'teh': 'the', 'taht': 'that', 'adn': 'and', 'dont': "don't", 'wont': "won't",
-  'cant': "can't", 'didnt': "didn't", 'doesnt': "doesn't", 'wouldnt': "wouldn't",
-  'youre': "you're", 'theyre': "they're", 'thier': 'their', 'recieve': 'receive',
-  'beleive': 'believe', 'occured': 'occurred', 'seperate': 'separate',
-  'definately': 'definitely', 'occassion': 'occasion', 'accomodate': 'accommodate',
-  'wierd': 'weird', 'untill': 'until', 'neccessary': 'necessary', 'acheive': 'achieve',
-  'tommorrow': 'tomorrow', 'independant': 'independent', 'calender': 'calendar',
-  'embarass': 'embarrass', 'goverment': 'government', 'managment': 'management',
-  'enviroment': 'environment', 'recomend': 'recommend', 'refered': 'referred',
-  'begining': 'beginning', 'writting': 'writing', 'comming': 'coming',
-  'ie': 'i.e.', 'eg': 'e.g.', 'etc': 'etc.', 'btw': 'by the way',
-  'asap': 'ASAP', 'fyi': 'FYI', 'imo': 'in my opinion', 'imho': 'in my humble opinion',
-};
 
 // Auto-suggest state
 let suggestPopup = null;
@@ -34,11 +17,10 @@ let lastTypedText = '';
 // Load data
 async function loadMacros() {
   try {
-    const result = await chrome.storage.sync.get(['macros', 'counters', 'settings', 'autoCorrections']);
+    const result = await chrome.storage.sync.get(['macros', 'counters', 'settings']);
     macros = result.macros || [];
     counters = result.counters || {};
-    settings = result.settings || { autoExpand: true, showSuggestions: true, autoCorrect: true };
-    autoCorrections = result.autoCorrections || {};
+    settings = result.settings || { autoExpand: true, showSuggestions: true };
     console.log('💧 Fountain: Loaded', macros.length, 'macros');
   } catch (error) {
     console.error('💧 Fountain: Error loading:', error);
@@ -57,7 +39,6 @@ chrome.storage.onChanged.addListener((changes, area) => {
     if (changes.macros) macros = changes.macros.newValue || [];
     if (changes.counters) counters = changes.counters.newValue || {};
     if (changes.settings) settings = changes.settings.newValue || settings;
-    if (changes.autoCorrections) autoCorrections = changes.autoCorrections.newValue || {};
   }
 });
 
@@ -118,189 +99,12 @@ function formatDate(date, format) {
   return result;
 }
 
-// Smart date parsing - natural language to date
-function parseSmartDate(expr) {
-  const now = new Date();
-  const lower = expr.toLowerCase().trim();
-  
-  // Relative: +3 days, -1 week, +2 months
-  const relMatch = lower.match(/^([+-]?\d+)\s*(days?|weeks?|months?|years?|hours?|minutes?)$/);
-  if (relMatch) {
-    const num = parseInt(relMatch[1]);
-    const unit = relMatch[2];
-    const result = new Date(now);
-    if (unit.startsWith('day')) result.setDate(result.getDate() + num);
-    else if (unit.startsWith('week')) result.setDate(result.getDate() + num * 7);
-    else if (unit.startsWith('month')) result.setMonth(result.getMonth() + num);
-    else if (unit.startsWith('year')) result.setFullYear(result.getFullYear() + num);
-    else if (unit.startsWith('hour')) result.setHours(result.getHours() + num);
-    else if (unit.startsWith('minute')) result.setMinutes(result.getMinutes() + num);
-    return result;
-  }
-  
-  // Named days: today, tomorrow, yesterday
-  if (lower === 'today') return now;
-  if (lower === 'tomorrow') { const d = new Date(now); d.setDate(d.getDate() + 1); return d; }
-  if (lower === 'yesterday') { const d = new Date(now); d.setDate(d.getDate() - 1); return d; }
-  
-  // Next/last weekday: next monday, last friday
-  const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-  const nextLastMatch = lower.match(/^(next|last)\s+(sunday|monday|tuesday|wednesday|thursday|friday|saturday)$/);
-  if (nextLastMatch) {
-    const dir = nextLastMatch[1] === 'next' ? 1 : -1;
-    const targetDay = dayNames.indexOf(nextLastMatch[2]);
-    const result = new Date(now);
-    let diff = targetDay - result.getDay();
-    if (dir === 1 && diff <= 0) diff += 7;
-    if (dir === -1 && diff >= 0) diff -= 7;
-    result.setDate(result.getDate() + diff);
-    return result;
-  }
-  
-  // This weekday: this monday
-  const thisMatch = lower.match(/^this\s+(sunday|monday|tuesday|wednesday|thursday|friday|saturday)$/);
-  if (thisMatch) {
-    const targetDay = dayNames.indexOf(thisMatch[1]);
-    const result = new Date(now);
-    const diff = targetDay - result.getDay();
-    result.setDate(result.getDate() + diff);
-    return result;
-  }
-  
-  // End of: end of month, end of week, end of year
-  if (lower === 'end of month' || lower === 'eom') {
-    return new Date(now.getFullYear(), now.getMonth() + 1, 0);
-  }
-  if (lower === 'end of week' || lower === 'eow') {
-    const d = new Date(now);
-    d.setDate(d.getDate() + (6 - d.getDay()));
-    return d;
-  }
-  if (lower === 'end of year' || lower === 'eoy') {
-    return new Date(now.getFullYear(), 11, 31);
-  }
-  
-  // Start of: start of month, start of week
-  if (lower === 'start of month' || lower === 'som') {
-    return new Date(now.getFullYear(), now.getMonth(), 1);
-  }
-  if (lower === 'start of week' || lower === 'sow') {
-    const d = new Date(now);
-    d.setDate(d.getDate() - d.getDay());
-    return d;
-  }
-  
-  // In X days/weeks: in 3 days, in 2 weeks
-  const inMatch = lower.match(/^in\s+(\d+)\s+(days?|weeks?|months?)$/);
-  if (inMatch) {
-    const num = parseInt(inMatch[1]);
-    const unit = inMatch[2];
-    const result = new Date(now);
-    if (unit.startsWith('day')) result.setDate(result.getDate() + num);
-    else if (unit.startsWith('week')) result.setDate(result.getDate() + num * 7);
-    else if (unit.startsWith('month')) result.setMonth(result.getMonth() + num);
-    return result;
-  }
-  
-  // X days/weeks ago
-  const agoMatch = lower.match(/^(\d+)\s+(days?|weeks?|months?)\s+ago$/);
-  if (agoMatch) {
-    const num = parseInt(agoMatch[1]);
-    const unit = agoMatch[2];
-    const result = new Date(now);
-    if (unit.startsWith('day')) result.setDate(result.getDate() - num);
-    else if (unit.startsWith('week')) result.setDate(result.getDate() - num * 7);
-    else if (unit.startsWith('month')) result.setMonth(result.getMonth() - num);
-    return result;
-  }
-  
-  return now; // Default to today
-}
-
-// Math expression evaluator (safe)
-function evaluateMath(expr) {
-  try {
-    // Only allow safe math operations
-    const sanitized = expr.replace(/[^0-9+\-*/%().,\s]/g, '');
-    if (sanitized !== expr.replace(/\s/g, '').replace(/round|floor|ceil|abs|sqrt|pow|min|max|pi|e/gi, '')) {
-      // Has math functions, use safe eval
-      const mathFuncs = {
-        round: Math.round, floor: Math.floor, ceil: Math.ceil,
-        abs: Math.abs, sqrt: Math.sqrt, pow: Math.pow,
-        min: Math.min, max: Math.max, pi: Math.PI, e: Math.E,
-        sin: Math.sin, cos: Math.cos, tan: Math.tan,
-        log: Math.log, log10: Math.log10, random: Math.random
-      };
-      const fn = new Function(...Object.keys(mathFuncs), `return ${expr}`);
-      return fn(...Object.values(mathFuncs));
-    }
-    // Simple arithmetic only
-    return Function(`"use strict"; return (${sanitized})`)();
-  } catch (e) {
-    console.warn('💧 Fountain: Math error:', e);
-    return `[calc error]`;
-  }
-}
-
 // Process variables
 async function processVariables(text, regexMatch = null) {
   const now = new Date();
   
-  // === CONDITIONALS: {if:condition}...{else}...{endif} ===
-  // Process conditionals first (can contain other variables)
-  text = processConditionals(text);
-  
-  // === LOOPS ===
-  // {repeat:n}content{/repeat}
-  text = text.replace(/\{repeat:(\d+)\}([\s\S]*?)\{\/repeat\}/g, (_, count, content) => {
-    return content.repeat(parseInt(count));
-  });
-  
-  // {list:a,b,c} - creates bulleted list
-  text = text.replace(/\{list:([^}]+)\}/g, (_, items) => {
-    return items.split(',').map(i => `• ${i.trim()}`).join('\n');
-  });
-  
-  // {numlist:a,b,c} - creates numbered list
-  text = text.replace(/\{numlist:([^}]+)\}/g, (_, items) => {
-    return items.split(',').map((i, idx) => `${idx + 1}. ${i.trim()}`).join('\n');
-  });
-  
-  // === MATH ===
-  // {calc:expression} - math expressions
-  text = text.replace(/\{calc:([^}]+)\}/g, (_, expr) => {
-    const result = evaluateMath(expr);
-    return typeof result === 'number' ? (Number.isInteger(result) ? result : result.toFixed(2)) : result;
-  });
-  
-  // === SMART DATE ===
-  // {smartdate:next monday} or {date:+3 days}
-  text = text.replace(/\{smartdate:([^}]+)\}/g, (_, expr) => {
-    const date = parseSmartDate(expr);
-    return date.toLocaleDateString();
-  });
-  
-  // {smartdate:expression:format}
-  text = text.replace(/\{smartdate:([^:}]+):([^}]+)\}/g, (_, expr, fmt) => {
-    const date = parseSmartDate(expr);
-    return formatDate(date, fmt);
-  });
-  
-  // Check if date format contains smart date keywords
-  text = text.replace(/\{date:([^}]+)\}/g, (_, fmt) => {
-    // Check for smart date patterns
-    const smartPatterns = /^(today|tomorrow|yesterday|next|last|this|end of|start of|\+|-|\d+\s+(day|week|month|year)|in\s+\d+)/i;
-    if (smartPatterns.test(fmt)) {
-      // It's a smart date expression, possibly with format
-      const parts = fmt.split('|');
-      const expr = parts[0];
-      const format = parts[1] || 'MM/DD/YYYY';
-      const date = parseSmartDate(expr);
-      return formatDate(date, format);
-    }
-    // Regular date format
-    return formatDate(now, fmt);
-  });
+  // Date with format
+  text = text.replace(/\{date:([^}]+)\}/g, (_, fmt) => formatDate(now, fmt));
   
   // Basic date/time
   text = text.replace(/\{date\}/g, now.toLocaleDateString());
@@ -313,9 +117,6 @@ async function processVariables(text, regexMatch = null) {
   text = text.replace(/\{minute\}/g, String(now.getMinutes()).padStart(2, '0'));
   text = text.replace(/\{second\}/g, String(now.getSeconds()).padStart(2, '0'));
   text = text.replace(/\{timestamp\}/g, String(now.getTime()));
-  text = text.replace(/\{weekday\}/g, now.toLocaleDateString('en-US', { weekday: 'long' }));
-  text = text.replace(/\{monthname\}/g, now.toLocaleDateString('en-US', { month: 'long' }));
-  text = text.replace(/\{iso\}/g, now.toISOString().split('T')[0]);
   
   // Counter
   text = text.replace(/\{counter:([^}]+)\}/g, (_, name) => {
@@ -324,30 +125,10 @@ async function processVariables(text, regexMatch = null) {
     return String(counters[name]).padStart(4, '0');
   });
   
-  // Counter with custom padding
-  text = text.replace(/\{counter:([^:}]+):(\d+)\}/g, (_, name, pad) => {
-    counters[name] = (counters[name] || 0) + 1;
-    chrome.storage.sync.set({ counters });
-    return String(counters[name]).padStart(parseInt(pad), '0');
-  });
-  
   // Random selection
   text = text.replace(/\{random:([^}]+)\}/g, (_, opts) => {
     const options = opts.split('|');
     return options[Math.floor(Math.random() * options.length)];
-  });
-  
-  // Random number range: {random:1-100}
-  text = text.replace(/\{randomnum:(\d+)-(\d+)\}/g, (_, min, max) => {
-    return String(Math.floor(Math.random() * (parseInt(max) - parseInt(min) + 1)) + parseInt(min));
-  });
-  
-  // UUID
-  text = text.replace(/\{uuid\}/g, () => {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-      const r = Math.random() * 16 | 0;
-      return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-    });
   });
   
   // Nested macros
@@ -395,98 +176,11 @@ async function processVariables(text, regexMatch = null) {
     }
   }
   
-  // Selection (current page selection)
-  text = text.replace(/\{selection\}/g, () => {
-    return window.getSelection()?.toString() || '';
-  });
-  
-  // URL info
-  text = text.replace(/\{url\}/g, window.location.href);
-  text = text.replace(/\{domain\}/g, window.location.hostname);
-  text = text.replace(/\{title\}/g, document.title);
-  
   // Special characters
   text = text.replace(/\{newline\}/g, '\n');
   text = text.replace(/\{tab\}/g, '\t');
-  text = text.replace(/\{space\}/g, ' ');
-  
-  // Case transformations
-  text = text.replace(/\{upper:([^}]+)\}/g, (_, t) => t.toUpperCase());
-  text = text.replace(/\{lower:([^}]+)\}/g, (_, t) => t.toLowerCase());
-  text = text.replace(/\{title:([^}]+)\}/g, (_, t) => t.replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()));
   
   return text;
-}
-
-// Process conditionals: {if:condition}...{else}...{endif}
-function processConditionals(text) {
-  const now = new Date();
-  const hour = now.getHours();
-  const day = now.getDay();
-  const date = now.getDate();
-  const month = now.getMonth() + 1;
-  const isWeekday = day >= 1 && day <= 5;
-  const isWeekend = day === 0 || day === 6;
-  
-  // Context for conditions
-  const context = {
-    hour, day, date, month, isWeekday, isWeekend,
-    isMorning: hour >= 5 && hour < 12,
-    isAfternoon: hour >= 12 && hour < 17,
-    isEvening: hour >= 17 && hour < 21,
-    isNight: hour >= 21 || hour < 5,
-    isMonday: day === 1, isTuesday: day === 2, isWednesday: day === 3,
-    isThursday: day === 4, isFriday: day === 5, isSaturday: day === 6, isSunday: day === 0
-  };
-  
-  // Process {if:condition}...{else}...{endif}
-  const ifRegex = /\{if:([^}]+)\}([\s\S]*?)(?:\{else\}([\s\S]*?))?\{endif\}/g;
-  
-  return text.replace(ifRegex, (_, condition, ifContent, elseContent = '') => {
-    try {
-      // Evaluate condition in context
-      const condLower = condition.toLowerCase().trim();
-      
-      // Simple named conditions
-      if (context[condLower] !== undefined) {
-        return context[condLower] ? ifContent : elseContent;
-      }
-      
-      // Time comparisons: hour<12, hour>=18
-      const timeMatch = condLower.match(/^hour\s*([<>=!]+)\s*(\d+)$/);
-      if (timeMatch) {
-        const op = timeMatch[1];
-        const val = parseInt(timeMatch[2]);
-        let result = false;
-        if (op === '<') result = hour < val;
-        else if (op === '>') result = hour > val;
-        else if (op === '<=' || op === '=<') result = hour <= val;
-        else if (op === '>=' || op === '=>') result = hour >= val;
-        else if (op === '==' || op === '=') result = hour === val;
-        else if (op === '!=' || op === '<>') result = hour !== val;
-        return result ? ifContent : elseContent;
-      }
-      
-      // Day comparisons
-      const dayMatch = condLower.match(/^day\s*([<>=!]+)\s*(\d+)$/);
-      if (dayMatch) {
-        const op = dayMatch[1];
-        const val = parseInt(dayMatch[2]);
-        let result = false;
-        if (op === '==') result = day === val;
-        else if (op === '!=') result = day !== val;
-        return result ? ifContent : elseContent;
-      }
-      
-      // Default: treat as JavaScript expression (safe subset)
-      const safeCondition = condition.replace(/[^a-zA-Z0-9<>=!&|() ]/g, '');
-      const fn = new Function(...Object.keys(context), `return !!(${safeCondition})`);
-      return fn(...Object.values(context)) ? ifContent : elseContent;
-    } catch (e) {
-      console.warn('💧 Fountain: Condition error:', e);
-      return ifContent; // Default to if content on error
-    }
-  });
 }
 
 // Input prompts
@@ -538,7 +232,7 @@ function showInputPrompt(label) {
           border-radius: 8px; background: #0d1117; color: #e6edf3;
           font-size: 14px; outline: none; transition: all 0.15s;
         }
-        .fp-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
+        .fp-input:focus { border-color: #00b3b3; box-shadow: 0 0 0 3px rgba(0,179,179,0.15); }
         .fp-btns { display: flex; gap: 8px; margin-top: 14px; justify-content: flex-end; }
         .fp-btn {
           padding: 8px 16px; border: none; border-radius: 6px; font-size: 13px;
@@ -546,8 +240,8 @@ function showInputPrompt(label) {
         }
         .fp-cancel { background: #21262d; color: #8b949e; border: 1px solid #30363d; }
         .fp-cancel:hover { background: #30363d; color: #e6edf3; }
-        .fp-ok { background: #3b82f6; color: #fff; }
-        .fp-ok:hover { background: #60a5fa; }
+        .fp-ok { background: #00b3b3; color: #fff; }
+        .fp-ok:hover { background: #26cccc; }
       </style>
       <div class="fp-box">
         <div class="fp-title">${escapeHtml(label)}</div>
@@ -605,11 +299,11 @@ function showUndoToast(state) {
         box-shadow: 0 8px 24px rgba(0,0,0,0.5);
       }
       .ft-undo {
-        background: #3b82f6; border: none;
+        background: #00b3b3; border: none;
         color: #fff; padding: 5px 12px; border-radius: 5px; font-size: 12px;
         font-weight: 500; cursor: pointer; transition: all 0.15s;
       }
-      .ft-undo:hover { background: #60a5fa; }
+      .ft-undo:hover { background: #26cccc; }
     </style>
     <span>Expanded: ${escapeHtml(state.shortcut)}</span>
     <button class="ft-undo">Undo</button>
@@ -941,13 +635,13 @@ function showSuggestPopup(element, suggestions) {
         background: #21262d;
       }
       .fs-item.selected {
-        border-left: 2px solid #3b82f6;
+        border-left: 2px solid #00b3b3;
       }
       .fs-shortcut {
         font-family: 'JetBrains Mono', Consolas, monospace;
         font-size: 12px;
         font-weight: 500;
-        color: #3b82f6;
+        color: #00b3b3;
       }
       .fs-preview {
         font-size: 11px;
@@ -1093,101 +787,6 @@ function updateSuggestSelection() {
   });
 }
 
-// Auto-correct functionality
-function checkAutoCorrect(element, text) {
-  if (!settings.autoCorrect || isExpanding) return false;
-  
-  // Get the last word
-  const words = text.split(/\s+/);
-  const lastWord = words[words.length - 1]?.toLowerCase();
-  
-  if (!lastWord || lastWord.length < 2) return false;
-  
-  // Check custom corrections first, then built-in
-  const correction = autoCorrections[lastWord] || COMMON_TYPOS[lastWord];
-  
-  if (correction) {
-    const oldValue = element.tagName === 'INPUT' || element.tagName === 'TEXTAREA'
-      ? element.value
-      : element.textContent || '';
-    
-    // Replace the typo with correction
-    const before = oldValue.substring(0, oldValue.length - lastWord.length);
-    const newValue = before + correction;
-    
-    // Save undo state
-    const undoState = { element, oldValue, shortcut: lastWord, timestamp: Date.now() };
-    
-    if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
-      element.value = newValue;
-      element.selectionStart = element.selectionEnd = newValue.length;
-    } else {
-      element.textContent = newValue;
-    }
-    
-    element.dispatchEvent(new Event('input', { bubbles: true }));
-    
-    // Save history for undo
-    expansionHistory.unshift(undoState);
-    if (expansionHistory.length > MAX_HISTORY) expansionHistory.pop();
-    
-    // Show subtle correction toast
-    showCorrectionToast(lastWord, correction, undoState);
-    
-    return true;
-  }
-  
-  return false;
-}
-
-function showCorrectionToast(typo, correction, undoState) {
-  const existing = document.querySelector('.fountain-correction-toast');
-  if (existing) existing.remove();
-  
-  const toast = document.createElement('div');
-  toast.className = 'fountain-correction-toast';
-  toast.innerHTML = `
-    <style>
-      .fountain-correction-toast {
-        position: fixed; bottom: 16px; right: 16px; z-index: 2147483646;
-        background: #161b22; border: 1px solid #30363d;
-        color: #8b949e; padding: 8px 12px; border-radius: 6px;
-        display: flex; align-items: center; gap: 8px;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-        font-size: 12px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        animation: ftSlide 0.2s ease-out;
-      }
-      @keyframes ftSlide { from { transform: translateY(10px); opacity: 0; } }
-      .fct-text { color: #6e7681; }
-      .fct-typo { text-decoration: line-through; color: #f85149; }
-      .fct-correct { color: #3fb950; font-weight: 500; }
-      .fct-undo {
-        background: transparent; border: 1px solid #30363d;
-        color: #8b949e; padding: 3px 8px; border-radius: 4px;
-        font-size: 11px; cursor: pointer;
-      }
-      .fct-undo:hover { background: #21262d; color: #e6edf3; }
-    </style>
-    <span class="fct-text">Corrected:</span>
-    <span class="fct-typo">${escapeHtml(typo)}</span>
-    <span class="fct-text">→</span>
-    <span class="fct-correct">${escapeHtml(correction)}</span>
-    <button class="fct-undo">Undo</button>
-  `;
-  
-  document.body.appendChild(toast);
-  
-  toast.querySelector('.fct-undo').addEventListener('click', () => {
-    undoExpansion(undoState);
-    toast.remove();
-  });
-  
-  setTimeout(() => {
-    if (toast.parentNode) toast.remove();
-  }, 3000);
-}
-
 // Event: Trigger keys
 let lastValue = '';
 document.addEventListener('keydown', e => {
@@ -1202,14 +801,10 @@ document.addEventListener('keydown', e => {
   
   if (e.key === ' ' || e.key === 'Enter' || /^[.,;:!?()[\]{}]$/.test(e.key)) {
     if (lastValue && !suggestPopup) {
-      // Try macro expansion first
       const expanded = expandMacro(el, lastValue, true);
       if (expanded && (e.key === ' ' || e.key === 'Enter')) {
         e.preventDefault();
         e.stopPropagation();
-      } else if (!expanded && e.key === ' ') {
-        // Try auto-correct on space
-        checkAutoCorrect(el, lastValue);
       }
     }
     hideSuggestPopup();

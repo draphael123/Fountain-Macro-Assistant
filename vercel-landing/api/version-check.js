@@ -1,5 +1,8 @@
 // Version Check API - Returns the latest extension version
-// Update this file when releasing a new version
+// Dynamically reads from the extension's manifest.json
+
+import fs from 'fs';
+import path from 'path';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -15,19 +18,55 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Current latest version - UPDATE THIS when releasing a new version
+    // Try to read version from manifest.json
+    let version = '3.0.0';
+    let manifestData = null;
+    
+    try {
+      // Try different possible paths for the manifest
+      const possiblePaths = [
+        path.join(process.cwd(), 'extension', 'manifest.json'),
+        path.join(process.cwd(), 'vercel-landing', 'extension', 'manifest.json'),
+        path.join(__dirname, '..', 'extension', 'manifest.json')
+      ];
+      
+      for (const manifestPath of possiblePaths) {
+        if (fs.existsSync(manifestPath)) {
+          const content = fs.readFileSync(manifestPath, 'utf8');
+          manifestData = JSON.parse(content);
+          version = manifestData.version || version;
+          break;
+        }
+      }
+    } catch (e) {
+      console.log('Could not read manifest, using default version');
+    }
+
     const latestVersion = {
-      version: '1.0.1', // Update this when releasing
-      releaseDate: '2026-01-03', // Update this when releasing
+      version: version,
+      releaseDate: '2026-01-16',
       downloadUrl: 'https://fountain-macro-assistant.vercel.app/index.html#download',
-      releaseNotes: 'Bug fixes and improvements',
+      releaseNotes: version === '3.0.0' ? 
+        'Major update with regex patterns, JavaScript snippets, cloud sync, and more!' :
+        'Bug fixes and improvements',
       changelog: [
-        'Initial release with macro expansion',
-        'Cloud backup and sync',
-        'Shared macros library',
-        'Personal macros management'
+        '🎯 Regex pattern matching with capture groups',
+        '💻 JavaScript snippets in expansions',
+        '🔢 Auto-incrementing counters',
+        '🎲 Random selection from options',
+        '☁️ Cloud sync across devices',
+        '⌨️ Keyboard shortcuts (Ctrl+Shift+M, Ctrl+Shift+N)',
+        '💬 Auto-suggest popup while typing',
+        '⭐ Favorites system',
+        '📊 Usage analytics and heatmap',
+        '🎮 Guided onboarding tour'
       ],
-      critical: false // Set to true for critical security updates
+      features: manifestData ? {
+        permissions: manifestData.permissions || [],
+        hasKeyboardShortcuts: !!manifestData.commands,
+        hasCloudSync: true
+      } : null,
+      critical: false
     };
 
     return res.status(200).json(latestVersion);
@@ -39,4 +78,3 @@ export default async function handler(req, res) {
     });
   }
 }
-

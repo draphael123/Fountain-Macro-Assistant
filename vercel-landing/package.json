@@ -1,13 +1,15 @@
 {
   "name": "fountain-macro-assistant-landing",
-  "version": "1.0.1",
+  "version": "3.0.0",
   "description": "Landing page for Fountain - Macro Assistant Chrome Extension",
   "scripts": {
-    "build": "echo 'Static site - no build needed'"
+    "build": "node scripts/sync-extension.js",
+    "sync": "node scripts/sync-extension.js",
+    "zip": "node update-extension-zip.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.0",
-    "@upstash/redis": "^1.28.0"
-  },
-  "devDependencies": {}
+    "@upstash/redis": "^1.28.0",
+    "archiver": "^6.0.2"
+  }
 }

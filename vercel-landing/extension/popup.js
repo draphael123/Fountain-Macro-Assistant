@@ -5,8 +5,6 @@ let macros = [];
 let folders = [];
 let macroStats = {};
 let counters = {};
-let trash = []; // Recently deleted macros
-let autoCorrections = {}; // Auto-correct typo mappings
 let currentEditingId = null;
 let selectedFolderId = 'all';
 let sortBy = 'name';
@@ -17,14 +15,10 @@ let draggedItem = null;
 let lightMode = false;
 let isFirstRun = false;
 let onboardingStep = 0;
-const TRASH_RETENTION_DAYS = 30;
 
 // Templates
 const TEMPLATES = [
-  { icon: '📧', title: 'Email Signature', desc: 'Professional sign-off', shortcut: '/sig', expansion: 'Best regards,\n{input:Your Name}\n{input:Title} | {input:Company}', category: 'signature' },
-  { icon: '💼', title: 'Professional Signature', desc: 'Formal business signature', shortcut: '/sigpro', expansion: 'Best regards,\n{input:Your Name}\n{input:Title}\n{input:Company}\nEmail: {input:Email}', category: 'signature' },
-  { icon: '👋', title: 'Casual Signature', desc: 'Friendly sign-off', shortcut: '/sigcasual', expansion: 'Thanks!\n{input:Your Name}\n{input:Email}', category: 'signature' },
-  { icon: '✍️', title: 'Formal Signature', desc: 'Very formal signature', shortcut: '/sigformal', expansion: 'Sincerely,\n{input:Your Name}\n{input:Title}\n{input:Company}', category: 'signature' },
+  { icon: '📧', title: 'Email Signature', desc: 'Professional sign-off', shortcut: '/sig', expansion: 'Best regards,\n{input:Your Name}\n{input:Title} | {input:Company}' },
   { icon: '📅', title: 'Meeting Request', desc: 'Quick meeting invite', shortcut: '/meet', expansion: 'Hi {input:Name},\n\nWould you be available for a meeting on {input:Date}?\n\n{cursor}' },
   { icon: '👋', title: 'Smart Greeting', desc: 'Time-based hello', shortcut: '/greet', expansion: 'Hello!', conditions: { expansions: [{ expansion: 'Good morning! ☀️', timeRange: { start: 0, end: 12 }}, { expansion: 'Good afternoon! 🌤️', timeRange: { start: 12, end: 18 }}, { expansion: 'Good evening! 🌙', timeRange: { start: 18, end: 24 }}]}},
   { icon: '🙏', title: 'Thank You', desc: 'Appreciation message', shortcut: '/ty', expansion: 'Thank you so much! I really appreciate your help. 🙏' },
@@ -58,11 +52,31 @@ const ONBOARDING_STEPS = [
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
   await loadData();
-  loadViewMode();
   setupEventListeners();
   checkFirstRun();
   checkPendingMacro();
+  // Update sync button state on load
+  updateSyncButtonState();
 });
+
+// Update sync button state without opening modal
+async function updateSyncButtonState() {
+  try {
+    const isLoggedIn = await CloudSync.isLoggedIn();
+    const syncBtn = document.getElementById('syncBtn');
+    if (syncBtn) {
+      if (isLoggedIn) {
+        syncBtn.classList.add('synced');
+        syncBtn.textContent = '✓ Synced';
+      } else {
+        syncBtn.classList.remove('synced');
+        syncBtn.textContent = '☁️ Sync';
+      }
+    }
+  } catch (e) {
+    console.error('Error updating sync button state:', e);
+  }
+}
 
 // Check for pending macro from context menu
 async function checkPendingMacro() {
@@ -95,28 +109,19 @@ async function checkPendingMacro() {
 // Load all data
 async function loadData() {
   try {
-    const result = await chrome.storage.sync.get(['macros', 'folders', 'macroStats', 'counters', 'lightMode', 'hasOnboarded', 'autoCorrections']);
-    const localResult = await chrome.storage.local.get(['trash']);
-    
+    const result = await chrome.storage.sync.get(['macros', 'folders', 'macroStats', 'counters', 'lightMode', 'hasOnboarded']);
     macros = result.macros || [];
     folders = result.folders || [];
     macroStats = result.macroStats || {};
     counters = result.counters || {};
     lightMode = result.lightMode || false;
     isFirstRun = !result.hasOnboarded;
-    autoCorrections = result.autoCorrections || {};
-    trash = localResult.trash || [];
-    
-    // Clean up old trash items
-    cleanupTrash();
     
     applyTheme();
     updateFolderSelects();
     updateQuickStats();
-    renderPinnedMacros();
     renderFavorites();
     renderRecentMacros();
-    renderDomainSuggestions();
     renderMacros();
     generateHeatmap();
   } catch (error) {
@@ -128,10 +133,11 @@ async function loadData() {
 async function saveMacros() {
   await chrome.storage.sync.set({ macros });
   updateQuickStats();
-  renderPinnedMacros();
   renderFavorites();
   renderRecentMacros();
   renderMacros();
+  // Trigger cloud sync if enabled
+  triggerAutoSync();
 }
 
 // Save folders
@@ -233,64 +239,6 @@ function updateQuickStats() {
   document.getElementById('timeSaved').textContent = mins >= 60 ? `${Math.round(mins/60)}h` : `${mins}m`;
 }
 
-// Pinned macros
-const MAX_PINNED = 5;
-
-function renderPinnedMacros() {
-  const container = document.getElementById('pinnedMacros');
-  const section = document.getElementById('pinnedSection');
-  const countEl = document.getElementById('pinnedCount');
-  
-  const pinned = macros.filter(m => m.pinned);
-  
-  if (countEl) {
-    countEl.textContent = `${pinned.length}/${MAX_PINNED}`;
-  }
-  
-  if (pinned.length === 0) {
-    section.style.display = 'none';
-    return;
-  }
-  
-  section.style.display = 'block';
-  container.innerHTML = pinned.map(m => {
-    const stats = macroStats[m.id] || { count: 0 };
-    const preview = m.expansion.substring(0, 40) + (m.expansion.length > 40 ? '...' : '');
-    return `
-      <div class="pinned-macro-card" data-id="${m.id}" title="${escapeHtml(m.expansion.substring(0, 100))}">
-        <div class="pinned-macro-header">
-          <span class="pinned-icon">📌</span>
-          <span class="pinned-shortcut">${escapeHtml(m.shortcut)}</span>
-          <button class="unpin-btn" data-id="${m.id}" title="Unpin">✕</button>
-        </div>
-        <div class="pinned-macro-preview">${escapeHtml(preview)}</div>
-        ${stats.count > 0 ? `<div class="pinned-macro-stats">⚡ ${stats.count}x</div>` : ''}
-      </div>
-    `;
-  }).join('');
-  
-  // Click to edit
-  container.querySelectorAll('.pinned-macro-card').forEach(el => {
-    el.addEventListener('click', (e) => {
-      if (e.target.classList.contains('unpin-btn')) return;
-      editMacro(el.dataset.id);
-    });
-  });
-  
-  // Unpin button
-  container.querySelectorAll('.unpin-btn').forEach(btn => {
-    btn.addEventListener('click', async (e) => {
-      e.stopPropagation();
-      const macro = macros.find(m => m.id === btn.dataset.id);
-      if (macro) {
-        macro.pinned = false;
-        await saveMacros();
-        showToast('Macro unpinned', 'success');
-      }
-    });
-  });
-}
-
 // Favorites
 function renderFavorites() {
   const container = document.getElementById('favoritesMacros');
@@ -335,9 +283,9 @@ function renderRecentMacros() {
   container.innerHTML = recent.map(m => {
     const stat = macroStats[m.id] || { count: 0 };
     return `
-      <div class="recent-macro-chip" data-id="${m.id}" title="${escapeHtml(m.expansion.substring(0, 50))}">
+      <div class="recent-macro-chip" data-id="${m.id}">
         <span class="shortcut">${escapeHtml(m.shortcut)}</span>
-        <span class="usage">${stat.count}x</span>
+        <span class="usage">${stat.count}</span>
       </div>
     `;
   }).join('');
@@ -345,80 +293,6 @@ function renderRecentMacros() {
   container.querySelectorAll('.recent-macro-chip').forEach(el => {
     el.addEventListener('click', () => editMacro(el.dataset.id));
   });
-}
-
-// Domain Suggestions
-async function renderDomainSuggestions() {
-  try {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    if (!tab?.url) return;
-    
-    const url = new URL(tab.url);
-    const domain = url.hostname.replace('www.', '');
-    const section = document.getElementById('domainSuggestionsSection');
-    const container = document.getElementById('suggestedMacros');
-    const domainName = document.getElementById('currentDomainName');
-    
-    // Find macros that match this domain
-    const suggested = macros.filter(m => 
-      m.enabled !== false &&
-      (m.domains || []).some(d => domain.includes(d) || d.includes(domain))
-    ).slice(0, 5);
-    
-    if (suggested.length === 0) {
-      section.style.display = 'none';
-      return;
-    }
-    
-    section.style.display = 'block';
-    domainName.textContent = domain;
-    container.innerHTML = suggested.map(m => `
-      <div class="suggested-macro-chip" data-id="${m.id}" title="${escapeHtml(m.expansion.substring(0, 50))}">
-        <span class="shortcut">${escapeHtml(m.shortcut)}</span>
-        <span class="indicator">🌐</span>
-      </div>
-    `).join('');
-    
-    container.querySelectorAll('.suggested-macro-chip').forEach(el => {
-      el.addEventListener('click', () => editMacro(el.dataset.id));
-    });
-  } catch (e) {
-    console.error('Domain suggestions error:', e);
-  }
-}
-
-// Sample Macros
-async function addSampleMacros() {
-  const samples = [
-    { shortcut: '/email', expansion: 'your.email@example.com', tags: ['contact'] },
-    { shortcut: '/sig', expansion: 'Best regards,\nYour Name', tags: ['signature'] },
-    { shortcut: '/date', expansion: '{date:YYYY-MM-DD}', tags: ['date-time'] },
-    { shortcut: '/time', expansion: '{time:HH:mm}', tags: ['date-time'] },
-    { shortcut: '/phone', expansion: '(555) 123-4567', tags: ['contact'] }
-  ];
-  
-  let added = 0;
-  samples.forEach(sample => {
-    if (!macros.some(m => m.shortcut === sample.shortcut)) {
-      macros.push({
-        id: Date.now().toString() + Math.random(),
-        shortcut: sample.shortcut,
-        expansion: sample.expansion,
-        tags: sample.tags || [],
-        enabled: true,
-        createdAt: new Date().toISOString()
-      });
-      added++;
-    }
-  });
-  
-  if (added > 0) {
-    await saveMacros();
-    showToast(`Added ${added} sample macros! 🎉`, 'success');
-    renderMacros();
-  } else {
-    showToast('Sample macros already exist', 'info');
-  }
 }
 
 // Render macros
@@ -437,16 +311,7 @@ function renderMacros(filter = '') {
       (selectedFolderId === '' && !m.folderId) ||
       m.folderId === selectedFolderId;
     
-    // Apply active filters
-    let matchesFilters = true;
-    activeFilters.forEach(f => {
-      if (f === 'pinned' && !m.pinned) matchesFilters = false;
-      if (f === 'favorites' && !m.favorited) matchesFilters = false;
-      if (f === 'recent' && (!macroStats[m.id] || !macroStats[m.id].lastUsed)) matchesFilters = false;
-      if (f.startsWith('tag:') && !(m.tags || []).includes(f.replace('tag:', ''))) matchesFilters = false;
-    });
-    
-    return matchesSearch && matchesFolder && matchesFilters;
+    return matchesSearch && matchesFolder;
   });
   
   filtered = sortMacros(filtered);
@@ -472,180 +337,45 @@ function renderMacros(filter = '') {
     }
   });
   
-  // Apply view mode
-  list.className = `macros-list view-${currentViewMode}`;
-  
   let html = '';
   
-  // For grid/compact views, don't group by folder
-  if (currentViewMode === 'grid' || currentViewMode === 'compact') {
-    html = filtered.map(m => renderMacroItem(m, filter)).join('');
-  } else {
-    // Render folders (list view)
-    Object.keys(byFolder).forEach(folderId => {
-      const folder = folders.find(f => f.id === folderId);
-      if (!folder) return;
-      
-      html += `
-        <div class="folder-section">
-          <div class="folder-header">
-            <span class="folder-icon" style="color: ${folder.color || '#c44eff'}">📁</span>
-            <span class="folder-name">${escapeHtml(folder.name)}</span>
-            <span class="folder-count">${byFolder[folderId].length}</span>
-          </div>
-          <div class="folder-macros">
-            ${byFolder[folderId].map(m => renderMacroItem(m, filter)).join('')}
-          </div>
-        </div>
-      `;
-    });
+  // Render folders
+  Object.keys(byFolder).forEach(folderId => {
+    const folder = folders.find(f => f.id === folderId);
+    if (!folder) return;
     
-    // Unfiled macros
-    if (noFolder.length > 0 && (selectedFolderId === 'all' || selectedFolderId === '')) {
-      html += `
-        <div class="folder-section">
-          <div class="folder-header">
-            <span class="folder-icon">📄</span>
-            <span class="folder-name">Unfiled</span>
-            <span class="folder-count">${noFolder.length}</span>
-          </div>
-          <div class="folder-macros">
-            ${noFolder.map(m => renderMacroItem(m, filter)).join('')}
-          </div>
+    html += `
+      <div class="folder-section">
+        <div class="folder-header">
+          <span class="folder-icon" style="color: ${folder.color || '#c44eff'}">📁</span>
+          <span class="folder-name">${escapeHtml(folder.name)}</span>
+          <span class="folder-count">${byFolder[folderId].length}</span>
         </div>
-      `;
-    }
+        <div class="folder-macros">
+          ${byFolder[folderId].map(m => renderMacroItem(m, filter)).join('')}
+        </div>
+      </div>
+    `;
+  });
+  
+  // Unfiled macros
+  if (noFolder.length > 0 && (selectedFolderId === 'all' || selectedFolderId === '')) {
+    html += `
+      <div class="folder-section">
+        <div class="folder-header">
+          <span class="folder-icon">📄</span>
+          <span class="folder-name">Unfiled</span>
+          <span class="folder-count">${noFolder.length}</span>
+        </div>
+        <div class="folder-macros">
+          ${noFolder.map(m => renderMacroItem(m, filter)).join('')}
+        </div>
+      </div>
+    `;
   }
   
   list.innerHTML = html;
   setupMacroListeners();
-  setupContextMenu();
-  setupDragAndDrop();
-  
-  // Update search suggestions
-  updateSearchSuggestions(filter);
-}
-
-// Context Menu
-let contextMenuMacroId = null;
-
-function setupContextMenu() {
-  document.addEventListener('click', () => hideContextMenu());
-  document.getElementById('contextMenu')?.querySelectorAll('.context-menu-item').forEach(item => {
-    item.addEventListener('click', e => {
-      e.stopPropagation();
-      handleContextAction(item.dataset.action);
-    });
-  });
-}
-
-function showContextMenu(x, y, macroId) {
-  contextMenuMacroId = macroId;
-  const menu = document.getElementById('contextMenu');
-  menu.style.display = 'block';
-  menu.style.left = `${x}px`;
-  menu.style.top = `${y}px`;
-  
-  // Adjust if off-screen
-  const rect = menu.getBoundingClientRect();
-  if (rect.right > window.innerWidth) menu.style.left = `${x - rect.width}px`;
-  if (rect.bottom > window.innerHeight) menu.style.top = `${y - rect.height}px`;
-  
-  // Update favorite button state
-  const macro = macros.find(m => m.id === macroId);
-  const favBtn = menu.querySelector('[data-action="favorite"]');
-  if (favBtn && macro) {
-    favBtn.querySelector('span').textContent = macro.favorited ? '⭐ Unfavorite' : '⭐ Favorite';
-  }
-  
-  // Update pin button state
-  const pinBtn = menu.querySelector('[data-action="pin"]');
-  if (pinBtn && macro) {
-    const pinnedCount = macros.filter(m => m.pinned).length;
-    const canPin = macro.pinned || pinnedCount < MAX_PINNED;
-    pinBtn.querySelector('span').textContent = macro.pinned ? '📌 Unpin' : '📌 Pin to Top';
-    pinBtn.disabled = !canPin && !macro.pinned;
-    pinBtn.title = !canPin && !macro.pinned ? `Max ${MAX_PINNED} pinned macros` : '';
-  }
-}
-
-function hideContextMenu() {
-  const menu = document.getElementById('contextMenu');
-  if (menu) menu.style.display = 'none';
-  contextMenuMacroId = null;
-}
-
-async function handleContextAction(action) {
-  if (!contextMenuMacroId) return;
-  const macro = macros.find(m => m.id === contextMenuMacroId);
-  if (!macro) return;
-  
-  switch(action) {
-    case 'edit':
-      editMacro(contextMenuMacroId);
-      break;
-    case 'duplicate':
-      duplicateMacroById(contextMenuMacroId);
-      break;
-    case 'favorite':
-      macro.favorited = !macro.favorited;
-      await saveMacros();
-      showToast(macro.favorited ? 'Added to favorites' : 'Removed from favorites', 'success');
-      break;
-    case 'pin':
-      const pinnedCount = macros.filter(m => m.pinned).length;
-      if (macro.pinned) {
-        macro.pinned = false;
-        await saveMacros();
-        showToast('Macro unpinned', 'success');
-      } else if (pinnedCount < MAX_PINNED) {
-        macro.pinned = true;
-        await saveMacros();
-        showToast('Macro pinned to top!', 'success');
-      } else {
-        showToast(`Max ${MAX_PINNED} pinned macros allowed`, 'warning');
-      }
-      break;
-    case 'copy-shortcut':
-      navigator.clipboard.writeText(macro.shortcut);
-      showToast('Shortcut copied!', 'success');
-      break;
-    case 'copy-expansion':
-      navigator.clipboard.writeText(macro.expansion);
-      showToast('Expansion copied!', 'success');
-      break;
-    case 'delete':
-      if (confirm('Delete this macro?')) {
-        await deleteMacroById(contextMenuMacroId);
-      }
-      break;
-  }
-  hideContextMenu();
-  renderMacros();
-}
-
-function duplicateMacroById(macroId) {
-  const macro = macros.find(m => m.id === macroId);
-  if (!macro) return;
-  
-  const duplicate = {
-    ...macro,
-    id: Date.now().toString(),
-    shortcut: macro.shortcut + '-copy',
-    createdAt: new Date().toISOString()
-  };
-  
-  macros.push(duplicate);
-  saveMacros();
-  showToast('Macro duplicated!', 'success');
-  renderMacros();
-}
-
-async function deleteMacroById(macroId) {
-  macros = macros.filter(m => m.id !== macroId);
-  await saveMacros();
-  showToast('Macro deleted', 'success');
-  renderMacros();
 }
 
 // Render single macro item
@@ -654,68 +384,25 @@ function renderMacroItem(macro, filter = '') {
   const isSelected = selectedMacros.has(macro.id);
   const isEnabled = macro.enabled !== false;
   const isFavorite = macro.favorited;
-  const isPinned = macro.pinned;
-  const isRecent = stats.lastUsed && (Date.now() - stats.lastUsed < 86400000); // Last 24h
   
   const shortcutDisplay = filter ? highlight(macro.shortcut, filter) : escapeHtml(macro.shortcut);
   const preview = macro.expansion.substring(0, 80) + (macro.expansion.length > 80 ? '...' : '');
   
   const indicators = [];
-  if (macro.pinned) indicators.push('<span class="indicator pinned" title="Pinned">📌</span>');
   if (macro.aliases?.length) indicators.push('<span class="indicator alias" title="Has aliases">🔗</span>');
   if (macro.conditions && Object.keys(macro.conditions).length) indicators.push('<span class="indicator condition" title="Conditional">⚡</span>');
   if (macro.domains?.length) indicators.push('<span class="indicator domain" title="Domain filter">🌐</span>');
   if (macro.isRegex) indicators.push('<span class="indicator regex" title="Regex pattern">🎯</span>');
   if (macro.expansion.includes('{js:')) indicators.push('<span class="indicator js" title="JavaScript">💻</span>');
   
-  const viewClass = currentViewMode === 'grid' ? 'macro-card' : currentViewMode === 'compact' ? 'macro-compact' : 'macro-item';
-  
-  if (currentViewMode === 'grid') {
-    return `
-      <div class="${viewClass} ${isSelected ? 'selected' : ''} ${!isEnabled ? 'disabled' : ''} ${isFavorite ? 'favorited' : ''} ${isPinned ? 'pinned' : ''} ${isRecent ? 'recent' : ''}" 
-           data-macro-id="${macro.id}" data-id="${macro.id}" draggable="true" role="listitem"
-           aria-label="Macro ${escapeHtml(macro.shortcut)}">
-        <div class="macro-card-header">
-          <input type="checkbox" class="macro-checkbox" ${isSelected ? 'checked' : ''} data-id="${macro.id}" aria-label="Select macro">
-          ${isPinned ? '<span class="pin-indicator" title="Pinned">📌</span>' : ''}
-          <button class="favorite-btn ${isFavorite ? 'active' : ''}" data-id="${macro.id}" title="${isFavorite ? 'Unfavorite' : 'Favorite'}" aria-label="${isFavorite ? 'Unfavorite' : 'Favorite'}">⭐</button>
-        </div>
-        <div class="macro-card-shortcut">${shortcutDisplay}</div>
-        <div class="macro-card-preview">${escapeHtml(preview)}</div>
-        <div class="macro-card-indicators">${indicators.join('')}</div>
-        <div class="macro-card-stats">${stats.count > 0 ? `<span>${stats.count}x</span>` : ''}</div>
-        <div class="macro-card-actions">
-          <button class="quick-action-btn" data-action="copy" data-id="${macro.id}" title="Copy shortcut">📝</button>
-          <button class="quick-action-btn" data-action="edit" data-id="${macro.id}" title="Edit">✏️</button>
-        </div>
-      </div>
-    `;
-  }
-  
-  if (currentViewMode === 'compact') {
-    return `
-      <div class="${viewClass} ${isSelected ? 'selected' : ''} ${!isEnabled ? 'disabled' : ''} ${isFavorite ? 'favorited' : ''} ${isPinned ? 'pinned' : ''}" 
-           data-macro-id="${macro.id}" data-id="${macro.id}" draggable="true" role="listitem">
-        <input type="checkbox" class="macro-checkbox" ${isSelected ? 'checked' : ''} data-id="${macro.id}">
-        ${isPinned ? '<span class="pin-indicator-compact">📌</span>' : ''}
-        <span class="macro-shortcut-compact">${shortcutDisplay}</span>
-        <span class="macro-preview-compact">${escapeHtml(preview)}</span>
-        ${isFavorite ? '<span class="favorite-indicator">⭐</span>' : ''}
-        ${stats.count > 0 ? `<span class="usage-count">${stats.count}</span>` : ''}
-      </div>
-    `;
-  }
-  
   return `
-    <div class="${viewClass} ${isSelected ? 'selected' : ''} ${!isEnabled ? 'disabled' : ''} ${isFavorite ? 'favorited' : ''} ${isPinned ? 'pinned' : ''} ${isRecent ? 'recent' : ''}" 
-         data-macro-id="${macro.id}" data-id="${macro.id}" draggable="true" role="listitem"
-         aria-label="Macro ${escapeHtml(macro.shortcut)}">
+    <div class="macro-item ${isSelected ? 'selected' : ''} ${!isEnabled ? 'disabled' : ''} ${isFavorite ? 'favorited' : ''}" 
+         data-id="${macro.id}" draggable="true">
       <div class="macro-header">
         <div class="macro-header-left">
           <input type="checkbox" class="macro-checkbox" ${isSelected ? 'checked' : ''} data-id="${macro.id}">
           <span class="drag-handle">⠿</span>
           <div class="macro-shortcut">
-            ${isPinned ? '<span class="pin-badge">📌</span>' : ''}
             ${shortcutDisplay}
             <div class="macro-indicators">${indicators.join('')}</div>
           </div>
@@ -740,31 +427,18 @@ function renderMacroItem(macro, filter = '') {
 
 // Setup macro event listeners
 function setupMacroListeners() {
-  document.querySelectorAll('[data-macro-id]').forEach(el => {
+  document.querySelectorAll('.macro-item').forEach(el => {
     el.addEventListener('click', e => {
       if (e.target.classList.contains('macro-checkbox') || 
           e.target.classList.contains('toggle-switch') ||
           e.target.classList.contains('favorite-btn') ||
-          e.target.classList.contains('drag-handle') ||
-          e.target.classList.contains('quick-action-btn')) return;
-      editMacro(el.dataset.macroId);
+          e.target.classList.contains('drag-handle')) return;
+      editMacro(el.dataset.id);
     });
     
-    // Right-click context menu
-    el.addEventListener('contextmenu', e => {
-      e.preventDefault();
-      showContextMenu(e.pageX, e.pageY, el.dataset.macroId);
+    el.addEventListener('dblclick', e => {
+      // Quick inline edit could go here
     });
-    
-    // Hover preview for grid view
-    if (currentViewMode === 'grid') {
-      el.addEventListener('mouseenter', () => {
-        showHoverPreview(el, el.dataset.macroId);
-      });
-      el.addEventListener('mouseleave', () => {
-        hideHoverPreview();
-      });
-    }
     
     // Drag & drop
     el.addEventListener('dragstart', handleDragStart);
@@ -772,25 +446,6 @@ function setupMacroListeners() {
     el.addEventListener('dragover', handleDragOver);
     el.addEventListener('drop', handleDrop);
     el.addEventListener('dragleave', e => e.currentTarget.classList.remove('drag-over'));
-  });
-  
-  // Quick action buttons
-  document.querySelectorAll('.quick-action-btn').forEach(btn => {
-    btn.addEventListener('click', async e => {
-      e.stopPropagation();
-      const macroId = btn.dataset.id;
-      const action = btn.dataset.action;
-      
-      if (action === 'copy') {
-        const macro = macros.find(m => m.id === macroId);
-        if (macro) {
-          await navigator.clipboard.writeText(macro.shortcut);
-          showToast('Shortcut copied!', 'success');
-        }
-      } else if (action === 'edit') {
-        editMacro(macroId);
-      }
-    });
   });
   
   // Checkboxes
@@ -910,25 +565,6 @@ async function bulkFavorite() {
   clearSelection();
   await saveMacros();
   showToast('Added to favorites ⭐', 'success');
-}
-
-async function bulkPin() {
-  const currentPinnedCount = macros.filter(m => m.pinned).length;
-  const selectedCount = selectedMacros.size;
-  const alreadyPinnedSelected = macros.filter(m => selectedMacros.has(m.id) && m.pinned).length;
-  const newPinsNeeded = selectedCount - alreadyPinnedSelected;
-  
-  if (currentPinnedCount + newPinsNeeded > MAX_PINNED) {
-    showToast(`Can only pin ${MAX_PINNED} macros. ${MAX_PINNED - currentPinnedCount} slots available.`, 'warning');
-    return;
-  }
-  
-  macros.forEach(m => {
-    if (selectedMacros.has(m.id)) m.pinned = true;
-  });
-  clearSelection();
-  await saveMacros();
-  showToast('Pinned selected macros 📌', 'success');
 }
 
 async function bulkMove(folderId) {
@@ -1088,9 +724,8 @@ async function saveMacro() {
   const tagsRaw = document.getElementById('tagsInput').value.trim();
   const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(t => t) : [];
   
-  // Check duplicates/conflicts
+  // Check duplicates
   const allShortcuts = [shortcut, ...aliases];
-  const conflicts = checkConflicts(shortcut, currentEditingId);
   const duplicate = macros.find(m => {
     if (m.id === currentEditingId) return false;
     const mShortcuts = [m.shortcut, ...(m.aliases || [])];
@@ -1179,263 +814,12 @@ async function duplicateMacro() {
 // Delete macro
 async function deleteMacro() {
   if (!currentEditingId) return;
-  if (confirm('Move this macro to trash? You can restore it within 30 days.')) {
-    const macro = macros.find(m => m.id === currentEditingId);
-    if (macro) {
-      // Move to trash with deletion timestamp
-      trash.push({ ...macro, deletedAt: Date.now() });
-      await chrome.storage.local.set({ trash });
-    }
+  if (confirm('Delete this macro?')) {
     macros = macros.filter(m => m.id !== currentEditingId);
     await saveMacros();
     closeModal('macroModal');
-    showToast('Moved to trash. Can restore within 30 days.', 'success');
+    showToast('Macro deleted', 'success');
   }
-}
-
-// Trash management functions
-async function cleanupTrash() {
-  const cutoff = Date.now() - (TRASH_RETENTION_DAYS * 24 * 60 * 60 * 1000);
-  const before = trash.length;
-  trash = trash.filter(m => m.deletedAt > cutoff);
-  if (trash.length !== before) {
-    await chrome.storage.local.set({ trash });
-  }
-}
-
-async function restoreFromTrash(macroId) {
-  const idx = trash.findIndex(m => m.id === macroId);
-  if (idx === -1) return;
-  
-  const macro = trash[idx];
-  delete macro.deletedAt;
-  macros.push(macro);
-  trash.splice(idx, 1);
-  
-  await chrome.storage.local.set({ trash });
-  await saveMacros();
-  showToast('Macro restored! 🎉', 'success');
-}
-
-async function permanentDelete(macroId) {
-  if (!confirm('Permanently delete this macro? This cannot be undone.')) return;
-  
-  trash = trash.filter(m => m.id !== macroId);
-  await chrome.storage.local.set({ trash });
-  showToast('Permanently deleted', 'success');
-  renderTrash();
-}
-
-async function emptyTrash() {
-  if (!confirm(`Permanently delete all ${trash.length} items in trash? This cannot be undone.`)) return;
-  
-  trash = [];
-  await chrome.storage.local.set({ trash });
-  showToast('Trash emptied', 'success');
-  closeModal('trashModal');
-}
-
-function renderTrash() {
-  const container = document.getElementById('trashList');
-  const countEl = document.getElementById('trashCount');
-  
-  if (countEl) countEl.textContent = trash.length;
-  if (!container) return;
-  
-  if (trash.length === 0) {
-    container.innerHTML = '<div class="empty-trash">🗑️ Trash is empty</div>';
-    return;
-  }
-  
-  container.innerHTML = trash.map(m => {
-    const daysAgo = Math.floor((Date.now() - m.deletedAt) / (24 * 60 * 60 * 1000));
-    const daysLeft = TRASH_RETENTION_DAYS - daysAgo;
-    return `
-      <div class="trash-item" data-id="${m.id}">
-        <div class="trash-item-info">
-          <span class="trash-shortcut">${escapeHtml(m.shortcut)}</span>
-          <span class="trash-preview">${escapeHtml(m.expansion.substring(0, 50))}...</span>
-          <span class="trash-meta">${daysLeft} days left</span>
-        </div>
-        <div class="trash-actions">
-          <button class="btn btn-sm btn-primary restore-btn" data-id="${m.id}">↩️ Restore</button>
-          <button class="btn btn-sm btn-danger delete-btn" data-id="${m.id}">🗑️</button>
-        </div>
-      </div>
-    `;
-  }).join('');
-  
-  // Event listeners
-  container.querySelectorAll('.restore-btn').forEach(btn => {
-    btn.addEventListener('click', () => restoreFromTrash(btn.dataset.id));
-  });
-  container.querySelectorAll('.delete-btn').forEach(btn => {
-    btn.addEventListener('click', () => permanentDelete(btn.dataset.id));
-  });
-}
-
-function openTrash() {
-  renderTrash();
-  showModal('trashModal');
-}
-
-// === IMPORT FUNCTIONALITY ===
-let currentImportType = 'fountain';
-
-function openImport() {
-  showModal('importModal');
-}
-
-function triggerImport(type) {
-  currentImportType = type;
-  const input = document.getElementById('importFileInput');
-  input.accept = type === 'fountain' ? '.json' : '.csv';
-  input.click();
-}
-
-async function handleImportFile(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  
-  try {
-    const text = await file.text();
-    let imported = [];
-    
-    if (currentImportType === 'fountain') {
-      imported = importFountainJSON(text);
-    } else if (currentImportType === 'textexpander') {
-      imported = importTextExpanderCSV(text);
-    } else if (currentImportType === 'atext') {
-      imported = importATextCSV(text);
-    }
-    
-    if (imported.length > 0) {
-      macros.push(...imported);
-      await saveMacros();
-      closeModal('importModal');
-      showToast(`Imported ${imported.length} macros! 🎉`, 'success');
-    } else {
-      showToast('No macros found in file', 'error');
-    }
-  } catch (err) {
-    console.error('Import error:', err);
-    showToast('Error importing file: ' + err.message, 'error');
-  }
-  
-  e.target.value = ''; // Reset input
-}
-
-function importFountainJSON(text) {
-  const data = JSON.parse(text);
-  const items = data.macros || data;
-  
-  return (Array.isArray(items) ? items : []).map(m => ({
-    ...m,
-    id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
-    createdAt: new Date().toISOString()
-  }));
-}
-
-function importTextExpanderCSV(text) {
-  // TextExpander CSV format: abbreviation,plaintext content
-  const lines = parseCSV(text);
-  const imported = [];
-  
-  for (let i = 1; i < lines.length; i++) { // Skip header
-    const row = lines[i];
-    if (row.length >= 2) {
-      const shortcut = row[0]?.trim();
-      const expansion = row[1]?.trim() || row[2]?.trim(); // Some formats have content in column 2 or 3
-      
-      if (shortcut && expansion) {
-        imported.push({
-          id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
-          shortcut: shortcut.startsWith('/') ? shortcut : '/' + shortcut,
-          expansion: expansion.replace(/\\n/g, '\n'),
-          createdAt: new Date().toISOString(),
-          tags: ['imported', 'textexpander']
-        });
-      }
-    }
-  }
-  
-  return imported;
-}
-
-function importATextCSV(text) {
-  // aText CSV format: abbreviation,content
-  const lines = parseCSV(text);
-  const imported = [];
-  
-  for (let i = 1; i < lines.length; i++) {
-    const row = lines[i];
-    if (row.length >= 2) {
-      const shortcut = row[0]?.trim();
-      const expansion = row[1]?.trim();
-      
-      if (shortcut && expansion) {
-        imported.push({
-          id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
-          shortcut: shortcut.startsWith('/') ? shortcut : '/' + shortcut,
-          expansion: expansion.replace(/\\n/g, '\n'),
-          createdAt: new Date().toISOString(),
-          tags: ['imported', 'atext']
-        });
-      }
-    }
-  }
-  
-  return imported;
-}
-
-function parseCSV(text) {
-  const lines = [];
-  const rows = text.split(/\r?\n/);
-  
-  for (const row of rows) {
-    if (!row.trim()) continue;
-    
-    const cells = [];
-    let current = '';
-    let inQuotes = false;
-    
-    for (let i = 0; i < row.length; i++) {
-      const char = row[i];
-      
-      if (char === '"') {
-        if (inQuotes && row[i + 1] === '"') {
-          current += '"';
-          i++;
-        } else {
-          inQuotes = !inQuotes;
-        }
-      } else if (char === ',' && !inQuotes) {
-        cells.push(current);
-        current = '';
-      } else {
-        current += char;
-      }
-    }
-    cells.push(current);
-    lines.push(cells);
-  }
-  
-  return lines;
-}
-
-// === AUTO-CORRECT MODE ===
-async function saveAutoCorrections() {
-  await chrome.storage.sync.set({ autoCorrections });
-}
-
-function addAutoCorrection(typo, correction) {
-  autoCorrections[typo.toLowerCase()] = correction;
-  saveAutoCorrections();
-}
-
-function removeAutoCorrection(typo) {
-  delete autoCorrections[typo.toLowerCase()];
-  saveAutoCorrections();
 }
 
 // Conditional rows
@@ -1601,41 +985,16 @@ async function addTemplate(index) {
     return;
   }
   
-  let expansion = t.expansion;
-  
-  // If it's a signature template, try to use saved signature data
-  if (t.category === 'signature') {
-    try {
-      const result = await chrome.storage.sync.get(['signatureSettings']);
-      const sigSettings = result.signatureSettings || {};
-      if (sigSettings.name || sigSettings.email) {
-        // Replace placeholders with actual data
-        expansion = expansion
-          .replace(/{input:Your Name}/g, sigSettings.name || '{input:Your Name}')
-          .replace(/{input:Name}/g, sigSettings.name || '{input:Name}')
-          .replace(/{input:Title}/g, sigSettings.title || '{input:Title}')
-          .replace(/{input:Company}/g, sigSettings.company || '{input:Company}')
-          .replace(/{input:Email}/g, sigSettings.email || '{input:Email}')
-          .replace(/{input:Phone}/g, sigSettings.phone || '{input:Phone}')
-          .replace(/{input:Website}/g, sigSettings.website || '{input:Website}');
-      }
-    } catch (e) {
-      console.error('Error loading signature settings:', e);
-    }
-  }
-  
   macros.push({
     id: Date.now().toString(),
     shortcut: t.shortcut,
-    expansion: expansion,
+    expansion: t.expansion,
     isRegex: t.isRegex || false,
     conditions: t.conditions,
-    tags: t.category ? [t.category] : [],
     enabled: true
   });
   
-  await chrome.storage.sync.set({ macros });
-  renderMacros();
+  await saveMacros();
   closeModal('templatesModal');
   showToast(`Added "${t.title}" 🎉`, 'success');
 }
@@ -1720,127 +1079,6 @@ function updateDashboard() {
       </div>
     `).join('');
   }
-  
-  // Render usage insights
-  renderUsageInsights();
-}
-
-function renderUsageInsights() {
-  const container = document.getElementById('usageInsights');
-  if (!container) return;
-  
-  // Find never-used macros
-  const neverUsed = macros.filter(m => !macroStats[m.id] || macroStats[m.id].count === 0);
-  
-  // Find macros not used in 30+ days
-  const stale = macros.filter(m => {
-    const stat = macroStats[m.id];
-    if (!stat?.lastUsed) return false;
-    const daysSince = (Date.now() - stat.lastUsed) / (1000 * 60 * 60 * 24);
-    return daysSince > 30 && stat.count > 0;
-  });
-  
-  // Find similar shortcuts that might be confusing
-  const similar = findSimilarShortcuts();
-  
-  let html = '';
-  
-  if (neverUsed.length > 0) {
-    html += `
-      <div class="insights-card">
-        <div class="insights-card-title">⚠️ Never Used (${neverUsed.length})</div>
-        <div class="insights-list">
-          ${neverUsed.slice(0, 5).map(m => `
-            <div class="insights-item">
-              <span class="insights-item-shortcut">${escapeHtml(m.shortcut)}</span>
-              <span class="insights-item-action" data-action="delete" data-id="${m.id}">🗑️ Delete</span>
-            </div>
-          `).join('')}
-          ${neverUsed.length > 5 ? `<div style="text-align:center;font-size:11px;color:var(--text-muted);">+${neverUsed.length - 5} more</div>` : ''}
-        </div>
-      </div>
-    `;
-  }
-  
-  if (stale.length > 0) {
-    html += `
-      <div class="insights-card">
-        <div class="insights-card-title">💤 Not Used in 30+ Days (${stale.length})</div>
-        <div class="insights-list">
-          ${stale.slice(0, 5).map(m => `
-            <div class="insights-item">
-              <span class="insights-item-shortcut">${escapeHtml(m.shortcut)}</span>
-              <span class="insights-item-action" data-action="delete" data-id="${m.id}">🗑️ Delete</span>
-            </div>
-          `).join('')}
-        </div>
-      </div>
-    `;
-  }
-  
-  if (similar.length > 0) {
-    html += `
-      <div class="insights-card">
-        <div class="insights-card-title">🔀 Similar Shortcuts (may cause confusion)</div>
-        <div class="insights-list">
-          ${similar.slice(0, 5).map(pair => `
-            <div class="insights-item">
-              <span>
-                <span class="insights-item-shortcut">${escapeHtml(pair[0])}</span>
-                <span style="color:var(--text-muted);margin:0 4px;">≈</span>
-                <span class="insights-item-shortcut">${escapeHtml(pair[1])}</span>
-              </span>
-            </div>
-          `).join('')}
-        </div>
-      </div>
-    `;
-  }
-  
-  if (!html) {
-    html = '<div style="text-align:center;color:var(--text-muted);padding:20px;">✨ All macros are being used effectively!</div>';
-  }
-  
-  container.innerHTML = html;
-  
-  // Add event listeners for delete actions
-  container.querySelectorAll('[data-action="delete"]').forEach(el => {
-    el.addEventListener('click', async () => {
-      const id = el.dataset.id;
-      const macro = macros.find(m => m.id === id);
-      if (macro && confirm(`Delete "${macro.shortcut}"?`)) {
-        // Move to trash
-        trash.push({ ...macro, deletedAt: Date.now() });
-        await chrome.storage.local.set({ trash });
-        macros = macros.filter(m => m.id !== id);
-        await saveMacros();
-        renderUsageInsights();
-        showToast('Moved to trash', 'success');
-      }
-    });
-  });
-}
-
-function findSimilarShortcuts() {
-  const pairs = [];
-  
-  for (let i = 0; i < macros.length; i++) {
-    for (let j = i + 1; j < macros.length; j++) {
-      const a = macros[i].shortcut.toLowerCase();
-      const b = macros[j].shortcut.toLowerCase();
-      
-      // Check if very similar (edit distance <= 2)
-      if (levenshteinDistance(a, b) <= 2 && a !== b) {
-        pairs.push([macros[i].shortcut, macros[j].shortcut]);
-      }
-      // Or one is prefix of another
-      else if ((a.startsWith(b) || b.startsWith(a)) && a !== b && Math.abs(a.length - b.length) <= 2) {
-        pairs.push([macros[i].shortcut, macros[j].shortcut]);
-      }
-    }
-  }
-  
-  return pairs;
 }
 
 function generateHeatmap() {
@@ -1942,14 +1180,9 @@ function showToast(message, type = 'info') {
   
   const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
   const toast = document.createElement('div');
-  toast.className = `toast toast-${type}`;
-  toast.setAttribute('role', 'alert');
-  toast.setAttribute('aria-live', type === 'error' ? 'assertive' : 'polite');
+  toast.className = 'toast';
   toast.innerHTML = `<span class="toast-icon">${icons[type]}</span><span class="toast-message">${escapeHtml(message)}</span>`;
   document.body.appendChild(toast);
-  
-  // Add flash animation
-  setTimeout(() => toast.classList.add('toast-in'), 10);
   
   setTimeout(() => {
     toast.classList.add('toast-out');
@@ -1972,49 +1205,14 @@ function setupEventListeners() {
   // Theme
   document.getElementById('themeToggle')?.addEventListener('click', toggleTheme);
   
-  // More dropdown
-  const moreBtn = document.getElementById('moreBtn');
-  const moreDropdown = document.getElementById('moreDropdown');
-  if (moreBtn && moreDropdown) {
-    moreBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      moreDropdown.style.display = moreDropdown.style.display === 'none' ? 'block' : 'none';
-    });
-    document.addEventListener('click', () => {
-      moreDropdown.style.display = 'none';
-    });
-    moreDropdown.addEventListener('click', () => {
-      moreDropdown.style.display = 'none';
-    });
-  }
-  
   // Main buttons
   document.getElementById('addMacroBtn')?.addEventListener('click', openAddMacro);
   document.getElementById('emptyAddBtn')?.addEventListener('click', openAddMacro);
-  document.getElementById('emptyTemplateBtn')?.addEventListener('click', () => { closeModal('macroModal'); openTemplates(); });
-  document.getElementById('emptySampleBtn')?.addEventListener('click', addSampleMacros);
-  document.getElementById('clearRecentBtn')?.addEventListener('click', clearRecentStats);
   document.getElementById('addFolderBtn')?.addEventListener('click', openAddFolder);
   document.getElementById('helpBtn')?.addEventListener('click', () => showModal('helpModal'));
-  document.getElementById('settingsBtn')?.addEventListener('click', () => chrome.runtime.openOptionsPage());
   document.getElementById('templatesBtn')?.addEventListener('click', openTemplates);
   document.getElementById('packagesBtn')?.addEventListener('click', openPackages);
   document.getElementById('dashboardBtn')?.addEventListener('click', openDashboard);
-  document.getElementById('trashBtn')?.addEventListener('click', openTrash);
-  document.getElementById('importBtn')?.addEventListener('click', openImport);
-  
-  // Trash modal
-  document.getElementById('closeTrashModal')?.addEventListener('click', () => closeModal('trashModal'));
-  document.getElementById('closeTrashBtn')?.addEventListener('click', () => closeModal('trashModal'));
-  document.getElementById('emptyTrashBtn')?.addEventListener('click', emptyTrash);
-  
-  // Import modal
-  document.getElementById('closeImportModal')?.addEventListener('click', () => closeModal('importModal'));
-  document.getElementById('closeImportBtn')?.addEventListener('click', () => closeModal('importModal'));
-  document.getElementById('importFountainBtn')?.addEventListener('click', () => triggerImport('fountain'));
-  document.getElementById('importTextExpanderBtn')?.addEventListener('click', () => triggerImport('textexpander'));
-  document.getElementById('importATextBtn')?.addEventListener('click', () => triggerImport('atext'));
-  document.getElementById('importFileInput')?.addEventListener('change', handleImportFile);
   
   // Search & filters
   document.getElementById('searchInput')?.addEventListener('input', e => renderMacros(e.target.value));
@@ -2031,7 +1229,6 @@ function setupEventListeners() {
   document.getElementById('bulkDeleteBtn')?.addEventListener('click', bulkDelete);
   document.getElementById('bulkExportBtn')?.addEventListener('click', bulkExport);
   document.getElementById('bulkFavoriteBtn')?.addEventListener('click', bulkFavorite);
-  document.getElementById('bulkPinBtn')?.addEventListener('click', bulkPin);
   document.getElementById('bulkMoveBtn')?.addEventListener('click', () => showModal('bulkMoveModal'));
   document.getElementById('bulkCancelBtn')?.addEventListener('click', clearSelection);
   document.getElementById('confirmBulkMoveBtn')?.addEventListener('click', () => bulkMove(document.getElementById('bulkFolderSelect')?.value));
@@ -2042,7 +1239,6 @@ function setupEventListeners() {
   document.getElementById('closeModal')?.addEventListener('click', () => closeModal('macroModal'));
   document.getElementById('cancelBtn')?.addEventListener('click', () => closeModal('macroModal'));
   document.getElementById('saveMacroBtn')?.addEventListener('click', saveMacro);
-  setupConflictChecker();
   document.getElementById('deleteMacroBtn')?.addEventListener('click', deleteMacro);
   document.getElementById('duplicateMacroBtn')?.addEventListener('click', duplicateMacro);
   document.getElementById('testExpansionBtn')?.addEventListener('click', testExpansion);
@@ -2106,12 +1302,29 @@ function setupEventListeners() {
   document.getElementById('closeDashboardBtn')?.addEventListener('click', () => closeModal('dashboardModal'));
   document.getElementById('resetStatsBtn')?.addEventListener('click', resetStats);
   
+  // Cloud Sync
+  document.getElementById('syncBtn')?.addEventListener('click', openSyncModal);
+  document.getElementById('closeSyncModal')?.addEventListener('click', () => closeModal('syncModal'));
+  document.getElementById('loginBtn')?.addEventListener('click', handleLogin);
+  document.getElementById('registerBtn')?.addEventListener('click', handleRegister);
+  document.getElementById('logoutBtn')?.addEventListener('click', handleLogout);
+  document.getElementById('syncNowBtn')?.addEventListener('click', handleSyncNow);
+  document.getElementById('downloadFromCloudBtn')?.addEventListener('click', handleDownloadFromCloud);
+  
+  // Sync tab switching
+  document.querySelectorAll('.sync-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.sync-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const isLogin = tab.dataset.tab === 'login';
+      document.getElementById('loginForm').style.display = isLogin ? 'flex' : 'none';
+      document.getElementById('registerForm').style.display = isLogin ? 'none' : 'flex';
+    });
+  });
+  
   // Onboarding
   document.getElementById('onboardingNext')?.addEventListener('click', nextOnboardingStep);
   document.getElementById('onboardingSkip')?.addEventListener('click', closeOnboarding);
-  
-  // Keyboard navigation
-  setupKeyboardNavigation();
   
   // Close modals on backdrop click
   document.querySelectorAll('.modal').forEach(modal => {
@@ -2120,486 +1333,181 @@ function setupEventListeners() {
     });
   });
   
-  // Quick create
-  document.getElementById('quickCreateBtn')?.addEventListener('click', openQuickCreate);
-  document.getElementById('closeQuickCreateModal')?.addEventListener('click', () => closeModal('quickCreateModal'));
-  document.getElementById('cancelQuickCreateBtn')?.addEventListener('click', () => closeModal('quickCreateModal'));
-  document.getElementById('saveQuickCreateBtn')?.addEventListener('click', saveQuickCreate);
-  
-  // View toggles
-  document.getElementById('viewListBtn')?.addEventListener('click', () => setViewMode('list'));
-  document.getElementById('viewGridBtn')?.addEventListener('click', () => setViewMode('grid'));
-  document.getElementById('viewCompactBtn')?.addEventListener('click', () => setViewMode('compact'));
-  
-  // Filter buttons
-  document.getElementById('filterPinnedBtn')?.addEventListener('click', () => toggleFilter('pinned'));
-  document.getElementById('filterFavoritesBtn')?.addEventListener('click', () => toggleFilter('favorites'));
-  document.getElementById('filterRecentBtn')?.addEventListener('click', () => toggleFilter('recent'));
-  document.getElementById('filterTagsBtn')?.addEventListener('click', () => showTagFilter());
-  document.getElementById('clearFiltersBtn')?.addEventListener('click', clearAllFilters);
-  
-  // Keyboard shortcuts - comprehensive
-  setupKeyboardNavigation();
-}
-
-// Keyboard Navigation System
-let currentSelectedIndex = -1;
-let currentViewMode = 'list';
-let activeFilters = new Set();
-let searchDebounceTimer = null;
-
-function setupKeyboardNavigation() {
-  // Focus search on '/' key
+  // Keyboard shortcuts
   document.addEventListener('keydown', e => {
-    // Don't interfere if typing in input/textarea
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-      // Allow special shortcuts even in inputs
-      if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S')) {
-        e.preventDefault();
-        const modal = document.querySelector('.modal.active');
-        if (modal?.id === 'macroModal') {
-          saveMacro();
-        } else if (modal?.id === 'quickCreateModal') {
-          saveQuickCreate();
-        }
-        return;
-      }
-      return;
-    }
-    
-    // Global shortcuts
-    if (e.key === '/') {
-      e.preventDefault();
-      document.getElementById('searchInput')?.focus();
-      return;
-    }
-    
     if ((e.ctrlKey || e.metaKey) && e.key === 'n' && !e.shiftKey) {
       e.preventDefault();
       openAddMacro();
-      return;
     }
-    
     if ((e.ctrlKey || e.metaKey) && e.key === 'f' && !e.shiftKey) {
       e.preventDefault();
       document.getElementById('searchInput')?.focus();
-      return;
     }
-    
     if (e.key === 'Escape') {
-      // Close context menu first
-      const contextMenu = document.getElementById('contextMenu');
-      if (contextMenu && contextMenu.style.display !== 'none') {
-        hideContextMenu();
-        return;
-      }
-      // Then close modals
       document.querySelectorAll('.modal.active').forEach(m => closeModal(m.id));
-      return;
-    }
-    
-    // Navigation in macro list
-    const macros = Array.from(document.querySelectorAll('.macro-item[data-macro-id]'));
-    if (macros.length === 0) return;
-    
-    if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      currentSelectedIndex = Math.min(currentSelectedIndex + 1, macros.length - 1);
-      highlightMacro(macros[currentSelectedIndex]);
-      macros[currentSelectedIndex]?.scrollIntoView({ block: 'nearest' });
-      return;
-    }
-    
-    if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      currentSelectedIndex = Math.max(currentSelectedIndex - 1, -1);
-      if (currentSelectedIndex >= 0) {
-        highlightMacro(macros[currentSelectedIndex]);
-        macros[currentSelectedIndex]?.scrollIntoView({ block: 'nearest' });
-      } else {
-        clearMacroHighlight();
-      }
-      return;
-    }
-    
-    if (e.key === 'Enter' && currentSelectedIndex >= 0 && macros[currentSelectedIndex]) {
-      e.preventDefault();
-      const macroId = macros[currentSelectedIndex].dataset.macroId;
-      editMacro(macroId);
-      return;
-    }
-    
-    if ((e.key === 'Delete' || e.key === 'Backspace') && currentSelectedIndex >= 0 && macros[currentSelectedIndex]) {
-      e.preventDefault();
-      const macroId = macros[currentSelectedIndex].dataset.macroId;
-      if (confirm('Delete this macro?')) {
-        deleteMacroById(macroId);
-      }
-      return;
     }
   });
+}
+
+// ==================== CLOUD SYNC ====================
+
+async function openSyncModal() {
+  showModal('syncModal');
+  await updateSyncUI();
+}
+
+async function updateSyncUI() {
+  const isLoggedIn = await CloudSync.isLoggedIn();
   
-  // Search input enhancements
-  const searchInput = document.getElementById('searchInput');
-  if (searchInput) {
-    // Debounced search
-    searchInput.addEventListener('input', e => {
-      clearTimeout(searchDebounceTimer);
-      searchDebounceTimer = setTimeout(() => {
-        renderMacros(e.target.value);
-        currentSelectedIndex = -1;
-      }, 150);
-    });
-    
-    // Search shortcuts
-    searchInput.addEventListener('keydown', e => {
-      if (e.key === 'Enter' && e.target.value.startsWith(':')) {
-        handleSearchShortcut(e.target.value);
-        return;
-      }
-    });
-    
-    // Auto-focus on popup open
-    setTimeout(() => searchInput.focus(), 100);
-  }
-}
-
-function highlightMacro(element) {
-  document.querySelectorAll('.macro-item').forEach(el => el.classList.remove('keyboard-selected'));
-  element?.classList.add('keyboard-selected');
-}
-
-function clearMacroHighlight() {
-  document.querySelectorAll('.macro-item').forEach(el => el.classList.remove('keyboard-selected'));
-  currentSelectedIndex = -1;
-}
-
-// Quick Create
-async function openQuickCreate() {
-  const modal = document.getElementById('quickCreateModal');
-  showModal('quickCreateModal');
+  document.getElementById('syncAuthForm').style.display = isLoggedIn ? 'none' : 'block';
+  document.getElementById('syncStatus').style.display = isLoggedIn ? 'block' : 'none';
   
-  // Try to get clipboard content
-  try {
-    const clip = await navigator.clipboard.readText();
-    if (clip) {
-      document.getElementById('quickExpansionInput').value = clip;
+  const syncBtn = document.getElementById('syncBtn');
+  if (isLoggedIn) {
+    const user = await CloudSync.getUser();
+    const lastSync = await CloudSync.getLastSync();
+    
+    document.getElementById('syncUserName').textContent = user?.displayName || 'User';
+    document.getElementById('syncUserEmail').textContent = user?.email || '';
+    document.getElementById('lastSyncTime').textContent = lastSync ? 
+      new Date(lastSync).toLocaleString() : 'Never';
+    document.getElementById('syncedMacroCount').textContent = macros.length;
+    
+    // Update sync button indicator
+    if (syncBtn) {
+      syncBtn.classList.add('synced');
+      syncBtn.textContent = '✓ Synced';
     }
-  } catch (e) {}
-}
-
-async function saveQuickCreate() {
-  const shortcut = document.getElementById('quickShortcutInput').value.trim();
-  const expansion = document.getElementById('quickExpansionInput').value.trim();
-  
-  if (!shortcut || !expansion) {
-    showToast('Please fill in both fields', 'error');
-    return;
-  }
-  
-  // Check for duplicates
-  if (macros.some(m => m.shortcut.toLowerCase() === shortcut.toLowerCase())) {
-    if (!confirm('Shortcut already exists. Overwrite?')) return;
-    macros = macros.filter(m => m.shortcut.toLowerCase() !== shortcut.toLowerCase());
-  }
-  
-  macros.push({
-    id: Date.now().toString(),
-    shortcut,
-    expansion,
-    enabled: true,
-    createdAt: new Date().toISOString()
-  });
-  
-  await saveMacros();
-  closeModal('quickCreateModal');
-  document.getElementById('quickShortcutInput').value = '';
-  document.getElementById('quickExpansionInput').value = '';
-  showToast('Macro created! ✨', 'success');
-  renderMacros();
-}
-
-// View Modes
-function setViewMode(mode) {
-  currentViewMode = mode;
-  const list = document.getElementById('macrosList');
-  list.className = `macros-list view-${mode}`;
-  
-  document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
-  document.getElementById(`view${mode.charAt(0).toUpperCase() + mode.slice(1)}Btn`)?.classList.add('active');
-  
-  renderMacros(document.getElementById('searchInput')?.value || '');
-  localStorage.setItem('fountain-view-mode', mode);
-}
-
-// Filters
-function toggleFilter(filterType) {
-  if (activeFilters.has(filterType)) {
-    activeFilters.delete(filterType);
   } else {
-    activeFilters.add(filterType);
-  }
-  updateActiveFilters();
-  renderMacros(document.getElementById('searchInput')?.value || '');
-}
-
-function clearAllFilters() {
-  activeFilters.clear();
-  updateActiveFilters();
-  renderMacros(document.getElementById('searchInput')?.value || '');
-}
-
-function updateActiveFilters() {
-  const container = document.getElementById('activeFilters');
-  const list = document.getElementById('activeFiltersList');
-  
-  if (activeFilters.size === 0) {
-    container.style.display = 'none';
-    return;
-  }
-  
-  container.style.display = 'flex';
-  list.innerHTML = Array.from(activeFilters).map(f => 
-    `<span class="active-filter-tag">${f}<button class="remove-filter" data-filter="${f}">×</button></span>`
-  ).join('');
-  
-  list.querySelectorAll('.remove-filter').forEach(btn => {
-    btn.addEventListener('click', () => {
-      activeFilters.delete(btn.dataset.filter);
-      updateActiveFilters();
-      renderMacros(document.getElementById('searchInput')?.value || '');
-    });
-  });
-}
-
-function showTagFilter() {
-  const tags = [...new Set(macros.flatMap(m => m.tags || []))];
-  if (tags.length === 0) {
-    showToast('No tags available', 'error');
-    return;
-  }
-  
-  const tag = prompt(`Filter by tag:\n${tags.join(', ')}`);
-  if (tag && tags.includes(tag)) {
-    activeFilters.add(`tag:${tag}`);
-    updateActiveFilters();
-    renderMacros(document.getElementById('searchInput')?.value || '');
-  }
-}
-
-function handleSearchShortcut(query) {
-  // Handle :sig, :fav, :pin, etc.
-  const shortcuts = {
-    ':sig': () => { activeFilters.add('tag:signature'); updateActiveFilters(); renderMacros(''); },
-    ':fav': () => { activeFilters.add('favorites'); updateActiveFilters(); renderMacros(''); },
-    ':pin': () => { activeFilters.add('pinned'); updateActiveFilters(); renderMacros(''); },
-    ':pinned': () => { activeFilters.add('pinned'); updateActiveFilters(); renderMacros(''); },
-    ':recent': () => { activeFilters.add('recent'); updateActiveFilters(); renderMacros(''); }
-  };
-  
-  if (shortcuts[query.toLowerCase()]) {
-    shortcuts[query.toLowerCase()]();
-    document.getElementById('searchInput').value = '';
-  }
-}
-
-async function clearRecentStats() {
-  if (confirm('Clear recent usage stats? This will reset when macros were last used.')) {
-    Object.keys(macroStats).forEach(id => {
-      if (macroStats[id]) delete macroStats[id].lastUsed;
-    });
-    await chrome.storage.sync.set({ macroStats });
-    renderRecentMacros();
-    showToast('Recent stats cleared', 'success');
-  }
-}
-
-// Search Suggestions
-function updateSearchSuggestions(query) {
-  const suggestions = document.getElementById('searchSuggestions');
-  if (!query || query.length < 2) {
-    suggestions.style.display = 'none';
-    return;
-  }
-  
-  // Get matching macros for suggestions
-  const matches = macros
-    .filter(m => 
-      m.shortcut.toLowerCase().includes(query.toLowerCase()) ||
-      (m.tags || []).some(t => t.toLowerCase().includes(query.toLowerCase()))
-    )
-    .slice(0, 5);
-  
-  if (matches.length === 0) {
-    suggestions.style.display = 'none';
-    return;
-  }
-  
-  suggestions.innerHTML = matches.map(m => `
-    <div class="search-suggestion-item" data-shortcut="${escapeHtml(m.shortcut)}">
-      <span class="suggestion-shortcut">${escapeHtml(m.shortcut)}</span>
-      <span class="suggestion-preview">${escapeHtml(m.expansion.substring(0, 40))}...</span>
-    </div>
-  `).join('');
-  
-  suggestions.style.display = 'block';
-  
-  // Click handlers
-  suggestions.querySelectorAll('.search-suggestion-item').forEach(item => {
-    item.addEventListener('click', () => {
-      const shortcut = item.dataset.shortcut;
-      document.getElementById('searchInput').value = shortcut;
-      suggestions.style.display = 'none';
-      renderMacros(shortcut);
-    });
-  });
-}
-
-// Hover Preview
-let hoverPreviewElement = null;
-
-function showHoverPreview(element, macroId) {
-  const macro = macros.find(m => m.id === macroId);
-  if (!macro) return;
-  
-  hideHoverPreview();
-  
-  hoverPreviewElement = document.createElement('div');
-  hoverPreviewElement.className = 'hover-preview';
-  hoverPreviewElement.innerHTML = `
-    <div class="hover-preview-header">
-      <strong>${escapeHtml(macro.shortcut)}</strong>
-      ${macro.favorited ? '<span>⭐</span>' : ''}
-    </div>
-    <div class="hover-preview-content">
-      <pre>${escapeHtml(macro.expansion)}</pre>
-    </div>
-  `;
-  
-  document.body.appendChild(hoverPreviewElement);
-  
-  const rect = element.getBoundingClientRect();
-  hoverPreviewElement.style.top = `${rect.bottom + 5}px`;
-  hoverPreviewElement.style.left = `${rect.left}px`;
-}
-
-function hideHoverPreview() {
-  if (hoverPreviewElement) {
-    hoverPreviewElement.remove();
-    hoverPreviewElement = null;
-  }
-}
-
-// Setup Drag and Drop
-function setupDragAndDrop() {
-  // Already handled in setupMacroListeners, but add folder drop zones
-  document.querySelectorAll('.folder-header').forEach(header => {
-    header.addEventListener('dragover', e => {
-      e.preventDefault();
-      header.classList.add('drag-over-folder');
-    });
-    header.addEventListener('dragleave', () => {
-      header.classList.remove('drag-over-folder');
-    });
-    header.addEventListener('drop', async e => {
-      e.preventDefault();
-      header.classList.remove('drag-over-folder');
-      const macroId = e.dataTransfer.getData('text/plain');
-      const folderId = header.closest('.folder-section')?.dataset.folderId;
-      if (macroId && folderId) {
-        const macro = macros.find(m => m.id === macroId);
-        if (macro) {
-          macro.folderId = folderId;
-          await saveMacros();
-        }
-      }
-    });
-  });
-}
-
-// Conflict Detection
-function checkConflicts(shortcut, excludeId = null) {
-  const lower = shortcut.toLowerCase();
-  
-  // Exact match
-  const exact = macros.filter(m => 
-    m.id !== excludeId && 
-    (m.shortcut.toLowerCase() === lower ||
-     (m.aliases || []).some(a => a.toLowerCase() === lower))
-  );
-  
-  if (exact.length > 0) {
-    showToast(`Warning: Shortcut "${shortcut}" already exists!`, 'warning');
-    return { exact, similar: [] };
-  }
-  
-  // Similar shortcuts (for warning)
-  const similar = macros.filter(m => {
-    if (m.id === excludeId) return false;
-    const mShortcut = m.shortcut.toLowerCase();
-    // Check for prefix conflicts (one starts with the other)
-    if (mShortcut.startsWith(lower) || lower.startsWith(mShortcut)) return true;
-    // Check Levenshtein distance for similar typos
-    if (levenshteinDistance(lower, mShortcut) <= 2 && lower.length > 2) return true;
-    return false;
-  });
-  
-  if (similar.length > 0) {
-    const names = similar.slice(0, 3).map(m => m.shortcut).join(', ');
-    showToast(`Similar shortcuts exist: ${names}`, 'info');
-  }
-  
-  return { exact, similar };
-}
-
-// Levenshtein distance for fuzzy matching
-function levenshteinDistance(a, b) {
-  if (a.length === 0) return b.length;
-  if (b.length === 0) return a.length;
-  
-  const matrix = [];
-  for (let i = 0; i <= b.length; i++) matrix[i] = [i];
-  for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
-  
-  for (let i = 1; i <= b.length; i++) {
-    for (let j = 1; j <= a.length; j++) {
-      if (b.charAt(i - 1) === a.charAt(j - 1)) {
-        matrix[i][j] = matrix[i - 1][j - 1];
-      } else {
-        matrix[i][j] = Math.min(
-          matrix[i - 1][j - 1] + 1,
-          matrix[i][j - 1] + 1,
-          matrix[i - 1][j] + 1
-        );
-      }
+    if (syncBtn) {
+      syncBtn.classList.remove('synced');
+      syncBtn.textContent = '☁️ Sync';
     }
   }
-  return matrix[b.length][a.length];
 }
 
-// Real-time conflict checking on input
-function setupConflictChecker() {
-  const shortcutInput = document.getElementById('shortcutInput');
-  if (!shortcutInput) return;
+async function handleLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
   
-  let debounceTimer;
-  shortcutInput.addEventListener('input', () => {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => {
-      const value = shortcutInput.value.trim();
-      if (value.length >= 2) {
-        checkConflicts(value, currentEditingId);
-      }
-    }, 500);
-  });
-}
-
-// Load view mode preference
-function loadViewMode() {
-  const saved = localStorage.getItem('fountain-view-mode');
-  if (saved && ['list', 'grid', 'compact'].includes(saved)) {
-    setViewMode(saved);
+  if (!email || !password) {
+    showSyncError('Please enter email and password');
+    return;
+  }
+  
+  document.getElementById('loginBtn').disabled = true;
+  document.getElementById('loginBtn').textContent = 'Signing in...';
+  
+  const result = await CloudSync.login(email, password);
+  
+  document.getElementById('loginBtn').disabled = false;
+  document.getElementById('loginBtn').textContent = 'Sign In';
+  
+  if (result.success) {
+    showToast('Signed in successfully! ☁️', 'success');
+    await updateSyncUI();
+    // Optionally sync from cloud on login
+    await handleDownloadFromCloud();
+  } else {
+    showSyncError(result.error || 'Login failed');
   }
 }
 
+async function handleRegister() {
+  const email = document.getElementById('registerEmail').value.trim();
+  const displayName = document.getElementById('registerDisplayName').value.trim();
+  const password = document.getElementById('registerPassword').value;
+  
+  if (!email || !password) {
+    showSyncError('Please enter email and password');
+    return;
+  }
+  
+  if (password.length < 6) {
+    showSyncError('Password must be at least 6 characters');
+    return;
+  }
+  
+  document.getElementById('registerBtn').disabled = true;
+  document.getElementById('registerBtn').textContent = 'Creating account...';
+  
+  const result = await CloudSync.register(email, password, displayName);
+  
+  document.getElementById('registerBtn').disabled = false;
+  document.getElementById('registerBtn').textContent = 'Create Account';
+  
+  if (result.success) {
+    showToast('Account created! Your macros are now syncing ☁️', 'success');
+    await updateSyncUI();
+  } else {
+    showSyncError(result.error || 'Registration failed');
+  }
+}
 
+async function handleLogout() {
+  await CloudSync.logout();
+  showToast('Signed out', 'info');
+  await updateSyncUI();
+}
+
+async function handleSyncNow() {
+  const btn = document.getElementById('syncNowBtn');
+  btn.disabled = true;
+  btn.textContent = '🔄 Syncing...';
+  document.getElementById('syncBtn').classList.add('syncing');
+  
+  const result = await CloudSync.syncToCloud();
+  
+  btn.disabled = false;
+  btn.textContent = '🔄 Sync Now';
+  document.getElementById('syncBtn').classList.remove('syncing');
+  
+  if (result.success) {
+    showToast(`Synced ${result.macroCount} macros to cloud! ☁️`, 'success');
+    document.getElementById('lastSyncTime').textContent = new Date(result.lastSync).toLocaleString();
+  } else {
+    showToast('Sync failed: ' + (result.error || 'Unknown error'), 'error');
+  }
+}
+
+async function handleDownloadFromCloud() {
+  const btn = document.getElementById('downloadFromCloudBtn');
+  btn.disabled = true;
+  btn.textContent = '⬇️ Downloading...';
+  
+  const result = await CloudSync.syncFromCloud();
+  
+  btn.disabled = false;
+  btn.textContent = '⬇️ Download';
+  
+  if (result.success) {
+    // Reload data
+    await loadData();
+    showToast('Downloaded macros from cloud! ☁️', 'success');
+    document.getElementById('lastSyncTime').textContent = 
+      result.data?.lastSync ? new Date(result.data.lastSync).toLocaleString() : 'Just now';
+    document.getElementById('syncedMacroCount').textContent = macros.length;
+  } else {
+    showToast('Download failed: ' + (result.error || 'Unknown error'), 'error');
+  }
+}
+
+function showSyncError(message) {
+  const errorEl = document.getElementById('syncError');
+  errorEl.textContent = message;
+  errorEl.style.display = 'block';
+  setTimeout(() => {
+    errorEl.style.display = 'none';
+  }, 5000);
+}
+
+// Auto-sync when macros change
+async function triggerAutoSync() {
+  if (await CloudSync.isSyncEnabled() && await CloudSync.isLoggedIn()) {
+    // Debounce: wait 2 seconds before syncing
+    clearTimeout(window.autoSyncTimeout);
+    window.autoSyncTimeout = setTimeout(async () => {
+      await CloudSync.syncToCloud();
+    }, 2000);
+  }
+}
