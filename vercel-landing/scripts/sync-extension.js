@@ -236,6 +236,18 @@ async function main() {
     console.log(`   Size: ${stats.size} bytes (${(stats.size / 1024).toFixed(1)} KB)`);
   }
   
+  // Create build verification file
+  const buildInfoPath = path.join(__dirname, '..', 'build-info.json');
+  const buildInfo = {
+    buildTime: new Date().toISOString(),
+    extensionVersion: finalManifest?.version || 'unknown',
+    zipSize: fs.existsSync(OUTPUT_ZIP) ? fs.statSync(OUTPUT_ZIP).size : 0,
+    nodeVersion: process.version,
+    platform: process.platform
+  };
+  fs.writeFileSync(buildInfoPath, JSON.stringify(buildInfo, null, 2));
+  console.log(`📝 Build info written to: ${buildInfoPath}`);
+  
   console.log('═'.repeat(60) + '\n');
 }
 
