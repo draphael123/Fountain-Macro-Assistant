@@ -2,6 +2,7 @@
 
 /**
  * Extension Sync Script for Vercel Deployment
+ * Build ID: 2026-01-16-v2
  * 
  * This script runs during build to ensure the website's extension folder
  * is synced with the main extension folder (fountain-macro-assistant-extension).
