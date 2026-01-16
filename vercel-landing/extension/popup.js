@@ -32,13 +32,98 @@ const TEMPLATES = [
   { icon: '📆', title: 'Today\'s Date', desc: 'Formatted date', shortcut: '/today', expansion: '{js:new Date().toLocaleDateString("en-US", {weekday: "long", year: "numeric", month: "long", day: "numeric"})}' }
 ];
 
-// Packages
+// Packages with actual macros
 const PACKAGES = [
-  { icon: '💼', name: 'Business Pro', desc: 'Professional email templates', count: 15, author: 'Fountain' },
-  { icon: '💻', name: 'Developer Kit', desc: 'Code snippets & comments', count: 25, author: 'Fountain' },
-  { icon: '📱', name: 'Social Media', desc: 'Hashtags & responses', count: 20, author: 'Fountain' },
-  { icon: '🎓', name: 'Academic', desc: 'Citations & formatting', count: 12, author: 'Fountain' },
-  { icon: '🛒', name: 'E-commerce', desc: 'Customer support replies', count: 18, author: 'Fountain' }
+  { 
+    icon: '🎧', 
+    name: 'Customer Service', 
+    desc: 'Support replies & templates', 
+    author: 'Fountain',
+    macros: [
+      { shortcut: '/csgreeting', expansion: 'Hello! Thank you for contacting us. How can I help you today?' },
+      { shortcut: '/cshold', expansion: 'Thank you for your patience. I\'m looking into this for you right now and will have an update shortly.' },
+      { shortcut: '/csresolve', expansion: 'I\'m happy to let you know that this issue has been resolved! Is there anything else I can help you with today?' },
+      { shortcut: '/csescalate', expansion: 'I understand this is important to you. Let me escalate this to our specialized team who can better assist you. You\'ll hear back within {input:timeframe}.' },
+      { shortcut: '/csapology', expansion: 'I sincerely apologize for the inconvenience this has caused. We take this seriously and are working to make it right.' },
+      { shortcut: '/csrefund', expansion: 'I\'ve processed your refund request. You should see the amount credited to your account within 5-10 business days.' },
+      { shortcut: '/csfollow', expansion: 'Thank you for bringing this to our attention. I\'ll follow up with you within {input:timeframe} with an update.' },
+      { shortcut: '/csclose', expansion: 'Is there anything else I can help you with today? If not, I hope you have a wonderful day! 😊' }
+    ]
+  },
+  { 
+    icon: '📣', 
+    name: 'Marketing', 
+    desc: 'Campaigns & social copy', 
+    author: 'Fountain',
+    macros: [
+      { shortcut: '/mktcta', expansion: '🚀 {input:Action verb} now and get {input:offer}! Limited time only.' },
+      { shortcut: '/mktsocial', expansion: '✨ {input:Hook}\n\n{cursor}\n\n👇 Link in bio!\n\n#marketing #growth #business' },
+      { shortcut: '/mktemail', expansion: 'Subject: {input:Subject}\n\nHi {input:Name},\n\n{cursor}\n\nBest,\n{input:Your Name}' },
+      { shortcut: '/mkturgent', expansion: '⏰ LAST CHANCE! Only {input:time} left to grab {input:offer}. Don\'t miss out!' },
+      { shortcut: '/mkttesti', expansion: '"[Customer quote here]"\n— {input:Customer Name}, {input:Title/Company}' },
+      { shortcut: '/mktfeature', expansion: '✅ {input:Feature 1}\n✅ {input:Feature 2}\n✅ {input:Feature 3}\n\n👉 Get started today!' },
+      { shortcut: '/mktthread', expansion: '🧵 THREAD: {input:Topic}\n\n1/ {cursor}' },
+      { shortcut: '/mktnews', expansion: '📰 Newsletter Update\n\nHey {input:Name}!\n\nHere\'s what\'s new this week:\n\n{cursor}' }
+    ]
+  },
+  { 
+    icon: '💻', 
+    name: 'Developer', 
+    desc: 'Code snippets & comments', 
+    author: 'Fountain',
+    macros: [
+      { shortcut: '/devtodo', expansion: '// TODO [{date:YYYY-MM-DD}]: {input:Description}' },
+      { shortcut: '/devfix', expansion: '// FIXME: {input:Issue description}' },
+      { shortcut: '/devnote', expansion: '// NOTE: {input:Note}' },
+      { shortcut: '/devclog', expansion: 'console.log(\'{input:label}:\', {cursor});' },
+      { shortcut: '/devfunc', expansion: 'function {input:name}({input:params}) {\n  {cursor}\n}' },
+      { shortcut: '/devasync', expansion: 'async function {input:name}({input:params}) {\n  try {\n    {cursor}\n  } catch (error) {\n    console.error(error);\n  }\n}' },
+      { shortcut: '/devpr', expansion: '## Description\n{input:What does this PR do?}\n\n## Changes\n- {cursor}\n\n## Testing\n- [ ] Unit tests\n- [ ] Manual testing' },
+      { shortcut: '/devcommit', expansion: '{input:type}({input:scope}): {input:description}' }
+    ]
+  },
+  { 
+    icon: '💰', 
+    name: 'Sales', 
+    desc: 'Outreach & follow-ups', 
+    author: 'Fountain',
+    macros: [
+      { shortcut: '/salesintro', expansion: 'Hi {input:Name},\n\nI noticed {input:observation} and thought you might be interested in {input:value prop}.\n\nWould you have 15 minutes this week for a quick chat?\n\nBest,\n{input:Your Name}' },
+      { shortcut: '/salesfollow', expansion: 'Hi {input:Name},\n\nJust following up on my previous message. I\'d love to show you how we can help with {input:pain point}.\n\nAre you available for a brief call this week?' },
+      { shortcut: '/salesdemo', expansion: 'Great speaking with you! As promised, here\'s the link to schedule your demo: {input:link}\n\nLooking forward to showing you {input:product}!' },
+      { shortcut: '/salesprice', expansion: 'Based on our conversation, here\'s the pricing breakdown:\n\n{input:Package}: ${input:price}/month\n\nThis includes:\n• {input:Feature 1}\n• {input:Feature 2}\n• {input:Feature 3}' },
+      { shortcut: '/salesclose', expansion: 'Ready to get started? Here\'s what happens next:\n\n1. Sign the agreement\n2. Complete onboarding\n3. Start seeing results!\n\nAny questions before we proceed?' },
+      { shortcut: '/salesobj', expansion: 'I completely understand your concern about {input:objection}. What I can tell you is {input:response}.' }
+    ]
+  },
+  { 
+    icon: '📋', 
+    name: 'HR & Recruiting', 
+    desc: 'Hiring & communications', 
+    author: 'Fountain',
+    macros: [
+      { shortcut: '/hrscreen', expansion: 'Hi {input:Name},\n\nThank you for applying for the {input:Position} role. We\'d like to schedule a screening call.\n\nAre you available {input:times}?' },
+      { shortcut: '/hrinterview', expansion: 'Congratulations! We\'d like to invite you for an interview for the {input:Position} role.\n\nDate: {input:Date}\nTime: {input:Time}\nLocation: {input:Location/Link}' },
+      { shortcut: '/hroffer', expansion: 'We\'re excited to extend an offer for the {input:Position} position!\n\nSalary: {input:Salary}\nStart Date: {input:Date}\n\nPlease review the attached offer letter.' },
+      { shortcut: '/hrreject', expansion: 'Thank you for your interest in {input:Position}. After careful consideration, we\'ve decided to move forward with other candidates. We\'ll keep your resume on file for future opportunities.' },
+      { shortcut: '/hronboard', expansion: 'Welcome to the team! 🎉\n\nYour first day is {input:Date}. Please bring:\n• ID documents\n• Completed paperwork\n\nWe\'re excited to have you!' },
+      { shortcut: '/hrreview', expansion: 'Performance Review - {input:Name}\nDate: {date}\n\nStrengths:\n• {cursor}\n\nAreas for Growth:\n• \n\nGoals:' }
+    ]
+  },
+  { 
+    icon: '🎓', 
+    name: 'Education', 
+    desc: 'Teaching & academic', 
+    author: 'Fountain',
+    macros: [
+      { shortcut: '/edufeedback', expansion: 'Great work on {input:assignment}! You showed strong understanding of {input:concept}. For next time, consider {input:improvement}.' },
+      { shortcut: '/eduremind', expansion: 'Reminder: {input:Assignment} is due on {input:Date}. Please submit via {input:platform}.' },
+      { shortcut: '/educite', expansion: '{input:Author} ({input:Year}). {input:Title}. {input:Journal/Publisher}.' },
+      { shortcut: '/eduoffice', expansion: 'Office Hours:\n{input:Day}: {input:Time}\nLocation: {input:Room/Link}\n\nPlease email ahead to confirm.' },
+      { shortcut: '/edugrade', expansion: 'Grade: {input:Grade}\n\nFeedback:\n{cursor}\n\nPlease see me during office hours if you have questions.' },
+      { shortcut: '/edusyllabus', expansion: 'Week {input:Number}: {input:Topic}\nReadings: {input:Readings}\nAssignment: {input:Assignment}' }
+    ]
+  }
 ];
 
 // Onboarding steps
@@ -1009,20 +1094,122 @@ function openPackages() {
         <div class="package-name">${p.name}</div>
         <div class="package-desc">${p.desc}</div>
         <div class="package-stats">
-          <span>📝 ${p.count} macros</span>
+          <span>📝 ${p.macros.length} macros</span>
           <span>👤 ${p.author}</span>
         </div>
       </div>
+      <button class="btn btn-sm btn-primary install-package-btn" data-index="${i}" style="margin-top: 8px;">
+        ⬇️ Install
+      </button>
     </div>
   `).join('');
   
+  grid.querySelectorAll('.install-package-btn').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const index = parseInt(btn.dataset.index);
+      await installPackage(index);
+    });
+  });
+  
   grid.querySelectorAll('.package-card').forEach(card => {
     card.addEventListener('click', () => {
-      showToast('Package download coming soon! 📦', 'info');
+      const index = parseInt(card.dataset.index);
+      previewPackage(index);
     });
   });
   
   showModal('packagesModal');
+}
+
+function previewPackage(index) {
+  const pkg = PACKAGES[index];
+  const previewHtml = `
+    <div style="padding: 16px;">
+      <h3 style="margin-bottom: 12px;">${pkg.icon} ${pkg.name}</h3>
+      <p style="color: var(--text-secondary); margin-bottom: 16px;">${pkg.desc}</p>
+      <div style="max-height: 300px; overflow-y: auto;">
+        ${pkg.macros.map(m => `
+          <div style="background: var(--bg-secondary); padding: 10px 12px; border-radius: 8px; margin-bottom: 8px;">
+            <code style="color: var(--primary); font-weight: 600;">${escapeHtml(m.shortcut)}</code>
+            <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+              ${escapeHtml(m.expansion.substring(0, 60))}${m.expansion.length > 60 ? '...' : ''}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      <button class="btn btn-primary" style="width: 100%; margin-top: 16px;" onclick="installPackage(${index}); closeModal('packagesModal');">
+        ⬇️ Install ${pkg.macros.length} Macros
+      </button>
+    </div>
+  `;
+  
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+  modal.id = 'packagePreviewModal';
+  modal.style.display = 'flex';
+  modal.innerHTML = `
+    <div class="modal-content" style="max-width: 400px;">
+      <div class="modal-header">
+        <h2>Package Preview</h2>
+        <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+      </div>
+      <div class="modal-body">
+        ${previewHtml}
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) modal.remove();
+  });
+}
+
+async function installPackage(index) {
+  const pkg = PACKAGES[index];
+  let installed = 0;
+  let skipped = 0;
+  
+  // Create folder for package if it doesn't exist
+  let folderId = folders.find(f => f.name === pkg.name)?.id;
+  if (!folderId) {
+    folderId = Date.now().toString();
+    folders.push({ id: folderId, name: pkg.name, icon: pkg.icon });
+    await saveFolders();
+  }
+  
+  for (const m of pkg.macros) {
+    // Check if shortcut already exists
+    const exists = macros.some(existing => existing.shortcut === m.shortcut);
+    if (exists) {
+      skipped++;
+      continue;
+    }
+    
+    macros.push({
+      id: Date.now().toString() + Math.random().toString(36).substr(2, 5),
+      shortcut: m.shortcut,
+      expansion: m.expansion,
+      folder: folderId,
+      aliases: [],
+      createdAt: Date.now(),
+      usageCount: 0
+    });
+    installed++;
+  }
+  
+  await saveMacros();
+  renderMacros();
+  updateFolderOptions();
+  
+  // Remove preview modal if exists
+  document.getElementById('packagePreviewModal')?.remove();
+  
+  if (installed > 0) {
+    showToast(`✅ Installed ${installed} macros from ${pkg.name}!${skipped > 0 ? ` (${skipped} skipped - already exist)` : ''}`, 'success');
+  } else {
+    showToast(`All macros from ${pkg.name} already installed!`, 'info');
+  }
 }
 
 // Dashboard
