@@ -179,14 +179,17 @@ async function main() {
   console.log('🔄 Fountain Extension Sync Check');
   console.log('═'.repeat(60));
   
-  // Check if source extension exists
-  if (!fs.existsSync(SOURCE_EXTENSION_DIR)) {
-    console.log('\n⚠️  Source extension folder not found.');
-    console.log(`   Expected: ${SOURCE_EXTENSION_DIR}`);
+  // Check if source extension exists and has manifest
+  const sourceManifestPath = path.join(SOURCE_EXTENSION_DIR, 'manifest.json');
+  if (!fs.existsSync(SOURCE_EXTENSION_DIR) || !fs.existsSync(sourceManifestPath)) {
+    console.log('\n⚠️  Source extension folder or manifest not found.');
+    console.log(`   Expected: ${sourceManifestPath}`);
     console.log('   Skipping sync (this is normal for Vercel builds).\n');
     
     // Still create zip from existing files
     if (fs.existsSync(WEBSITE_EXTENSION_DIR)) {
+      const websiteManifest = readManifest(WEBSITE_EXTENSION_DIR);
+      console.log(`📋 Using website extension v${websiteManifest?.version || 'unknown'}`);
       await createExtensionZip();
     }
     return;
@@ -197,8 +200,11 @@ async function main() {
   const websiteManifest = readManifest(WEBSITE_EXTENSION_DIR);
   
   if (!sourceManifest) {
-    console.error('\n❌ Could not read source manifest.json');
-    process.exit(1);
+    console.log('\n⚠️  Could not read source manifest.json, using website version.');
+    if (fs.existsSync(WEBSITE_EXTENSION_DIR)) {
+      await createExtensionZip();
+    }
+    return;
   }
   
   const sourceVersion = sourceManifest.version || '0.0.0';
