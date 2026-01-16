@@ -184,66 +184,6 @@ function initNewsletter() {
     });
 }
 
-// Exit Intent Popup
-function initExitIntent() {
-    const popup = document.getElementById('exit-popup');
-    const closeBtn = document.getElementById('exit-popup-close');
-    const downloadLink = document.getElementById('exit-download-link');
-    const form = document.getElementById('exit-popup-form');
-    
-    if (!popup) return;
-    
-    let hasShown = sessionStorage.getItem('exitPopupShown');
-    let hasSubscribed = localStorage.getItem('fountain_subscribed');
-    
-    function showPopup() {
-        if (hasShown || hasSubscribed) return;
-        popup.style.display = 'flex';
-        sessionStorage.setItem('exitPopupShown', 'true');
-        hasShown = true;
-    }
-    
-    function hidePopup() {
-        popup.style.display = 'none';
-    }
-    
-    // Show on exit intent (mouse leaving viewport)
-    document.addEventListener('mouseout', (e) => {
-        if (e.clientY < 10 && e.relatedTarget === null) {
-            showPopup();
-        }
-    });
-    
-    // Also show after 30 seconds on page
-    setTimeout(() => {
-        if (!hasShown && !hasSubscribed) {
-            showPopup();
-        }
-    }, 30000);
-    
-    closeBtn?.addEventListener('click', hidePopup);
-    
-    popup.addEventListener('click', (e) => {
-        if (e.target === popup) hidePopup();
-    });
-    
-    downloadLink?.addEventListener('click', hidePopup);
-    
-    form?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('exit-email')?.value;
-        if (email) {
-            const subscribers = JSON.parse(localStorage.getItem('fountain_subscribers') || '[]');
-            if (!subscribers.includes(email)) {
-                subscribers.push(email);
-                localStorage.setItem('fountain_subscribers', JSON.stringify(subscribers));
-            }
-            localStorage.setItem('fountain_subscribed', 'true');
-            hidePopup();
-            alert('Thanks for subscribing! 🎉');
-        }
-    });
-}
 
 // Time Saved Calculator
 function initCalculator() {
@@ -487,7 +427,6 @@ document.addEventListener('DOMContentLoaded', function() {
     initMobileNav();
     initHeroDemo();
     initNewsletter();
-    initExitIntent();
     initCalculator();
     initDemoTabs();
     initLazyLoading();
