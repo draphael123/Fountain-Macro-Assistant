@@ -1287,15 +1287,16 @@ section {
 
 .import-json-format h3 {
     font-size: 24px;
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: 16px;
-    color: var(--text-dark);
+    color: #1a1a2e;
 }
 
 .import-json-format > p {
-    color: var(--text-gray);
+    color: #374151;
     margin-bottom: 20px;
     line-height: 1.6;
+    font-size: 15px;
 }
 
 .code-example {
@@ -1318,19 +1319,25 @@ section {
 }
 
 .format-note {
-    color: var(--text-gray);
-    font-size: 14px;
-    margin-bottom: 8px;
+    color: #374151;
+    font-size: 15px;
+    margin-bottom: 10px;
     line-height: 1.6;
 }
 
+.format-note strong {
+    color: #1a1a2e;
+    font-weight: 600;
+}
+
 .format-note code {
-    background: var(--light-blue);
-    padding: 2px 6px;
+    background: #e0e7ff;
+    padding: 3px 8px;
     border-radius: 4px;
-    font-family: 'Courier New', monospace;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
     font-size: 13px;
-    color: var(--primary-blue);
+    color: #4338ca;
+    font-weight: 500;
 }
 
 .import-troubleshooting {
@@ -1367,15 +1374,17 @@ section {
 
 .trouble-item strong {
     display: block;
-    color: var(--text-dark);
+    color: #1a1a2e;
     font-size: 16px;
     margin-bottom: 8px;
+    font-weight: 600;
 }
 
 .trouble-item p {
-    color: var(--text-gray);
+    color: #374151;
     line-height: 1.6;
     margin: 0;
+    font-size: 15px;
 }
 
 .trouble-item code {
@@ -3281,6 +3290,39 @@ section {
 }
 
 [data-theme="dark"] .step-text strong {
+    color: #a78bfa;
+}
+
+/* JSON Format & Troubleshooting Dark Mode */
+[data-theme="dark"] .import-json-format,
+[data-theme="dark"] .import-troubleshooting {
+    background: var(--bg-light);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .import-json-format h3,
+[data-theme="dark"] .import-troubleshooting h3 {
+    color: #f1f5f9;
+}
+
+[data-theme="dark"] .import-json-format > p,
+[data-theme="dark"] .format-note,
+[data-theme="dark"] .trouble-item p {
+    color: #cbd5e1;
+}
+
+[data-theme="dark"] .format-note strong,
+[data-theme="dark"] .trouble-item strong {
+    color: #f1f5f9;
+}
+
+[data-theme="dark"] .format-note code {
+    background: rgba(99, 102, 241, 0.2);
+    color: #a78bfa;
+}
+
+[data-theme="dark"] .trouble-item code {
+    background: rgba(99, 102, 241, 0.2);
     color: #a78bfa;
 }
 
