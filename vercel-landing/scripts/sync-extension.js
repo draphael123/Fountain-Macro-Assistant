@@ -14,9 +14,14 @@
  * 4. Log warnings if the website extension is outdated
  */
 
-const fs = require('fs');
-const path = require('path');
-const archiver = require('archiver');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import archiver from 'archiver';
+
+// Get __dirname equivalent for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Paths relative to vercel-landing directory
 const WEBSITE_EXTENSION_DIR = path.join(__dirname, '..', 'extension');
