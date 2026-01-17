@@ -1,4 +1,4 @@
-// Fountain - Options Page v3.0
+// Macro-Assistant - Options Page v3.0
 
 let lightMode = false;
 

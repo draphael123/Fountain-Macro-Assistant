@@ -1,4 +1,4 @@
-// Cloud Sync Module for Fountain Macro Assistant
+// Cloud Sync Module for Macro-Assistant Macro Assistant
 // Uses Supabase authentication and API
 
 const CloudSync = {

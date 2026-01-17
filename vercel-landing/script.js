@@ -484,7 +484,7 @@ function initHeroDemo() {
     
     // Demo macros
     const demoMacros = {
-        '/hello': 'Hello! Thanks for trying Fountain. This is an example of text expansion! 👋',
+        '/hello': 'Hello! Thanks for trying Macro-Assistant. This is an example of text expansion! 👋',
         '/date': new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
         '/sig': 'Best regards,\nJohn Doe\nSoftware Engineer\njohn@example.com',
         '/shrug': '¯\\_(ツ)_/¯'
@@ -637,7 +637,7 @@ function initPackagesGrid() {
             <p>${pkg.desc}</p>
             <div class="web-package-stats">
                 <span>📝 ${pkg.macroCount} macros</span>
-                <span>👤 Fountain</span>
+                <span>👤 Macro-Assistant</span>
             </div>
             <div class="web-package-preview">
                 ${pkg.preview.map(p => `<code>${p}</code>`).join('')}

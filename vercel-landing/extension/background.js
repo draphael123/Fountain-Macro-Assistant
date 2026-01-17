@@ -1,8 +1,8 @@
-// Fountain - Macro Assistant v3.0 - Background Service Worker
+// Macro-Assistant - Macro Assistant v3.0 - Background Service Worker
 
 // Context menu setup
 chrome.runtime.onInstalled.addListener(() => {
-  console.log('💧 Fountain installed!');
+  console.log('💧 Macro-Assistant installed!');
   
   // Create context menus
   chrome.contextMenus.create({
@@ -18,8 +18,8 @@ chrome.runtime.onInstalled.addListener(() => {
   });
   
   chrome.contextMenus.create({
-    id: 'openFountain',
-    title: '💧 Open Fountain',
+    id: 'openMacro-Assistant',
+    title: '💧 Open Macro-Assistant',
     contexts: ['all']
   });
   
@@ -59,17 +59,17 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
         }
       });
       chrome.action.openPopup();
-    } else if (info.menuItemId === 'openFountain') {
+    } else if (info.menuItemId === 'openMacro-Assistant') {
       chrome.action.openPopup();
     }
   } catch (e) {
-    console.error('💧 Fountain context menu error:', e);
+    console.error('💧 Macro-Assistant context menu error:', e);
   }
 });
 
 // Command handler
 chrome.commands.onCommand.addListener(async (command) => {
-  console.log('💧 Fountain command:', command);
+  console.log('💧 Macro-Assistant command:', command);
   
   try {
     if (command === 'create_macro') {
@@ -81,7 +81,7 @@ chrome.commands.onCommand.addListener(async (command) => {
       chrome.action.openPopup();
     }
   } catch (e) {
-    console.error('💧 Fountain command error:', e);
+    console.error('💧 Macro-Assistant command error:', e);
   }
 });
 
@@ -103,6 +103,6 @@ async function handleStatsUpdate(macroId) {
     stats[macroId].lastUsed = Date.now();
     await chrome.storage.sync.set({ macroStats: stats });
   } catch (e) {
-    console.error('💧 Fountain stats error:', e);
+    console.error('💧 Macro-Assistant stats error:', e);
   }
 }

@@ -1,4 +1,4 @@
-// Fun Enhancements for Fountain Website
+// Fun Enhancements for Macro-Assistant Website
 // Adds interactive and engaging elements
 
 (function() {

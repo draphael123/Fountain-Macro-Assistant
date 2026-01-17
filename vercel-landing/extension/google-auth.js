@@ -1,4 +1,4 @@
-// Google Authentication Module for Fountain Macro Assistant
+// Google Authentication Module for Macro-Assistant Macro Assistant
 // Uses Chrome Identity API for seamless Google Sign-In
 
 const GoogleAuth = {

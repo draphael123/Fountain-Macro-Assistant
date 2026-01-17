@@ -1,4 +1,4 @@
-// Fountain - Macro Assistant v3.0 - Feature-rich popup
+// Macro-Assistant - Macro Assistant v3.0 - Feature-rich popup
 // With: favorites, regex, JS snippets, packages, heatmap, onboarding, and more
 
 let macros = [];
@@ -41,7 +41,7 @@ const PACKAGES = [
     icon: '🎧', 
     name: 'Customer Service', 
     desc: 'Support replies & templates', 
-    author: 'Fountain',
+    author: 'Macro-Assistant',
     macros: [
       { shortcut: '/csgreeting', expansion: 'Hello! Thank you for contacting us. How can I help you today?' },
       { shortcut: '/cshold', expansion: 'Thank you for your patience. I\'m looking into this for you right now and will have an update shortly.' },
@@ -57,7 +57,7 @@ const PACKAGES = [
     icon: '📣', 
     name: 'Marketing', 
     desc: 'Campaigns & social copy', 
-    author: 'Fountain',
+    author: 'Macro-Assistant',
     macros: [
       { shortcut: '/mktcta', expansion: '🚀 {input:Action verb} now and get {input:offer}! Limited time only.' },
       { shortcut: '/mktsocial', expansion: '✨ {input:Hook}\n\n{cursor}\n\n👇 Link in bio!\n\n#marketing #growth #business' },
@@ -73,7 +73,7 @@ const PACKAGES = [
     icon: '💻', 
     name: 'Developer', 
     desc: 'Code snippets & comments', 
-    author: 'Fountain',
+    author: 'Macro-Assistant',
     macros: [
       { shortcut: '/devtodo', expansion: '// TODO [{date:YYYY-MM-DD}]: {input:Description}' },
       { shortcut: '/devfix', expansion: '// FIXME: {input:Issue description}' },
@@ -89,7 +89,7 @@ const PACKAGES = [
     icon: '💰', 
     name: 'Sales', 
     desc: 'Outreach & follow-ups', 
-    author: 'Fountain',
+    author: 'Macro-Assistant',
     macros: [
       { shortcut: '/salesintro', expansion: 'Hi {input:Name},\n\nI noticed {input:observation} and thought you might be interested in {input:value prop}.\n\nWould you have 15 minutes this week for a quick chat?\n\nBest,\n{input:Your Name}' },
       { shortcut: '/salesfollow', expansion: 'Hi {input:Name},\n\nJust following up on my previous message. I\'d love to show you how we can help with {input:pain point}.\n\nAre you available for a brief call this week?' },
@@ -103,7 +103,7 @@ const PACKAGES = [
     icon: '📋', 
     name: 'HR & Recruiting', 
     desc: 'Hiring & communications', 
-    author: 'Fountain',
+    author: 'Macro-Assistant',
     macros: [
       { shortcut: '/hrscreen', expansion: 'Hi {input:Name},\n\nThank you for applying for the {input:Position} role. We\'d like to schedule a screening call.\n\nAre you available {input:times}?' },
       { shortcut: '/hrinterview', expansion: 'Congratulations! We\'d like to invite you for an interview for the {input:Position} role.\n\nDate: {input:Date}\nTime: {input:Time}\nLocation: {input:Location/Link}' },
@@ -117,7 +117,7 @@ const PACKAGES = [
     icon: '🎓', 
     name: 'Education', 
     desc: 'Teaching & academic', 
-    author: 'Fountain',
+    author: 'Macro-Assistant',
     macros: [
       { shortcut: '/edufeedback', expansion: 'Great work on {input:assignment}! You showed strong understanding of {input:concept}. For next time, consider {input:improvement}.' },
       { shortcut: '/eduremind', expansion: 'Reminder: {input:Assignment} is due on {input:Date}. Please submit via {input:platform}.' },
@@ -131,7 +131,7 @@ const PACKAGES = [
     icon: '🏠', 
     name: 'Personal', 
     desc: 'Everyday shortcuts', 
-    author: 'Fountain',
+    author: 'Macro-Assistant',
     macros: [
       { shortcut: '/myemail', expansion: '{input:Your Email}' },
       { shortcut: '/myphone', expansion: '{input:Your Phone}' },
@@ -151,7 +151,7 @@ const PACKAGES = [
     icon: '🏥', 
     name: 'Healthcare', 
     desc: 'Medical & wellness', 
-    author: 'Fountain',
+    author: 'Macro-Assistant',
     macros: [
       { shortcut: '/hcappt', expansion: 'Appointment Confirmation\n\nPatient: {input:Name}\nDate: {input:Date}\nTime: {input:Time}\nProvider: {input:Doctor}\n\nPlease arrive 15 minutes early.' },
       { shortcut: '/hcremind', expansion: 'Reminder: Your appointment with {input:Doctor} is scheduled for {input:Date} at {input:Time}. Please call to reschedule if needed.' },
@@ -165,7 +165,7 @@ const PACKAGES = [
     icon: '⚖️', 
     name: 'Legal', 
     desc: 'Legal & compliance', 
-    author: 'Fountain',
+    author: 'Macro-Assistant',
     macros: [
       { shortcut: '/legaldisclaim', expansion: 'This communication is for informational purposes only and does not constitute legal advice. Please consult with a qualified attorney for specific legal questions.' },
       { shortcut: '/legalconf', expansion: 'CONFIDENTIAL: This message contains privileged and confidential information intended only for the named recipient. If you received this in error, please notify the sender immediately and delete this message.' },
@@ -178,7 +178,7 @@ const PACKAGES = [
     icon: '🏡', 
     name: 'Real Estate', 
     desc: 'Property & listings', 
-    author: 'Fountain',
+    author: 'Macro-Assistant',
     macros: [
       { shortcut: '/relisting', expansion: '🏠 {input:Property Type} FOR {input:Sale/Rent}\n\n📍 {input:Address}\n💰 ${input:Price}\n🛏️ {input:Beds} Beds | 🛁 {input:Baths} Baths\n📐 {input:SqFt} sq ft\n\n{cursor}' },
       { shortcut: '/reshowing', expansion: 'Showing Scheduled!\n\nProperty: {input:Address}\nDate: {input:Date}\nTime: {input:Time}\n\nPlease confirm your attendance.' },
@@ -191,7 +191,7 @@ const PACKAGES = [
     icon: '🛒', 
     name: 'E-commerce', 
     desc: 'Online store replies', 
-    author: 'Fountain',
+    author: 'Macro-Assistant',
     macros: [
       { shortcut: '/ecship', expansion: 'Great news! Your order #{input:Order Number} has shipped! 📦\n\nTracking: {input:Tracking Number}\nEstimated Delivery: {input:Date}\n\nTrack your package: {input:Tracking URL}' },
       { shortcut: '/ecrefund', expansion: 'Your refund for order #{input:Order Number} has been processed. You should see ${input:Amount} credited to your account within 5-7 business days.' },
@@ -205,7 +205,7 @@ const PACKAGES = [
     icon: '📱', 
     name: 'Social Media', 
     desc: 'Posts & engagement', 
-    author: 'Fountain',
+    author: 'Macro-Assistant',
     macros: [
       { shortcut: '/smhashtags', expansion: '#{input:Topic} #{input:Related1} #{input:Related2} #{input:Related3} #{input:Related4}' },
       { shortcut: '/smlaunch', expansion: '🚀 IT\'S FINALLY HERE!\n\n{input:Product/Feature} is now live!\n\nWe\'ve been working hard on this and can\'t wait for you to try it.\n\n{cursor}\n\n🔗 Link in bio!' },
@@ -219,7 +219,7 @@ const PACKAGES = [
 
 // Onboarding steps
 const ONBOARDING_STEPS = [
-  { icon: '💧', title: 'Welcome to Fountain!', text: 'Type shortcuts that magically expand into longer text. Save time, type less, do more!' },
+  { icon: '💧', title: 'Welcome to Macro-Assistant!', text: 'Type shortcuts that magically expand into longer text. Save time, type less, do more!' },
   { icon: '✨', title: 'Create Your First Macro', text: 'Click the "✨ New" button to create a shortcut. Try something like /email → your full email address.' },
   { icon: '🎯', title: 'Smart Variables', text: 'Use {cursor} to position your cursor, {input:Name} to prompt for values, and {date} for timestamps!' },
   { icon: '🚀', title: 'You\'re Ready!', text: 'Type your shortcut + Space anywhere on the web and watch the magic happen! ✨' }
@@ -1748,7 +1748,7 @@ function getSampleSharedMacros() {
       expansion: 'Best regards,\\n{input:Your Name}\\n{input:Title} | {input:Company}\\n📧 {input:Email}',
       description: 'Professional email signature with dynamic fields',
       category: 'professional',
-      author: 'Fountain Team',
+      author: 'Macro-Assistant Team',
       downloads: 1250
     },
     {
@@ -1757,7 +1757,7 @@ function getSampleSharedMacros() {
       expansion: '{date:MMMM D, YYYY}',
       description: 'Insert today\'s date in a nice format',
       category: 'personal',
-      author: 'Fountain Team',
+      author: 'Macro-Assistant Team',
       downloads: 890
     },
     {
@@ -1766,7 +1766,7 @@ function getSampleSharedMacros() {
       expansion: 'Hi {input:Name},\\n\\nJust following up on my previous email. Please let me know if you have any questions.\\n\\nBest regards',
       description: 'Quick follow-up email template',
       category: 'professional',
-      author: 'Fountain Team',
+      author: 'Macro-Assistant Team',
       downloads: 756
     },
     {
@@ -1775,7 +1775,7 @@ function getSampleSharedMacros() {
       expansion: 'console.log(\'{cursor}\');',
       description: 'Quick console.log with cursor placement',
       category: 'developer',
-      author: 'Fountain Team',
+      author: 'Macro-Assistant Team',
       downloads: 2100
     },
     {
@@ -1784,7 +1784,7 @@ function getSampleSharedMacros() {
       expansion: '## Meeting Notes - {date:MMM D}\\n\\n**Attendees:** {input:Attendees}\\n**Topic:** {input:Topic}\\n\\n### Discussion\\n{cursor}\\n\\n### Action Items\\n- ',
       description: 'Meeting notes template with date',
       category: 'professional',
-      author: 'Fountain Team',
+      author: 'Macro-Assistant Team',
       downloads: 543
     },
     {
@@ -1793,7 +1793,7 @@ function getSampleSharedMacros() {
       expansion: 'Thank you so much for {input:reason}! I really appreciate it.',
       description: 'Quick thank you message',
       category: 'personal',
-      author: 'Fountain Team',
+      author: 'Macro-Assistant Team',
       downloads: 421
     }
   ];

@@ -181,7 +181,7 @@ function createExtensionZip() {
  */
 async function main() {
   console.log('═'.repeat(60));
-  console.log('🔄 Fountain Extension Sync Check');
+  console.log('🔄 Macro-Assistant Extension Sync Check');
   console.log('═'.repeat(60));
   
   // Check if source extension exists and has manifest

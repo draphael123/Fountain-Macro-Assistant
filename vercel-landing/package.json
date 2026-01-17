@@ -2,7 +2,7 @@
   "name": "fountain-macro-assistant-landing",
   "version": "3.0.0",
   "type": "module",
-  "description": "Landing page for Fountain - Macro Assistant Chrome Extension",
+  "description": "Landing page for Macro-Assistant Chrome Extension",
   "scripts": {
     "build": "node scripts/sync-extension.js",
     "sync": "node scripts/sync-extension.js",

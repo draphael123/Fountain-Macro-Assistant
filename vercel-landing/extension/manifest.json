@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Fountain - Macro Assistant",
+  "name": "Macro-Assistant",
   "version": "3.1.0",
   "description": "💧 Type faster with smart text expansion! Create shortcuts, use variables like {cursor}, {input:Name}, {date:FORMAT}, regex patterns, JavaScript snippets, and more.",
   "permissions": [
@@ -45,7 +45,7 @@
         "default": "Ctrl+Shift+M",
         "mac": "Command+Shift+M"
       },
-      "description": "Open Fountain Macro Assistant"
+      "description": "Open Macro-Assistant"
     },
     "create_macro": {
       "suggested_key": {

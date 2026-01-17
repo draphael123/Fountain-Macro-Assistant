@@ -1,4 +1,4 @@
-// Fountain - Macro Assistant v3.0 - Content Script
+// Macro-Assistant - Macro Assistant v3.0 - Content Script
 // Full-featured text expansion with regex, JS, counters, auto-suggest, and more
 
 let macros = [];
@@ -21,16 +21,16 @@ async function loadMacros() {
     macros = result.macros || [];
     counters = result.counters || {};
     settings = result.settings || { autoExpand: true, showSuggestions: true };
-    console.log('💧 Fountain: Loaded', macros.length, 'macros');
+    console.log('💧 Macro-Assistant: Loaded', macros.length, 'macros');
   } catch (error) {
-    console.error('💧 Fountain: Error loading:', error);
+    console.error('💧 Macro-Assistant: Error loading:', error);
   }
 }
 
 // Initialize
 (async () => {
   await loadMacros();
-  console.log('💧 Fountain: Ready!');
+  console.log('💧 Macro-Assistant: Ready!');
 })();
 
 // Listen for storage changes
@@ -153,7 +153,7 @@ async function processVariables(text, regexMatch = null) {
       const fn = new Function(...Object.keys(sandbox), `return ${code}`);
       return String(fn(...Object.values(sandbox)));
     } catch (e) {
-      console.warn('💧 Fountain: JS error:', e);
+      console.warn('💧 Macro-Assistant: JS error:', e);
       return `[error: ${e.message}]`;
     }
   });
@@ -338,7 +338,7 @@ function undoExpansion(state) {
     const idx = expansionHistory.indexOf(state);
     if (idx > -1) expansionHistory.splice(idx, 1);
   } catch (e) {
-    console.error('💧 Fountain: Undo error:', e);
+    console.error('💧 Macro-Assistant: Undo error:', e);
   }
 }
 
@@ -418,7 +418,7 @@ async function updateStats(macroId) {
     stats[macroId].lastUsed = Date.now();
     await chrome.storage.sync.set({ macroStats: stats });
   } catch (e) {
-    console.error('💧 Fountain: Stats error:', e);
+    console.error('💧 Macro-Assistant: Stats error:', e);
   }
 }
 
@@ -530,7 +530,7 @@ async function performExpansion(element, matchedText, expansion, macro, regexMat
     isExpanding = false;
     return true;
   } catch (e) {
-    console.error('💧 Fountain: Expansion error:', e);
+    console.error('💧 Macro-Assistant: Expansion error:', e);
     isExpanding = false;
     return false;
   }
@@ -555,14 +555,14 @@ function expandMacro(element, text, requireTrigger = false) {
         const regex = new RegExp(shortcut + '$', caseSensitive ? '' : 'i');
         const match = text.match(regex);
         if (match) {
-          console.log('💧 Fountain: Regex match', shortcut);
+          console.log('💧 Macro-Assistant: Regex match', shortcut);
           isExpanding = true;
           const expansion = getConditionalExpansion(macro);
           performExpansion(element, match[0], expansion, macro, match);
           return true;
         }
       } catch (e) {
-        console.warn('💧 Fountain: Invalid regex:', shortcut);
+        console.warn('💧 Macro-Assistant: Invalid regex:', shortcut);
       }
       continue;
     }
@@ -586,7 +586,7 @@ function expandMacro(element, text, requireTrigger = false) {
       const isWordBoundary = !lastChar || /[\s\n\r\t.,;:!?()[\]{}'"`]/.test(lastChar);
       
       if (!requireTrigger || isWordBoundary || !before.length) {
-        console.log('💧 Fountain: Expanding', matched);
+        console.log('💧 Macro-Assistant: Expanding', matched);
         isExpanding = true;
         const expansion = getConditionalExpansion(macro);
         performExpansion(element, matched, expansion, macro);

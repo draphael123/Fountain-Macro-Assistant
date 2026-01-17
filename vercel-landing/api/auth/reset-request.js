@@ -90,9 +90,9 @@ export default async function handler(request) {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            from: 'Fountain <noreply@fountain.net>',
+            from: 'Macro-Assistant <noreply@fountain.net>',
             to: [email],
-            subject: 'Reset Your Fountain Password',
+            subject: 'Reset Your Macro-Assistant Password',
             html: `
               <!DOCTYPE html>
               <html>
@@ -102,7 +102,7 @@ export default async function handler(request) {
               </head>
               <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
                 <div style="text-align: center; margin-bottom: 32px;">
-                  <h1 style="color: #0066FF; margin: 0; font-size: 28px;">💧 Fountain</h1>
+                  <h1 style="color: #0066FF; margin: 0; font-size: 28px;">💧 Macro-Assistant</h1>
                 </div>
                 
                 <div style="background: #f8fafc; border-radius: 12px; padding: 32px; text-align: center;">
@@ -125,13 +125,13 @@ export default async function handler(request) {
                     If you didn't request this, you can safely ignore this email.
                   </p>
                   <p style="margin: 0;">
-                    © ${new Date().getFullYear()} Fountain Macro Assistant
+                    © ${new Date().getFullYear()} Macro-Assistant Macro Assistant
                   </p>
                 </div>
               </body>
               </html>
             `,
-            text: `Fountain Password Reset\n\nYour reset code is: ${resetCode}\n\nThis code expires in 15 minutes.\n\nIf you didn't request this, you can safely ignore this email.`
+            text: `Macro-Assistant Password Reset\n\nYour reset code is: ${resetCode}\n\nThis code expires in 15 minutes.\n\nIf you didn't request this, you can safely ignore this email.`
           }),
         });
 
