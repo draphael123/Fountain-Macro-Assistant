@@ -123,6 +123,94 @@ const PACKAGES = [
       { shortcut: '/edugrade', expansion: 'Grade: {input:Grade}\n\nFeedback:\n{cursor}\n\nPlease see me during office hours if you have questions.' },
       { shortcut: '/edusyllabus', expansion: 'Week {input:Number}: {input:Topic}\nReadings: {input:Readings}\nAssignment: {input:Assignment}' }
     ]
+  },
+  { 
+    icon: '🏠', 
+    name: 'Personal', 
+    desc: 'Everyday shortcuts', 
+    author: 'Fountain',
+    macros: [
+      { shortcut: '/myemail', expansion: '{input:Your Email}' },
+      { shortcut: '/myphone', expansion: '{input:Your Phone}' },
+      { shortcut: '/myaddr', expansion: '{input:Street}\n{input:City}, {input:State} {input:ZIP}' },
+      { shortcut: '/shrug', expansion: '¯\\_(ツ)_/¯' },
+      { shortcut: '/tableflip', expansion: '(╯°□°)╯︵ ┻━┻' },
+      { shortcut: '/lenny', expansion: '( ͡° ͜ʖ ͡°)' },
+      { shortcut: '/check', expansion: '✓' },
+      { shortcut: '/x', expansion: '✗' },
+      { shortcut: '/arrow', expansion: '→' },
+      { shortcut: '/bullet', expansion: '•' },
+      { shortcut: '/rsvp', expansion: 'Thank you for the invitation! I would be happy to attend. Please count me in.' },
+      { shortcut: '/decline', expansion: 'Thank you for thinking of me, but unfortunately I won\'t be able to make it. I hope you have a wonderful time!' }
+    ]
+  },
+  { 
+    icon: '🏥', 
+    name: 'Healthcare', 
+    desc: 'Medical & wellness', 
+    author: 'Fountain',
+    macros: [
+      { shortcut: '/hcappt', expansion: 'Appointment Confirmation\n\nPatient: {input:Name}\nDate: {input:Date}\nTime: {input:Time}\nProvider: {input:Doctor}\n\nPlease arrive 15 minutes early.' },
+      { shortcut: '/hcremind', expansion: 'Reminder: Your appointment with {input:Doctor} is scheduled for {input:Date} at {input:Time}. Please call to reschedule if needed.' },
+      { shortcut: '/hcfollow', expansion: 'Following up on your recent visit. How are you feeling? Please don\'t hesitate to reach out if you have any questions or concerns.' },
+      { shortcut: '/hcrefill', expansion: 'Your prescription refill for {input:Medication} is ready for pickup at {input:Pharmacy}.' },
+      { shortcut: '/hcresults', expansion: 'Your test results are in. Please schedule a follow-up appointment to discuss them with your provider.' },
+      { shortcut: '/hcvitals', expansion: 'Vitals: BP {input:BP} | HR {input:HR} | Temp {input:Temp} | SpO2 {input:SpO2}' }
+    ]
+  },
+  { 
+    icon: '⚖️', 
+    name: 'Legal', 
+    desc: 'Legal & compliance', 
+    author: 'Fountain',
+    macros: [
+      { shortcut: '/legaldisclaim', expansion: 'This communication is for informational purposes only and does not constitute legal advice. Please consult with a qualified attorney for specific legal questions.' },
+      { shortcut: '/legalconf', expansion: 'CONFIDENTIAL: This message contains privileged and confidential information intended only for the named recipient. If you received this in error, please notify the sender immediately and delete this message.' },
+      { shortcut: '/legalretain', expansion: 'Please retain this document for your records. This notice serves as confirmation of {input:matter}.' },
+      { shortcut: '/legalconsult', expansion: 'Thank you for contacting our office. We would like to schedule a consultation to discuss your matter.\n\nAvailable times:\n{input:Times}\n\nPlease let us know what works best for you.' },
+      { shortcut: '/legaldeadline', expansion: '⚠️ DEADLINE REMINDER\n\nMatter: {input:Matter}\nDeadline: {input:Date}\nAction Required: {input:Action}' }
+    ]
+  },
+  { 
+    icon: '🏡', 
+    name: 'Real Estate', 
+    desc: 'Property & listings', 
+    author: 'Fountain',
+    macros: [
+      { shortcut: '/relisting', expansion: '🏠 {input:Property Type} FOR {input:Sale/Rent}\n\n📍 {input:Address}\n💰 ${input:Price}\n🛏️ {input:Beds} Beds | 🛁 {input:Baths} Baths\n📐 {input:SqFt} sq ft\n\n{cursor}' },
+      { shortcut: '/reshowing', expansion: 'Showing Scheduled!\n\nProperty: {input:Address}\nDate: {input:Date}\nTime: {input:Time}\n\nPlease confirm your attendance.' },
+      { shortcut: '/reoffer', expansion: 'Congratulations! You\'ve received an offer on {input:Address}.\n\nOffer: ${input:Amount}\nContingencies: {input:Contingencies}\nClosing Date: {input:Date}' },
+      { shortcut: '/reclose', expansion: 'Congratulations on your new home! 🎉\n\nClosing Date: {input:Date}\nTime: {input:Time}\nLocation: {input:Location}\n\nPlease bring:\n• Photo ID\n• Certified funds' },
+      { shortcut: '/refollow', expansion: 'Hi {input:Name},\n\nFollowing up on your property search. I found some great new listings that match your criteria. Would you like to schedule viewings?' }
+    ]
+  },
+  { 
+    icon: '🛒', 
+    name: 'E-commerce', 
+    desc: 'Online store replies', 
+    author: 'Fountain',
+    macros: [
+      { shortcut: '/ecship', expansion: 'Great news! Your order #{input:Order Number} has shipped! 📦\n\nTracking: {input:Tracking Number}\nEstimated Delivery: {input:Date}\n\nTrack your package: {input:Tracking URL}' },
+      { shortcut: '/ecrefund', expansion: 'Your refund for order #{input:Order Number} has been processed. You should see ${input:Amount} credited to your account within 5-7 business days.' },
+      { shortcut: '/ecstock', expansion: 'Good news! {input:Product} is back in stock! Get yours before they sell out again: {input:Link}' },
+      { shortcut: '/ecreview', expansion: 'We hope you\'re enjoying your purchase! Would you mind taking a moment to leave a review? Your feedback helps other customers and helps us improve. ⭐' },
+      { shortcut: '/ecabandon', expansion: 'Hi! We noticed you left some items in your cart. Complete your purchase today and enjoy {input:Discount}% off with code: {input:Code}' },
+      { shortcut: '/ecdelay', expansion: 'We apologize for the delay with your order #{input:Order Number}. Due to {input:Reason}, your new estimated delivery is {input:Date}. Thank you for your patience.' }
+    ]
+  },
+  { 
+    icon: '📱', 
+    name: 'Social Media', 
+    desc: 'Posts & engagement', 
+    author: 'Fountain',
+    macros: [
+      { shortcut: '/smhashtags', expansion: '#{input:Topic} #{input:Related1} #{input:Related2} #{input:Related3} #{input:Related4}' },
+      { shortcut: '/smlaunch', expansion: '🚀 IT\'S FINALLY HERE!\n\n{input:Product/Feature} is now live!\n\nWe\'ve been working hard on this and can\'t wait for you to try it.\n\n{cursor}\n\n🔗 Link in bio!' },
+      { shortcut: '/smbts', expansion: '👀 Behind the scenes look at {input:what}!\n\n{cursor}\n\nWhat would you like to see more of? Let us know in the comments! 👇' },
+      { shortcut: '/smqa', expansion: 'Q&A Time! 🙋\n\nDrop your questions below and we\'ll answer them in our next {input:post/video/story}!\n\n{cursor}' },
+      { shortcut: '/smgiveaway', expansion: '🎁 GIVEAWAY TIME!\n\nWe\'re giving away {input:Prize}!\n\nTo enter:\n1️⃣ Follow us\n2️⃣ Like this post\n3️⃣ Tag 2 friends\n\nWinner announced {input:Date}! Good luck! 🍀' },
+      { shortcut: '/smcta', expansion: '👉 {input:Action} now!\n\n🔗 {input:Link}\n\n{input:Hashtags}' }
+    ]
   }
 ];
 
@@ -149,6 +237,11 @@ async function updateSyncButtonState() {
   try {
     const isLoggedIn = await CloudSync.isLoggedIn();
     const syncBtn = document.getElementById('syncBtn');
+    const statusBar = document.getElementById('syncStatusBar');
+    const statusIcon = document.getElementById('syncStatusIcon');
+    const statusText = document.getElementById('syncStatusText');
+    const statusAction = document.getElementById('syncStatusAction');
+    
     if (syncBtn) {
       if (isLoggedIn) {
         syncBtn.classList.add('synced');
@@ -158,8 +251,65 @@ async function updateSyncButtonState() {
         syncBtn.textContent = '☁️ Sync';
       }
     }
+    
+    // Update status bar
+    if (statusBar) {
+      if (isLoggedIn) {
+        statusBar.style.display = 'flex';
+        statusBar.classList.remove('error', 'syncing');
+        statusBar.classList.add('synced');
+        statusIcon.textContent = '✓';
+        const user = await CloudSync.getUser();
+        const lastSync = await CloudSync.getLastSync();
+        const syncTime = lastSync ? new Date(lastSync).toLocaleTimeString() : 'Never';
+        statusText.textContent = `Synced as ${user?.email?.split('@')[0] || 'User'} • Last: ${syncTime}`;
+        statusAction.textContent = 'Sync Now';
+        statusAction.onclick = handleSyncNow;
+      } else {
+        statusBar.style.display = 'flex';
+        statusBar.classList.remove('synced', 'syncing', 'error');
+        statusIcon.textContent = '☁️';
+        statusText.textContent = 'Not connected • Sign in to sync';
+        statusAction.textContent = 'Connect';
+        statusAction.onclick = () => showModal('syncModal');
+      }
+    }
   } catch (e) {
     console.error('Error updating sync button state:', e);
+  }
+}
+
+// Handle sync now button
+async function handleSyncNow() {
+  const statusBar = document.getElementById('syncStatusBar');
+  const statusIcon = document.getElementById('syncStatusIcon');
+  const statusText = document.getElementById('syncStatusText');
+  const statusAction = document.getElementById('syncStatusAction');
+  
+  try {
+    statusBar.classList.remove('synced', 'error');
+    statusBar.classList.add('syncing');
+    statusIcon.textContent = '🔄';
+    statusText.textContent = 'Syncing...';
+    statusAction.disabled = true;
+    
+    await CloudSync.syncToCloud(macros);
+    
+    statusBar.classList.remove('syncing');
+    statusBar.classList.add('synced');
+    statusIcon.textContent = '✓';
+    statusText.textContent = `Synced just now • ${macros.length} macros`;
+    statusAction.disabled = false;
+    
+    showToast('Macros synced successfully!', 'success');
+  } catch (error) {
+    statusBar.classList.remove('syncing');
+    statusBar.classList.add('error');
+    statusIcon.textContent = '⚠️';
+    statusText.textContent = 'Sync failed • ' + error.message;
+    statusAction.disabled = false;
+    
+    showToast('Sync failed: ' + error.message, 'error');
   }
 }
 

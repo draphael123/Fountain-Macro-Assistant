@@ -1887,3 +1887,77 @@ header h1 .logo-img {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+/* Sync Status Bar */
+.sync-status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, rgba(0, 179, 179, 0.1), rgba(0, 179, 179, 0.05));
+  border: 1px solid rgba(0, 179, 179, 0.3);
+  border-radius: var(--radius-md);
+  font-size: 12px;
+}
+
+.sync-status-bar.synced {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.sync-status-bar.error {
+  background: linear-gradient(135deg, rgba(248, 81, 73, 0.1), rgba(248, 81, 73, 0.05));
+  border-color: rgba(248, 81, 73, 0.3);
+}
+
+.sync-status-bar.syncing {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.sync-status-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sync-status-icon {
+  font-size: 14px;
+}
+
+.sync-status-bar.syncing .sync-status-icon {
+  animation: spin 1s linear infinite;
+}
+
+.sync-status-text {
+  color: var(--text-secondary);
+}
+
+.sync-status-bar.synced .sync-status-text {
+  color: #10b981;
+}
+
+.sync-status-bar.error .sync-status-text {
+  color: #f85149;
+}
+
+.sync-status-action {
+  padding: 4px 10px;
+  font-size: 11px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.sync-status-action:hover {
+  background: var(--accent-dark);
+}
+
+.sync-status-bar.syncing .sync-status-action {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

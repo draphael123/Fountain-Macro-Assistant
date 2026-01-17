@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', function() {
     initGuideSearch();
     initMacroBuilder();
     initDownloadVersion();
+    initDemoAnimations();
+    initTestimonialCounter();
 });
 
 // ========================================
@@ -577,5 +579,141 @@ function initSignatureDemo() {
     if (demoSection) {
         animationObserver.observe(demoSection);
     }
+}
+
+// ========================================
+// DEMO ANIMATIONS (GIF-like)
+// ========================================
+
+function initDemoAnimations() {
+    const demoData = {
+        signature: {
+            shortcut: '/sig',
+            expansion: 'Best regards,\nJohn Smith\nSenior Developer'
+        },
+        date: {
+            shortcut: '/today',
+            expansion: new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+        },
+        input: {
+            shortcut: '/greet',
+            expansion: 'Hello [Name]!\nWelcome to our team.'
+        },
+        code: {
+            shortcut: '//log',
+            expansion: 'console.log("Debug:", value);'
+        }
+    };
+
+    const demos = document.querySelectorAll('.gif-placeholder');
+    
+    demos.forEach(demo => {
+        const demoType = demo.dataset.demo;
+        const data = demoData[demoType];
+        if (!data) return;
+
+        const typedEl = demo.querySelector('.demo-typed');
+        const resultEl = demo.querySelector('.expansion-result');
+        if (!typedEl || !resultEl) return;
+
+        let isAnimating = false;
+        let charIndex = 0;
+
+        function animate() {
+            if (isAnimating) return;
+            isAnimating = true;
+            charIndex = 0;
+            typedEl.textContent = '';
+            resultEl.textContent = '';
+            resultEl.style.opacity = '0';
+
+            function typeChar() {
+                if (charIndex < data.shortcut.length) {
+                    typedEl.textContent = data.shortcut.substring(0, charIndex + 1);
+                    charIndex++;
+                    setTimeout(typeChar, 100);
+                } else {
+                    // Shortcut complete, show space then expand
+                    setTimeout(() => {
+                        typedEl.textContent = data.shortcut + ' ';
+                        setTimeout(() => {
+                            // Clear and show expansion
+                            typedEl.textContent = '';
+                            resultEl.textContent = data.expansion;
+                            resultEl.style.opacity = '1';
+                            
+                            // Reset after delay
+                            setTimeout(() => {
+                                isAnimating = false;
+                            }, 3000);
+                        }, 200);
+                    }, 300);
+                }
+            }
+
+            typeChar();
+        }
+
+        // Use Intersection Observer
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !isAnimating) {
+                    animate();
+                    // Loop animation
+                    setInterval(() => {
+                        if (!isAnimating) animate();
+                    }, 6000);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        observer.observe(demo);
+    });
+}
+
+// ========================================
+// TESTIMONIAL COUNTER ANIMATION
+// ========================================
+
+function initTestimonialCounter() {
+    const counters = [
+        { id: 'userCount', target: 2500, suffix: '+' },
+        { id: 'downloadCount', target: 2847, suffix: '' }
+    ];
+
+    counters.forEach(counter => {
+        const el = document.getElementById(counter.id);
+        if (!el) return;
+
+        let hasAnimated = false;
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !hasAnimated) {
+                    hasAnimated = true;
+                    animateCounter(el, counter.target, counter.suffix);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        observer.observe(el);
+    });
+}
+
+function animateCounter(el, target, suffix) {
+    const duration = 2000;
+    const steps = 60;
+    const stepTime = duration / steps;
+    const increment = target / steps;
+    let current = 0;
+
+    const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+            current = target;
+            clearInterval(timer);
+        }
+        el.textContent = Math.floor(current).toLocaleString() + suffix;
+    }, stepTime);
 }
 
