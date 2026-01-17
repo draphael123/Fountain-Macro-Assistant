@@ -408,254 +408,6 @@
             }
         }
 
-        /* Auth Buttons in Header */
-        .auth-buttons {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            margin-left: 16px;
-        }
-        .auth-buttons .btn-outline {
-            background: transparent;
-            border: 2px solid var(--primary-blue);
-            color: var(--primary-blue);
-            padding: 8px 16px;
-            font-size: 14px;
-            font-weight: 500;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .auth-buttons .btn-outline:hover {
-            background: var(--primary-blue);
-            color: white;
-        }
-        .auth-buttons .btn-primary {
-            background: var(--primary-blue);
-            border: 2px solid var(--primary-blue);
-            color: white;
-            padding: 8px 16px;
-            font-size: 14px;
-            font-weight: 500;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .auth-buttons .btn-primary:hover {
-            background: var(--primary-dark);
-            border-color: var(--primary-dark);
-        }
-        .user-menu {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            margin-left: 16px;
-        }
-        .user-name {
-            font-weight: 500;
-            color: var(--text-dark);
-        }
-        .user-menu .btn-small {
-            padding: 6px 12px;
-            font-size: 13px;
-        }
-
-        /* Auth Modal */
-        .auth-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 10000;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(4px);
-        }
-        .auth-modal.active {
-            display: flex;
-        }
-        .auth-modal-content {
-            background: var(--bg-white);
-            border-radius: 16px;
-            padding: 40px;
-            width: 100%;
-            max-width: 420px;
-            position: relative;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-            animation: modalSlideIn 0.3s ease-out;
-        }
-        @keyframes modalSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        .auth-modal-close {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            background: none;
-            border: none;
-            font-size: 28px;
-            cursor: pointer;
-            color: var(--text-gray);
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: background 0.2s;
-        }
-        .auth-modal-close:hover {
-            background: var(--bg-light);
-        }
-        .auth-modal h2 {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--text-dark);
-            margin: 0 0 8px;
-        }
-        .auth-subtitle {
-            color: var(--text-gray);
-            margin: 0 0 24px;
-            font-size: 15px;
-        }
-        .auth-modal .form-group {
-            margin-bottom: 20px;
-        }
-        .auth-modal .form-group label {
-            display: block;
-            font-weight: 500;
-            color: var(--text-dark);
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-        .auth-modal .form-group input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 15px;
-            transition: border-color 0.2s;
-            background: var(--bg-white);
-            color: var(--text-dark);
-        }
-        .auth-modal .form-group input:focus {
-            outline: none;
-            border-color: var(--primary-blue);
-        }
-        .auth-error {
-            background: #fef2f2;
-            color: #dc2626;
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            font-size: 14px;
-            display: none;
-        }
-        .auth-error.show {
-            display: block;
-        }
-        .btn-full {
-            width: 100%;
-            padding: 14px;
-            font-size: 16px;
-            font-weight: 600;
-        }
-        .auth-switch {
-            text-align: center;
-            margin-top: 24px;
-            color: var(--text-gray);
-            font-size: 14px;
-        }
-        .auth-switch a {
-            color: var(--primary-blue);
-            font-weight: 500;
-            text-decoration: none;
-        }
-        .auth-switch a:hover {
-            text-decoration: underline;
-        }
-
-        /* Dark mode auth styles */
-        [data-theme="dark"] .auth-modal-content {
-            background: var(--bg-dark);
-        }
-        [data-theme="dark"] .auth-error {
-            background: #4c1d1d;
-            color: #fca5a5;
-        }
-
-        /* My Macros Section */
-        .my-macros-section {
-            margin-bottom: 40px;
-        }
-        .my-macros-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-        .my-macro-card {
-            background: var(--bg-white);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            padding: 20px;
-            transition: all 0.2s;
-        }
-        .my-macro-card:hover {
-            border-color: var(--primary-blue);
-            box-shadow: 0 4px 12px rgba(0, 102, 255, 0.1);
-        }
-        .my-macro-shortcut {
-            font-family: 'SF Mono', Monaco, monospace;
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--primary-blue);
-            margin-bottom: 8px;
-        }
-        .my-macro-expansion {
-            color: var(--text-gray);
-            font-size: 14px;
-            line-height: 1.5;
-            max-height: 80px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin-bottom: 12px;
-        }
-        .my-macro-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 12px;
-            color: var(--text-gray);
-        }
-        .my-macros-empty {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--text-gray);
-        }
-        .my-macros-empty a {
-            color: var(--primary-blue);
-        }
-        
-        /* My Macros Tab highlight */
-        .tab[data-tab="my-macros"] {
-            background: linear-gradient(135deg, var(--primary-blue), #00B8FF);
-            color: white;
-            border-color: transparent;
-        }
-        .tab[data-tab="my-macros"]:hover {
-            opacity: 0.9;
-        }
     </style>
 </head>
 <body>
@@ -694,83 +446,10 @@
                             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
                         </svg>
                     </button>
-                    <div class="auth-buttons" id="auth-buttons">
-                        <button class="btn btn-outline" id="login-btn">Log In</button>
-                        <button class="btn btn-primary" id="signup-btn">Sign Up</button>
-                    </div>
-                    <div class="user-menu" id="user-menu" style="display: none;">
-                        <span class="user-name" id="user-name"></span>
-                        <button class="btn btn-outline btn-small" id="logout-btn">Log Out</button>
-                    </div>
                 </nav>
             </div>
         </div>
     </header>
-
-    <!-- Auth Modal -->
-    <div id="auth-modal" class="auth-modal">
-        <div class="auth-modal-content">
-            <button class="auth-modal-close" id="auth-modal-close">&times;</button>
-            
-            <div id="login-form-container">
-                <h2>Log In</h2>
-                <p class="auth-subtitle">Welcome back! Sign in to your account.</p>
-                
-                <form id="login-form">
-                    <div class="form-group">
-                        <label for="login-email">Email</label>
-                        <input type="email" id="login-email" placeholder="you@example.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="login-password">Password</label>
-                        <input type="password" id="login-password" placeholder="Your password" required>
-                    </div>
-                    <div id="login-error" class="auth-error"></div>
-                    <button type="submit" class="btn btn-primary btn-full" id="login-submit">
-                        <span class="btn-text">Log In</span>
-                        <span class="btn-loading" style="display: none;">Logging in...</span>
-                    </button>
-                </form>
-                
-                <p class="auth-switch">
-                    Don't have an account? <a href="#" id="show-signup">Sign up</a>
-                </p>
-            </div>
-            
-            <div id="signup-form-container" style="display: none;">
-                <h2>Create Account</h2>
-                <p class="auth-subtitle">Sign up to share and save your macros.</p>
-                
-                <form id="signup-form">
-                    <div class="form-group">
-                        <label for="signup-name">Display Name</label>
-                        <input type="text" id="signup-name" placeholder="Your name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="signup-email">Email</label>
-                        <input type="email" id="signup-email" placeholder="you@example.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="signup-password">Password</label>
-                        <input type="password" id="signup-password" placeholder="At least 6 characters" minlength="6" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="signup-confirm">Confirm Password</label>
-                        <input type="password" id="signup-confirm" placeholder="Confirm your password" required>
-                    </div>
-                    <div id="signup-error" class="auth-error"></div>
-                    <button type="submit" class="btn btn-primary btn-full" id="signup-submit">
-                        <span class="btn-text">Create Account</span>
-                        <span class="btn-loading" style="display: none;">Creating account...</span>
-                    </button>
-                </form>
-                
-                <p class="auth-switch">
-                    Already have an account? <a href="#" id="show-login">Log in</a>
-                </p>
-            </div>
-        </div>
-    </div>
 
     <div class="shared-container">
         <div class="shared-header">
@@ -851,25 +530,6 @@
                 <button class="tab" data-tab="recent">Recent</button>
                 <button class="tab" data-tab="folders">Folders</button>
                 <button class="tab" data-tab="code">Import by Code</button>
-                <button class="tab" data-tab="my-macros" id="my-macros-tab" style="display: none;">My Macros</button>
-            </div>
-
-            <!-- My Macros Section (for logged-in users) -->
-            <div class="my-macros-section" id="my-macros-section" style="display: none;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-                    <h2 style="margin: 0; font-size: 24px; font-weight: 600; color: var(--text-dark);">My Synced Macros</h2>
-                    <div style="display: flex; gap: 12px; align-items: center;">
-                        <span id="my-macros-sync-status" style="font-size: 14px; color: var(--text-gray);"></span>
-                        <button class="btn btn-secondary" id="refresh-my-macros-btn">🔄 Refresh</button>
-                    </div>
-                </div>
-                <p style="color: var(--text-gray); margin-bottom: 24px;">These are your personal macros synced from the Fountain extension. Install the extension and sign in with the same account to sync.</p>
-                <div class="my-macros-grid" id="my-macros-grid">
-                    <div class="my-macros-empty" id="my-macros-empty">
-                        <p>No synced macros yet.</p>
-                        <p>Install the <a href="index.html#install">Fountain extension</a> and sign in to sync your macros.</p>
-                    </div>
-                </div>
             </div>
 
             <!-- Folders Section -->
@@ -1000,330 +660,11 @@
     </footer>
 
     <script src="script.js"></script>
-    <script src="auth.js"></script>
     <script src="shared-macros.js"></script>
     <script>
         let currentTab = 'popular';
         let allSharedMacros = [];
         let selectedFolderId = null;
-        let currentUser = null;
-
-        // ========== AUTH FUNCTIONALITY ==========
-        const API_BASE = '/api';
-        
-        // DOM Elements for auth
-        const authModal = document.getElementById('auth-modal');
-        const authButtons = document.getElementById('auth-buttons');
-        const userMenu = document.getElementById('user-menu');
-        const userNameEl = document.getElementById('user-name');
-        const loginBtn = document.getElementById('login-btn');
-        const signupBtn = document.getElementById('signup-btn');
-        const logoutBtn = document.getElementById('logout-btn');
-        const authModalClose = document.getElementById('auth-modal-close');
-        const loginFormContainer = document.getElementById('login-form-container');
-        const signupFormContainer = document.getElementById('signup-form-container');
-        const showSignupLink = document.getElementById('show-signup');
-        const showLoginLink = document.getElementById('show-login');
-        const loginForm = document.getElementById('login-form');
-        const signupForm = document.getElementById('signup-form');
-        const loginError = document.getElementById('login-error');
-        const signupError = document.getElementById('signup-error');
-
-        // Check if user is logged in on page load
-        function checkAuthStatus() {
-            const token = localStorage.getItem('fountain_auth_token');
-            const userData = localStorage.getItem('fountain_user');
-            
-            if (token && userData) {
-                try {
-                    currentUser = JSON.parse(userData);
-                    showLoggedInState();
-                } catch (e) {
-                    console.error('Error parsing user data:', e);
-                    logout();
-                }
-            } else {
-                showLoggedOutState();
-            }
-        }
-
-        function showLoggedInState() {
-            if (authButtons) authButtons.style.display = 'none';
-            if (userMenu) userMenu.style.display = 'flex';
-            if (userNameEl && currentUser) {
-                userNameEl.textContent = currentUser.displayName || currentUser.email;
-            }
-            // Show My Macros tab
-            const myMacrosTab = document.getElementById('my-macros-tab');
-            if (myMacrosTab) myMacrosTab.style.display = 'inline-block';
-        }
-
-        function showLoggedOutState() {
-            if (authButtons) authButtons.style.display = 'flex';
-            if (userMenu) userMenu.style.display = 'none';
-            currentUser = null;
-            // Hide My Macros tab
-            const myMacrosTab = document.getElementById('my-macros-tab');
-            if (myMacrosTab) myMacrosTab.style.display = 'none';
-            // Switch away from my-macros tab if currently on it
-            if (currentTab === 'my-macros') {
-                document.querySelector('[data-tab="popular"]')?.click();
-            }
-        }
-
-        // Load user's synced macros from cloud
-        async function loadMyMacros() {
-            const token = localStorage.getItem('fountain_auth_token');
-            if (!token) {
-                document.getElementById('my-macros-empty').style.display = 'block';
-                return;
-            }
-
-            const syncStatus = document.getElementById('my-macros-sync-status');
-            if (syncStatus) syncStatus.textContent = 'Loading...';
-
-            try {
-                const response = await fetch(`${API_BASE}/sync/get`, {
-                    method: 'GET',
-                    headers: { 
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-
-                const data = await response.json();
-                
-                if (data.success && data.data) {
-                    const macros = data.data.macros || [];
-                    displayMyMacros(macros, data.data.lastSync);
-                } else {
-                    if (syncStatus) syncStatus.textContent = 'Failed to load';
-                    document.getElementById('my-macros-empty').innerHTML = 
-                        '<p>Could not load your macros.</p><p>Please try again later.</p>';
-                }
-            } catch (error) {
-                console.error('Error loading my macros:', error);
-                if (syncStatus) syncStatus.textContent = 'Error';
-            }
-        }
-
-        function displayMyMacros(macros, lastSync) {
-            const grid = document.getElementById('my-macros-grid');
-            const empty = document.getElementById('my-macros-empty');
-            const syncStatus = document.getElementById('my-macros-sync-status');
-
-            if (syncStatus) {
-                syncStatus.textContent = lastSync ? 
-                    `Last synced: ${new Date(lastSync).toLocaleString()}` : '';
-            }
-
-            if (!macros || macros.length === 0) {
-                empty.style.display = 'block';
-                empty.innerHTML = `
-                    <p>No synced macros yet.</p>
-                    <p>Install the <a href="index.html#install">Fountain extension</a> and sign in to sync your macros.</p>
-                `;
-                return;
-            }
-
-            empty.style.display = 'none';
-            
-            // Clear existing cards (but not empty message)
-            const existingCards = grid.querySelectorAll('.my-macro-card');
-            existingCards.forEach(card => card.remove());
-
-            macros.forEach(macro => {
-                const card = document.createElement('div');
-                card.className = 'my-macro-card';
-                card.innerHTML = `
-                    <div class="my-macro-shortcut">${escapeHtml(macro.shortcut)}</div>
-                    <div class="my-macro-expansion">${escapeHtml(macro.expansion)}</div>
-                    <div class="my-macro-meta">
-                        <span>${macro.usageCount || 0} uses</span>
-                        <span>${macro.folder || 'No folder'}</span>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        function openAuthModal(mode = 'login') {
-            if (authModal) {
-                authModal.classList.add('active');
-                if (mode === 'signup') {
-                    loginFormContainer.style.display = 'none';
-                    signupFormContainer.style.display = 'block';
-                } else {
-                    loginFormContainer.style.display = 'block';
-                    signupFormContainer.style.display = 'none';
-                }
-                // Clear errors
-                if (loginError) loginError.classList.remove('show');
-                if (signupError) signupError.classList.remove('show');
-            }
-        }
-
-        function closeAuthModal() {
-            if (authModal) {
-                authModal.classList.remove('active');
-            }
-        }
-
-        // Login handler
-        async function handleLogin(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('login-email').value.trim();
-            const password = document.getElementById('login-password').value;
-            const submitBtn = document.getElementById('login-submit');
-            const btnText = submitBtn.querySelector('.btn-text');
-            const btnLoading = submitBtn.querySelector('.btn-loading');
-
-            // Show loading state
-            btnText.style.display = 'none';
-            btnLoading.style.display = 'inline';
-            submitBtn.disabled = true;
-            loginError.classList.remove('show');
-
-            try {
-                const response = await fetch(`${API_BASE}/auth/login`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    // Save auth data
-                    localStorage.setItem('fountain_auth_token', data.token);
-                    localStorage.setItem('fountain_user', JSON.stringify(data.user));
-                    currentUser = data.user;
-                    
-                    closeAuthModal();
-                    showLoggedInState();
-                    loginForm.reset();
-                    
-                    // Show success message
-                    alert(`Welcome back, ${data.user.displayName}!`);
-                } else {
-                    loginError.textContent = data.error || 'Login failed. Please try again.';
-                    loginError.classList.add('show');
-                }
-            } catch (error) {
-                console.error('Login error:', error);
-                loginError.textContent = 'Connection error. Please try again.';
-                loginError.classList.add('show');
-            } finally {
-                btnText.style.display = 'inline';
-                btnLoading.style.display = 'none';
-                submitBtn.disabled = false;
-            }
-        }
-
-        // Signup handler
-        async function handleSignup(e) {
-            e.preventDefault();
-            
-            const displayName = document.getElementById('signup-name').value.trim();
-            const email = document.getElementById('signup-email').value.trim();
-            const password = document.getElementById('signup-password').value;
-            const confirmPassword = document.getElementById('signup-confirm').value;
-            const submitBtn = document.getElementById('signup-submit');
-            const btnText = submitBtn.querySelector('.btn-text');
-            const btnLoading = submitBtn.querySelector('.btn-loading');
-
-            // Validate passwords match
-            if (password !== confirmPassword) {
-                signupError.textContent = 'Passwords do not match.';
-                signupError.classList.add('show');
-                return;
-            }
-
-            // Show loading state
-            btnText.style.display = 'none';
-            btnLoading.style.display = 'inline';
-            submitBtn.disabled = true;
-            signupError.classList.remove('show');
-
-            try {
-                const response = await fetch(`${API_BASE}/auth/register`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password, displayName })
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    // Save auth data
-                    localStorage.setItem('fountain_auth_token', data.token);
-                    localStorage.setItem('fountain_user', JSON.stringify(data.user));
-                    currentUser = data.user;
-                    
-                    closeAuthModal();
-                    showLoggedInState();
-                    signupForm.reset();
-                    
-                    // Show success message
-                    alert(`Welcome to Fountain, ${data.user.displayName}! Your account has been created.`);
-                } else {
-                    signupError.textContent = data.error || 'Registration failed. Please try again.';
-                    signupError.classList.add('show');
-                }
-            } catch (error) {
-                console.error('Signup error:', error);
-                signupError.textContent = 'Connection error. Please try again.';
-                signupError.classList.add('show');
-            } finally {
-                btnText.style.display = 'inline';
-                btnLoading.style.display = 'none';
-                submitBtn.disabled = false;
-            }
-        }
-
-        // Logout handler
-        function logout() {
-            localStorage.removeItem('fountain_auth_token');
-            localStorage.removeItem('fountain_user');
-            currentUser = null;
-            showLoggedOutState();
-        }
-
-        // Set up auth event listeners
-        if (loginBtn) loginBtn.addEventListener('click', () => openAuthModal('login'));
-        if (signupBtn) signupBtn.addEventListener('click', () => openAuthModal('signup'));
-        if (logoutBtn) logoutBtn.addEventListener('click', logout);
-        if (authModalClose) authModalClose.addEventListener('click', closeAuthModal);
-        if (showSignupLink) showSignupLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            loginFormContainer.style.display = 'none';
-            signupFormContainer.style.display = 'block';
-        });
-        if (showLoginLink) showLoginLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            loginFormContainer.style.display = 'block';
-            signupFormContainer.style.display = 'none';
-        });
-        if (loginForm) loginForm.addEventListener('submit', handleLogin);
-        if (signupForm) signupForm.addEventListener('submit', handleSignup);
-        
-        // Refresh My Macros button
-        const refreshMyMacrosBtn = document.getElementById('refresh-my-macros-btn');
-        if (refreshMyMacrosBtn) {
-            refreshMyMacrosBtn.addEventListener('click', loadMyMacros);
-        }
-        
-        // Close modal on outside click
-        if (authModal) {
-            authModal.addEventListener('click', (e) => {
-                if (e.target === authModal) closeAuthModal();
-            });
-        }
-
-        // Check auth status on load
-        checkAuthStatus();
-
-        // ========== END AUTH FUNCTIONALITY ==========
 
         // Load and display shared macros (async for API support)
         async function loadSharedMacros() {
@@ -1451,15 +792,12 @@
             
             const description = prompt('Enter folder description (optional):') || '';
             
-            // Use global auth from auth.js
-            currentUser = auth.getCurrentUser();
-            
             try {
                 const result = await sharedMacros.createFolderAsync(
                     name.trim(),
                     description.trim(),
-                    currentUser ? (currentUser.name || currentUser.email) : 'Anonymous',
-                    currentUser ? currentUser.id : null
+                    'Anonymous',
+                    null
                 );
                 
                 if (result.success) {
@@ -1631,26 +969,16 @@
 
                 // Hide all sections first
                 const foldersSection = document.getElementById('folders-section');
-                const myMacrosSection = document.getElementById('my-macros-section');
                 const sharedGrid = document.getElementById('shared-grid');
                 const emptyState = document.getElementById('empty-state');
                 
                 if (foldersSection) foldersSection.style.display = 'none';
-                if (myMacrosSection) myMacrosSection.style.display = 'none';
                 document.getElementById('import-code-modal').classList.remove('active');
 
                 if (currentTab === 'code') {
                     if (sharedGrid) sharedGrid.style.display = 'none';
                     if (emptyState) emptyState.style.display = 'none';
                     document.getElementById('import-code-modal').classList.add('active');
-                    return;
-                }
-
-                if (currentTab === 'my-macros') {
-                    if (sharedGrid) sharedGrid.style.display = 'none';
-                    if (emptyState) emptyState.style.display = 'none';
-                    if (myMacrosSection) myMacrosSection.style.display = 'block';
-                    loadMyMacros();
                     return;
                 }
 
@@ -1670,9 +998,6 @@
         if (createFolderBtn) {
             createFolderBtn.addEventListener('click', showCreateFolderModal);
         }
-        
-        // Get current user (auth is global from auth.js)
-        currentUser = auth.getCurrentUser();
 
         // Search functionality
         const searchInput = document.getElementById('search-input');
@@ -1913,10 +1238,9 @@
                 return;
             }
 
-            // Get author info
-            const currentUser = auth.getCurrentUser();
-            const author = currentUser ? currentUser.name : 'Anonymous';
-            const authorId = currentUser ? currentUser.id : null;
+            // Get author info (anonymous sharing)
+            const author = 'Anonymous';
+            const authorId = null;
 
             // Get selected folder
             const folderSelect = document.getElementById('share-folder-select');
@@ -1983,10 +1307,9 @@
                 createdAt: new Date().toISOString()
             };
 
-            // Get author info
-            const currentUser = auth.getCurrentUser();
-            const author = currentUser ? currentUser.name : 'Anonymous';
-            const authorId = currentUser ? currentUser.id : null;
+            // Get author info (anonymous sharing)
+            const author = 'Anonymous';
+            const authorId = null;
 
             // Share as a single macro collection (try async API first)
             try {
