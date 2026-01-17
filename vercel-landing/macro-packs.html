@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Macro Packs - Ready-to-Use Templates | Fountain</title>
+    <meta name="description" content="Download pre-built macro packs for customer service, tech support, sales, marketing, and more. Import instantly into Fountain.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Nunito+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M16 4L20 12L16 20L12 12L16 4Z' fill='%2300A693'/><path d='M12 12L8 16L12 20L16 16L12 12Z' fill='%2300C9B1'/><path d='M20 12L24 16L20 20L16 16L20 12Z' fill='%2300C9B1'/><path d='M16 20L12 24L16 28L20 24L16 20Z' fill='%2300A693'/></svg>">
+    <style>
+        .packs-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 24px;
+        }
+        .packs-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        .packs-header h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            font-family: 'Sora', sans-serif;
+        }
+        .packs-header p {
+            font-size: 20px;
+            color: var(--text-gray);
+            max-width: 600px;
+            margin: 0 auto 32px;
+        }
+        .how-to-import {
+            background: linear-gradient(135deg, var(--primary-teal), var(--secondary-teal));
+            color: white;
+            padding: 24px 32px;
+            border-radius: 16px;
+            max-width: 700px;
+            margin: 0 auto 60px;
+        }
+        .how-to-import h3 {
+            font-size: 18px;
+            margin: 0 0 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .how-to-import ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .how-to-import li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+        .category-section {
+            margin-bottom: 60px;
+        }
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        .category-icon {
+            font-size: 36px;
+        }
+        .category-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin: 0;
+            font-family: 'Sora', sans-serif;
+        }
+        .category-description {
+            color: var(--text-gray);
+            margin: 4px 0 0;
+            font-size: 14px;
+        }
+        .packs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+        .pack-card {
+            background: var(--bg-white);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .pack-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-teal), var(--accent-orange));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+        .pack-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 166, 147, 0.15);
+            border-color: var(--primary-teal);
+        }
+        .pack-card:hover::before {
+            transform: scaleX(1);
+        }
+        .pack-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+        .pack-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin: 0 0 4px;
+        }
+        .pack-count {
+            background: var(--light-teal);
+            color: var(--primary-teal);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .pack-description {
+            color: var(--text-gray);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+        .pack-preview {
+            background: var(--bg-light);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+        }
+        .pack-preview-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .pack-preview-item:last-child {
+            border-bottom: none;
+        }
+        .preview-shortcut {
+            color: var(--primary-teal);
+            font-weight: 600;
+            min-width: 80px;
+        }
+        .preview-arrow {
+            color: var(--text-gray);
+        }
+        .preview-expansion {
+            color: var(--text-dark);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .pack-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .pack-tag {
+            background: var(--bg-light);
+            color: var(--text-gray);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+        .download-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary-teal), var(--secondary-teal));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .download-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 20px rgba(0, 166, 147, 0.3);
+        }
+        .download-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+        
+        /* All Packs Download Section */
+        .all-packs-section {
+            background: linear-gradient(135deg, var(--bg-light), #f0faf9);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 60px;
+            border: 2px solid var(--border-color);
+        }
+        .all-packs-section h2 {
+            font-size: 28px;
+            margin-bottom: 12px;
+            color: var(--text-dark);
+        }
+        .all-packs-section p {
+            color: var(--text-gray);
+            margin-bottom: 24px;
+        }
+        .all-packs-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 32px;
+            background: linear-gradient(135deg, var(--accent-orange), #FF8C42);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .all-packs-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 30px rgba(255, 107, 53, 0.3);
+        }
+        
+        /* Dark mode */
+        [data-theme="dark"] .pack-card {
+            background: var(--bg-dark);
+        }
+        [data-theme="dark"] .pack-preview {
+            background: rgba(0, 0, 0, 0.3);
+        }
+        [data-theme="dark"] .all-packs-section {
+            background: linear-gradient(135deg, var(--bg-dark), #1a2f2d);
+        }
+        [data-theme="dark"] .how-to-import {
+            background: linear-gradient(135deg, #00796b, #004d40);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="index.html" style="text-decoration: none; display: flex; align-items: center; gap: 12px;">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 4L20 12L16 20L12 12L16 4Z" fill="#00A693"/>
+                            <path d="M12 12L8 16L12 20L16 16L12 12Z" fill="#00C9B1"/>
+                            <path d="M20 12L24 16L20 20L16 16L20 12Z" fill="#00C9B1"/>
+                            <path d="M16 20L12 24L16 28L20 24L16 20Z" fill="#00A693"/>
+                        </svg>
+                        <span class="logo-text">Fountain</span>
+                    </a>
+                </div>
+                <nav class="nav">
+                    <a href="index.html">Home</a>
+                    <a href="index.html#features">Features</a>
+                    <a href="shared.html">Community</a>
+                    <a href="macro-packs.html" class="active">Macro Packs</a>
+                    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                        <span class="theme-icon-light">☀️</span>
+                        <span class="theme-icon-dark">🌙</span>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="packs-container">
+        <div class="packs-header">
+            <h1>📦 Macro Packs</h1>
+            <p>Pre-built macro collections ready to supercharge your productivity. Download, import, and start typing faster instantly.</p>
+        </div>
+
+        <div class="how-to-import">
+            <h3>📥 How to Import</h3>
+            <ol>
+                <li><strong>Download</strong> a macro pack (JSON file)</li>
+                <li><strong>Open</strong> the Fountain extension</li>
+                <li>Go to <strong>Settings → Import/Export</strong></li>
+                <li>Click <strong>"Import from File"</strong> and select the downloaded file</li>
+            </ol>
+        </div>
+
+        <div class="all-packs-section">
+            <h2>🎁 Want Everything?</h2>
+            <p>Download all macro packs in one bundle - over 150+ ready-to-use macros!</p>
+            <button class="all-packs-btn" onclick="downloadAllPacks()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                Download All Packs
+            </button>
+        </div>
+
+        <!-- Customer Service -->
+        <div class="category-section">
+            <div class="category-header">
+                <span class="category-icon">💬</span>
+                <div>
+                    <h2 class="category-title">Customer Service</h2>
+                    <p class="category-description">Professional responses for support teams</p>
+                </div>
+            </div>
+            <div class="packs-grid">
+                <div class="pack-card">
+                    <div class="pack-header">
+                        <h3 class="pack-title">Support Essentials</h3>
+                        <span class="pack-count">15 macros</span>
+                    </div>
+                    <p class="pack-description">Common support responses including greetings, apologies, escalations, and closing messages.</p>
+                    <div class="pack-preview">
+                        <div class="pack-preview-item">
+                            <span class="preview-shortcut">/greet</span>
+                            <span class="preview-arrow">→</span>
+                            <span class="preview-expansion">Hi {input:Name}! Thanks for reaching out...</span>
+                        </div>
+                        <div class="pack-preview-item">
+                            <span class="preview-shortcut">/sorry</span>
+                            <span class="preview-arrow">→</span>
+                            <span class="preview-expansion">I sincerely apologize for the inconvenience...</span>
+                        </div>
+                        <div class="pack-preview-item">
+                            <span class="preview-shortcut">/close</span>
+                            <span class="preview-arrow">→</span>
+                            <span class="preview-expansion">Is there anything else I can help with?</span>
+                        </div>
+                    </div>
+                    <div class="pack-tags">
+                        <span class="pack-tag">greetings</span>
+                        <span class="pack-tag">apologies</span>
+                        <span class="pack-tag">closings</span>
+                    </div>
+                    <button class="download-btn" onclick="downloadPack('cs-essentials')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Download Pack
+                    </button>
+                </div>
+
+                <div class="pack-card">
+                    <div class="pack-header">
+                        <h3 class="pack-title">Refund & Returns</h3>
+                        <span class="pack-count">12 macros</span>
+                    </div>
+                    <p class="pack-description">Handle refund requests, return processes, and policy explanations professionally.</p>
+                    <div class="pack-preview">
+                        <div class="pack-preview-item">
+                            <span class="preview-shortcut">/refund</span>
+                            <span class="preview-arrow">→</span>
+                            <span class="preview-expansion">Your refund has been processed...</span>
+                        </div>
+                        <div class="pack-preview-item">
+                            <span class="preview-shortcut">/return</span>
+                            <span class="preview-arrow">→</span>
+                            <span class="preview-expansion">To initiate a return, please...</span>
+                        </div>
+                        <div class="pack-preview-item">
+                            <span class="preview-shortcut">/policy</span>
+                            <span class="preview-arrow">→</span>
+                            <span class="preview-expansion">Our return policy allows...</span>
+                        </div>
+                    </div>
+                    <div class="pack-tags">
+                        <span class="pack-tag">refunds</span>
+                        <span class="pack-tag">returns</span>
+                        <span class="pack-tag">policies</span>
+                    </div>
+                    <button class="download-btn" onclick="downloadPack('cs-refunds')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Download Pack
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tech Support -->
+        <div class="category-section">
+            <div class="category-header">
+                <span class="category-icon">🔧</span>
+                <div>
+                    <h2 class="category-title">Tech Support</h2>
+                    <p class="category-description">Troubleshooting guides and technical responses</p>
+                </div>
+            </div>
+            <div class="packs-grid">
+                <div class="pack-card">
+                    <div class="pack-header">
+                        <h3 class="pack-title">Common Fixes</h3>
+                        <span class="pack-count">18 macros</span>
+                    </div>
+                    <p class="pack-description">Standard troubleshooting steps for common technical issues - cache clearing, restarts, updates, etc.</p>
+                    <div class="pack-preview">
+                        <div class="pack-preview-item">
+                            <span class="preview-shortcut">/cache</span>
+                            <span class="preview-arrow">→</span>
+                            <span class="preview-expansion">Please clear your browser cache by...</span>
+                        </div>
+                        <div class="pack-preview-item">
+                            <span class="preview-shortcut">/restart</span>
+                            <span class="preview-arrow">→</span>
+                            <span class="preview-expansion">Please try restarting the application...</span>
+                        </div>
+                        <div class="pack-preview-item">
+                            <span class="preview-shortcut">/update</span>
+                            <span class="preview-arrow">→</span>
+                            <span class="preview-expansion">Please ensure you're running the latest...</span>
+                        </div>
+                    </div>
+                    <div class="pack-tags">
+                        <span class="pack-tag">troubleshooting</span>
+                        <span class="pack-tag">browser</span>
+                        <span class="pack-tag">basics</span>
+                    </div>
+                    <button class="download-btn" onclick="downloadPack('tech-common')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Download Pack
+                    </button>
+                </div>
+
+                <div class="pack-card">
+                    <div class="pack-header">
+                        <h3 class="pack-title">Password & Account</h3>
+                        <span class="pack-count">10 macros</span>
+                    </div>
+                    <p class="pack-description">Instructions for password resets, account recovery, and security-related issues.</p>
+                    <div class="pack-preview">
+                        <div class="pack-preview-item">
+                            <span class="preview-shortcut">/pwreset</span>
+                            <span class="preview-arrow">→</span>
+                            <span class="preview-expansion">To reset your password, click "Forgot..."</span>
+                        </div>
+                        <div class="pack-preview-item">
+                            <span class="preview-shortcut">/2fa</span>
+                            <span class="preview-arrow">→</span>
+                            <span class="preview-expansion">To enable two-factor authentication...</span>
+                        </div>
+                        <div class="pack-preview-item">
+                            <span class="preview-shortcut">/locked</span>
+                            <span class="preview-arrow">→</span>
+                            <span class="preview-expansion">Your account has been temporarily locked...</span>
+                        </div>
+                    </div>
+                    <div class="pack-tags">
+                        <span class="pack-tag">passwords</span>
+                        <span class="pack-tag">security</span>
+                        <span class="pack-tag">accounts</span>
+                    </div>
+                    <button class="download-btn" onclick="downloadPack('tech-account')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Download Pack
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sales & Marketing -->
+        <div class="category-section">
+            <div class="category-header">
+                <span class="category-icon">📈</span>
+                <div>
+                    <h2 class="category-title">Sales & Marketing</h2>
+                    <p class="category-description">Outreach templates and sales responses</p>
+                </div>
+            </div>
+            <div class="packs-grid">
+                <div class="pack-card">
+                    <div class="pack-header">
+                        <h3 class="pack-title">Cold Outreach</h3>
+                        <span class="pack-count">14 macros</span>
+                    </div>
+                    <p class="pack-description">Email templates for cold outreach, follow-ups, and meeting requests.</p>
+                    <div class="pack-preview">
+                        <div class="pack-preview-item">
+                            <span class="preview-shortcut">/intro</span>
+                            <span class="preview-arrow">→</span>
+                            <span class="preview-expansion">Hi {input:Name}, I noticed your company...</span>
+                        </div>
+                        <div class="pack-preview-item">
+                            <span class="preview-shortcut">/followup</span>
+                            <span class="preview-arrow">→</span>
+                            <span class="preview-expansion">Just following up on my previous email...</span>
+                        </div>
+                        <div class="pack-preview-item">
+                            <span class="preview-shortcut">/meeting</span>
+                            <span class="preview-arrow">→</span>
+                            <span class="preview-expansion">Would you be available for a 15-minute call...</span>
+                        </div>
+                    </div>
+                    <div class="pack-tags">
+                        <span class="pack-tag">outreach</span>
+                        <span class="pack-tag">follow-ups</span>
+                        <span class="pack-tag">meetings</span>
+                    </div>
+                    <button class="download-btn" onclick="downloadPack('sales-outreach')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Download Pack
+                    </button>
+                </div>
+
+                <div class="pack-card">
+                    <div class="pack-header">
+                        <h3 class="pack-title">Pricing & Demos</h3>
+                        <span class="pack-count">11 macros</span>
+                    </div>
+                    <p class="pack-description">Responses for pricing inquiries, demo scheduling, and proposal follow-ups.</p>
+                    <div class="pack-preview">
+                        <div class="pack-preview-item">
+                            <span class="preview-shortcut">/pricing</span>
+                            <span class="preview-arrow">→</span>
+                            <span class="preview-expansion">Great question! Our pricing starts at...</span>
+                        </div>
+                        <div class="pack-preview-item">
+                            <span class="preview-shortcut">/demo</span>
+                            <span class="preview-arrow">→</span>
+                            <span class="preview-expansion">I'd love to show you a demo. Here's my...</span>
+                        </div>
+                        <div class="pack-preview-item">
+                            <span class="preview-shortcut">/proposal</span>
+                            <span class="preview-arrow">→</span>
+                            <span class="preview-expansion">Attached is a proposal based on our discussion...</span>
+                        </div>
+                    </div>
+                    <div class="pack-tags">
+                        <span class="pack-tag">pricing</span>
+                        <span class="pack-tag">demos</span>
+                        <span class="pack-tag">proposals</span>
+                    </div>
+                    <button class="download-btn" onclick="downloadPack('sales-pricing')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Download Pack
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Developer -->
+        <div class="category-section">
+            <div class="category-header">
+                <span class="category-icon">👨‍💻</span>
+                <div>
+                    <h2 class="category-title">Developer</h2>
+                    <p class="category-description">Code snippets and developer shortcuts</p>
+                </div>
+            </div>
+            <div class="packs-grid">
+                <div class="pack-card">
+                    <div class="pack-header">
+                        <h3 class="pack-title">JavaScript Snippets</h3>
+                        <span class="pack-count">20 macros</span>
+                    </div>
+                    <p class="pack-description">Common JavaScript patterns, console logs, async/await templates, and more.</p>
+                    <div class="pack-preview">
+                        <div class="pack-preview-item">
+                            <span class="preview-shortcut">/clog</span>
+                            <span class="preview-arrow">→</span>
+                            <span class="preview-expansion">console.log('{cursor}');</span>
+                        </div>
+                        <div class="pack-preview-item">
+                            <span class="preview-shortcut">/async</span>
+                            <span class="preview-arrow">→</span>
+                            <span class="preview-expansion">async function {input:name}() { ... }</span>
+                        </div>
+                        <div class="pack-preview-item">
+                            <span class="preview-shortcut">/fetch</span>
+                            <span class="preview-arrow">→</span>
+                            <span class="preview-expansion">const res = await fetch('{cursor}');</span>
+                        </div>
+                    </div>
+                    <div class="pack-tags">
+                        <span class="pack-tag">javascript</span>
+                        <span class="pack-tag">async</span>
+                        <span class="pack-tag">snippets</span>
+                    </div>
+                    <button class="download-btn" onclick="downloadPack('dev-javascript')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Download Pack
+                    </button>
+                </div>
+
+                <div class="pack-card">
+                    <div class="pack-header">
+                        <h3 class="pack-title">Git Commands</h3>
+                        <span class="pack-count">15 macros</span>
+                    </div>
+                    <p class="pack-description">Common git commands, commit message templates, and branch operations.</p>
+                    <div class="pack-preview">
+                        <div class="pack-preview-item">
+                            <span class="preview-shortcut">/gcom</span>
+                            <span class="preview-arrow">→</span>
+                            <span class="preview-expansion">git add -A && git commit -m "{cursor}"</span>
+                        </div>
+                        <div class="pack-preview-item">
+                            <span class="preview-shortcut">/gpush</span>
+                            <span class="preview-arrow">→</span>
+                            <span class="preview-expansion">git push origin {input:branch}</span>
+                        </div>
+                        <div class="pack-preview-item">
+                            <span class="preview-shortcut">/gstash</span>
+                            <span class="preview-arrow">→</span>
+                            <span class="preview-expansion">git stash && git pull && git stash pop</span>
+                        </div>
+                    </div>
+                    <div class="pack-tags">
+                        <span class="pack-tag">git</span>
+                        <span class="pack-tag">version control</span>
+                        <span class="pack-tag">commits</span>
+                    </div>
+                    <button class="download-btn" onclick="downloadPack('dev-git')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Download Pack
+                    </button>
+                </div>
+
+                <div class="pack-card">
+                    <div class="pack-header">
+                        <h3 class="pack-title">HTML/CSS Snippets</h3>
+                        <span class="pack-count">16 macros</span>
+                    </div>
+                    <p class="pack-description">HTML boilerplates, CSS flexbox/grid shortcuts, and responsive design patterns.</p>
+                    <div class="pack-preview">
+                        <div class="pack-preview-item">
+                            <span class="preview-shortcut">/html5</span>
+                            <span class="preview-arrow">→</span>
+                            <span class="preview-expansion">&lt;!DOCTYPE html&gt;&lt;html lang="en"&gt;...</span>
+                        </div>
+                        <div class="pack-preview-item">
+                            <span class="preview-shortcut">/flex</span>
+                            <span class="preview-arrow">→</span>
+                            <span class="preview-expansion">display: flex; justify-content: center;...</span>
+                        </div>
+                        <div class="pack-preview-item">
+                            <span class="preview-shortcut">/grid</span>
+                            <span class="preview-arrow">→</span>
+                            <span class="preview-expansion">display: grid; grid-template-columns:...</span>
+                        </div>
+                    </div>
+                    <div class="pack-tags">
+                        <span class="pack-tag">html</span>
+                        <span class="pack-tag">css</span>
+                        <span class="pack-tag">responsive</span>
+                    </div>
+                    <button class="download-btn" onclick="downloadPack('dev-htmlcss')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Download Pack
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Productivity -->
+        <div class="category-section">
+            <div class="category-header">
+                <span class="category-icon">⚡</span>
+                <div>
+                    <h2 class="category-title">Productivity</h2>
+                    <p class="category-description">General productivity boosters for everyone</p>
+                </div>
+            </div>
+            <div class="packs-grid">
+                <div class="pack-card">
+                    <div class="pack-header">
+                        <h3 class="pack-title">Email Templates</h3>
+                        <span class="pack-count">12 macros</span>
+                    </div>
+                    <p class="pack-description">Professional email templates for various situations - introductions, thank yous, and more.</p>
+                    <div class="pack-preview">
+                        <div class="pack-preview-item">
+                            <span class="preview-shortcut">/tysm</span>
+                            <span class="preview-arrow">→</span>
+                            <span class="preview-expansion">Thank you so much for your time today...</span>
+                        </div>
+                        <div class="pack-preview-item">
+                            <span class="preview-shortcut">/ooo</span>
+                            <span class="preview-arrow">→</span>
+                            <span class="preview-expansion">I'm currently out of office until {date}...</span>
+                        </div>
+                        <div class="pack-preview-item">
+                            <span class="preview-shortcut">/sig</span>
+                            <span class="preview-arrow">→</span>
+                            <span class="preview-expansion">Best regards,\n{input:Name}\n{input:Title}</span>
+                        </div>
+                    </div>
+                    <div class="pack-tags">
+                        <span class="pack-tag">email</span>
+                        <span class="pack-tag">professional</span>
+                        <span class="pack-tag">signatures</span>
+                    </div>
+                    <button class="download-btn" onclick="downloadPack('prod-email')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Download Pack
+                    </button>
+                </div>
+
+                <div class="pack-card">
+                    <div class="pack-header">
+                        <h3 class="pack-title">Date & Time</h3>
+                        <span class="pack-count">10 macros</span>
+                    </div>
+                    <p class="pack-description">Dynamic date/time shortcuts, timestamps, and scheduling helpers.</p>
+                    <div class="pack-preview">
+                        <div class="pack-preview-item">
+                            <span class="preview-shortcut">/today</span>
+                            <span class="preview-arrow">→</span>
+                            <span class="preview-expansion">{date:MMMM D, YYYY}</span>
+                        </div>
+                        <div class="pack-preview-item">
+                            <span class="preview-shortcut">/now</span>
+                            <span class="preview-arrow">→</span>
+                            <span class="preview-expansion">{time:h:mm A}</span>
+                        </div>
+                        <div class="pack-preview-item">
+                            <span class="preview-shortcut">/stamp</span>
+                            <span class="preview-arrow">→</span>
+                            <span class="preview-expansion">{date:YYYY-MM-DD} {time:HH:mm:ss}</span>
+                        </div>
+                    </div>
+                    <div class="pack-tags">
+                        <span class="pack-tag">dates</span>
+                        <span class="pack-tag">timestamps</span>
+                        <span class="pack-tag">dynamic</span>
+                    </div>
+                    <button class="download-btn" onclick="downloadPack('prod-datetime')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Download Pack
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 4L20 12L16 20L12 12L16 4Z" fill="#00A693"/>
+                            <path d="M12 12L8 16L12 20L16 16L12 12Z" fill="#00C9B1"/>
+                            <path d="M20 12L24 16L20 20L16 16L20 12Z" fill="#00C9B1"/>
+                            <path d="M16 20L12 24L16 28L20 24L16 20Z" fill="#00A693"/>
+                        </svg>
+                        <span class="logo-text">Fountain</span>
+                    </div>
+                    <p>Type faster with intelligent text expansion.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Product</h4>
+                        <a href="index.html#features">Features</a>
+                        <a href="index.html#guide">User Guide</a>
+                        <a href="index.html#download">Download</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <a href="https://github.com/draphael123/Fountain-Macro-Assistant" target="_blank" rel="noopener">GitHub</a>
+                        <a href="shared.html">Community Macros</a>
+                        <a href="macro-packs.html">Macro Packs</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Fountain. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Macro pack data
+        const macroPacks = {
+            'cs-essentials': {
+                name: 'Support Essentials',
+                macros: [
+                    { shortcut: '/greet', expansion: 'Hi {input:Customer Name}! Thanks for reaching out to our support team. I\'m happy to help you today. How can I assist you?', caseSensitive: false },
+                    { shortcut: '/sorry', expansion: 'I sincerely apologize for the inconvenience this has caused. I completely understand your frustration, and I want to assure you that we\'re going to resolve this for you.', caseSensitive: false },
+                    { shortcut: '/thanks', expansion: 'Thank you so much for your patience while I looked into this for you. I really appreciate your understanding!', caseSensitive: false },
+                    { shortcut: '/close', expansion: 'Is there anything else I can help you with today? If not, I hope you have a wonderful rest of your day!', caseSensitive: false },
+                    { shortcut: '/escalate', expansion: 'I want to make sure you get the best possible help with this issue. I\'m going to escalate this to our specialized team who will be in touch within {input:timeframe}. You\'ll receive an email confirmation shortly.', caseSensitive: false },
+                    { shortcut: '/wait', expansion: 'Thank you for your patience! I\'m still looking into this for you. I\'ll have an update for you shortly.', caseSensitive: false },
+                    { shortcut: '/confirm', expansion: 'Just to confirm I understand correctly: {input:issue summary}. Is that right?', caseSensitive: false },
+                    { shortcut: '/resolved', expansion: 'Great news! I\'ve resolved the issue for you. {input:resolution details}. Please let me know if you have any other questions!', caseSensitive: false },
+                    { shortcut: '/feedback', expansion: 'Thank you for this feedback! I\'ve documented your suggestion and passed it along to our product team. We really value input from customers like you.', caseSensitive: false },
+                    { shortcut: '/busy', expansion: 'We\'re experiencing higher than normal volume right now, but I want to make sure you get the help you need. Thank you for your patience!', caseSensitive: false },
+                    { shortcut: '/transfer', expansion: 'I\'m going to connect you with a specialist who can best help with this specific issue. Please hold for just a moment.', caseSensitive: false },
+                    { shortcut: '/callback', expansion: 'Would you prefer a callback? I can schedule one for {input:time} if that works for you.', caseSensitive: false },
+                    { shortcut: '/email', expansion: 'I\'ve sent a detailed summary to your email at {input:email}. Please check your inbox (and spam folder just in case!).', caseSensitive: false },
+                    { shortcut: '/order', expansion: 'I can see your order #{input:order number}. Let me pull up the details for you.', caseSensitive: false },
+                    { shortcut: '/verify', expansion: 'For security purposes, could you please verify your {input:verification item}?', caseSensitive: false }
+                ]
+            },
+            'cs-refunds': {
+                name: 'Refund & Returns',
+                macros: [
+                    { shortcut: '/refund', expansion: 'Your refund has been processed! You should see the funds back in your account within 5-7 business days, depending on your bank.', caseSensitive: false },
+                    { shortcut: '/return', expansion: 'To initiate a return, please follow these steps:\n1. Go to your order history\n2. Select the item you\'d like to return\n3. Choose your return reason\n4. Print the prepaid shipping label\n\nLet me know if you need any help with this process!', caseSensitive: false },
+                    { shortcut: '/policy', expansion: 'Our return policy allows returns within 30 days of purchase for a full refund. Items must be in original condition with tags attached. Here\'s a link to our full policy: {input:policy URL}', caseSensitive: false },
+                    { shortcut: '/norefund', expansion: 'I understand this is frustrating. Unfortunately, this item is not eligible for a refund because {input:reason}. However, I\'d like to offer you {input:alternative} as a gesture of goodwill.', caseSensitive: false },
+                    { shortcut: '/partial', expansion: 'I\'ve processed a partial refund of ${input:amount} to your account. This should appear within 5-7 business days.', caseSensitive: false },
+                    { shortcut: '/exchange', expansion: 'I\'d be happy to process an exchange for you! Would you like the same item in a different {input:size/color}, or would you prefer a different product?', caseSensitive: false },
+                    { shortcut: '/credit', expansion: 'I\'ve added a ${input:amount} store credit to your account. This never expires and can be used on any future purchase!', caseSensitive: false },
+                    { shortcut: '/label', expansion: 'Your prepaid return label has been sent to {input:email}. Simply print it, attach it to your package, and drop it off at any {input:carrier} location.', caseSensitive: false },
+                    { shortcut: '/received', expansion: 'Great news! We\'ve received your return and your refund is being processed. You\'ll receive a confirmation email shortly.', caseSensitive: false },
+                    { shortcut: '/damaged', expansion: 'I\'m so sorry to hear your item arrived damaged! Please send us a photo of the damage and we\'ll get a replacement shipped out to you right away - no need to return the damaged item.', caseSensitive: false },
+                    { shortcut: '/wrong', expansion: 'I apologize that you received the wrong item! I\'ll send the correct item out today with expedited shipping, and you can keep or donate the incorrect item - no need to return it.', caseSensitive: false },
+                    { shortcut: '/tracking', expansion: 'Your return tracking number is: {input:tracking}. You can track its progress at {input:tracking URL}.', caseSensitive: false }
+                ]
+            },
+            'tech-common': {
+                name: 'Common Fixes',
+                macros: [
+                    { shortcut: '/cache', expansion: 'Please try clearing your browser cache:\n\nChrome: Settings → Privacy → Clear browsing data\nFirefox: Options → Privacy → Clear Data\nSafari: Preferences → Privacy → Manage Website Data\n\nAfter clearing, please restart your browser and try again.', caseSensitive: false },
+                    { shortcut: '/restart', expansion: 'Please try restarting the application:\n1. Close {input:app name} completely\n2. Wait 30 seconds\n3. Reopen the application\n\nThis often resolves temporary issues. Let me know if the problem persists!', caseSensitive: false },
+                    { shortcut: '/update', expansion: 'Please ensure you\'re running the latest version:\n1. Check for updates in the app settings\n2. If an update is available, install it\n3. Restart the application\n\nThis may resolve compatibility issues.', caseSensitive: false },
+                    { shortcut: '/cookies', expansion: 'Please enable cookies in your browser:\n1. Go to browser settings\n2. Find Privacy/Security settings\n3. Enable cookies (at least for our site)\n4. Refresh the page', caseSensitive: false },
+                    { shortcut: '/incognito', expansion: 'Let\'s try testing in incognito/private mode to rule out extension conflicts:\n1. Open an incognito/private window\n2. Navigate to the same page\n3. Try the action again\n\nDoes the issue occur in incognito mode as well?', caseSensitive: false },
+                    { shortcut: '/browser', expansion: 'Could you try accessing this in a different browser? This will help us determine if the issue is browser-specific. Popular alternatives include Chrome, Firefox, Safari, or Edge.', caseSensitive: false },
+                    { shortcut: '/disable', expansion: 'Browser extensions can sometimes interfere. Please try:\n1. Disable all browser extensions\n2. Refresh the page\n3. Test the functionality\n\nIf it works, re-enable extensions one by one to find the culprit.', caseSensitive: false },
+                    { shortcut: '/screenshot', expansion: 'Could you please share a screenshot of what you\'re seeing? This will help me better understand the issue. You can press:\n• Windows: Win + Shift + S\n• Mac: Cmd + Shift + 4', caseSensitive: false },
+                    { shortcut: '/logs', expansion: 'Could you please share the console logs?\n1. Right-click on the page\n2. Select "Inspect" or "Inspect Element"\n3. Go to the "Console" tab\n4. Screenshot any red error messages', caseSensitive: false },
+                    { shortcut: '/network', expansion: 'Let\'s check your network connection:\n1. Try visiting other websites\n2. Restart your router/modem\n3. Try a different network (like mobile data)\n4. Disable VPN if you\'re using one', caseSensitive: false },
+                    { shortcut: '/device', expansion: 'Could you please share your device information?\n• Operating System (e.g., Windows 11, macOS Sonoma)\n• Browser and version\n• Device type (desktop/laptop/tablet/phone)', caseSensitive: false },
+                    { shortcut: '/reproduce', expansion: 'To help me investigate, could you describe:\n1. Exactly what steps you took\n2. What you expected to happen\n3. What actually happened\n4. Does this happen every time or intermittently?', caseSensitive: false },
+                    { shortcut: '/workaround', expansion: 'While we work on a permanent fix, here\'s a workaround you can use:\n\n{input:workaround steps}\n\nI\'ll follow up once we have a complete solution.', caseSensitive: false },
+                    { shortcut: '/known', expansion: 'This is a known issue that our team is actively working on. We expect to have a fix deployed by {input:ETA}. I\'ll make sure you\'re notified when it\'s resolved.', caseSensitive: false },
+                    { shortcut: '/mobile', expansion: 'For mobile devices, please try:\n1. Close all apps completely\n2. Restart your device\n3. Check for app updates in the App Store/Play Store\n4. Ensure you have a stable internet connection', caseSensitive: false },
+                    { shortcut: '/permissions', expansion: 'This feature requires certain permissions. Please check:\n1. Go to your device/browser settings\n2. Find {input:app name} in the apps list\n3. Enable {input:permission type} permission\n4. Restart the app', caseSensitive: false },
+                    { shortcut: '/reinstall', expansion: 'As a last resort, try reinstalling:\n1. Uninstall the application\n2. Restart your device\n3. Download and install fresh from {input:source}\n4. Sign in with your account', caseSensitive: false },
+                    { shortcut: '/storage', expansion: 'Please check your storage space:\n1. Go to device settings\n2. Check available storage\n3. If low, try freeing up space by removing unused apps or files\n\nLet me know how much space is available.', caseSensitive: false }
+                ]
+            },
+            'tech-account': {
+                name: 'Password & Account',
+                macros: [
+                    { shortcut: '/pwreset', expansion: 'To reset your password:\n1. Click "Forgot Password" on the login page\n2. Enter your email address\n3. Check your inbox for the reset link (also check spam)\n4. Click the link and create a new password\n\nThe link expires in 24 hours.', caseSensitive: false },
+                    { shortcut: '/2fa', expansion: 'To enable two-factor authentication:\n1. Go to Account Settings → Security\n2. Click "Enable 2FA"\n3. Scan the QR code with an authenticator app (Google Authenticator, Authy, etc.)\n4. Enter the code to verify\n5. Save your backup codes somewhere safe!', caseSensitive: false },
+                    { shortcut: '/locked', expansion: 'Your account has been temporarily locked due to multiple failed login attempts. This is a security measure to protect your account. Please wait 30 minutes and try again, or use the password reset option.', caseSensitive: false },
+                    { shortcut: '/verify', expansion: 'Please verify your email address:\n1. Check your inbox for a verification email\n2. Click the verification link\n3. If you don\'t see it, check your spam folder\n\nWould you like me to resend the verification email?', caseSensitive: false },
+                    { shortcut: '/recover', expansion: 'To recover your account, please provide:\n• The email address associated with the account\n• Any previous passwords you remember\n• Approximate account creation date\n• Recent activity on the account\n\nThis helps us verify your identity.', caseSensitive: false },
+                    { shortcut: '/merge', expansion: 'To merge accounts:\n1. Make sure you\'re signed into your primary account\n2. Go to Account Settings\n3. Select "Link Accounts"\n4. Sign into the secondary account when prompted\n5. Confirm the merge', caseSensitive: false },
+                    { shortcut: '/delete', expansion: 'I understand you want to delete your account. Before I process this:\n• All your data will be permanently removed\n• This action cannot be undone\n• Any active subscriptions will be cancelled\n\nPlease confirm you understand and want to proceed.', caseSensitive: false },
+                    { shortcut: '/pwreqs', expansion: 'Your password must meet these requirements:\n• At least 8 characters\n• One uppercase letter\n• One lowercase letter\n• One number\n• One special character (!@#$%^&*)', caseSensitive: false },
+                    { shortcut: '/suspicious', expansion: 'I see there was some unusual activity on your account. For your security, I recommend:\n1. Change your password immediately\n2. Enable two-factor authentication\n3. Review your recent account activity\n4. Log out of all other devices', caseSensitive: false },
+                    { shortcut: '/session', expansion: 'To log out of all sessions:\n1. Go to Account Settings → Security\n2. Click "Active Sessions" or "Manage Devices"\n3. Click "Log out all other sessions"\n\nThis will require you to sign in again on all devices.', caseSensitive: false }
+                ]
+            },
+            'sales-outreach': {
+                name: 'Cold Outreach',
+                macros: [
+                    { shortcut: '/intro', expansion: 'Hi {input:Name},\n\nI noticed your company {input:company detail} and thought you might be interested in {input:value proposition}.\n\nWe\'ve helped similar companies achieve {input:results}.\n\nWould you be open to a brief chat to see if there\'s a fit?\n\nBest,\n{input:Your Name}', caseSensitive: false },
+                    { shortcut: '/followup', expansion: 'Hi {input:Name},\n\nJust following up on my previous email. I know you\'re busy, so I\'ll keep this brief.\n\n{input:key point}\n\nWould 15 minutes this week work for a quick call?\n\nBest,\n{input:Your Name}', caseSensitive: false },
+                    { shortcut: '/meeting', expansion: 'Hi {input:Name},\n\nWould you be available for a 15-minute call this week? I\'d love to show you how we can help with {input:pain point}.\n\nHere are some times that work for me:\n• {input:time 1}\n• {input:time 2}\n• {input:time 3}\n\nOr feel free to grab a slot on my calendar: {input:calendar link}\n\nLooking forward to connecting!', caseSensitive: false },
+                    { shortcut: '/referral', expansion: 'Hi {input:Name},\n\n{input:Referrer Name} suggested I reach out to you. They mentioned you might be looking for {input:solution}.\n\nWe recently helped {input:Referrer Name}\'s team achieve {input:result}, and they thought we could do the same for you.\n\nWould you be open to a quick conversation?\n\nBest,\n{input:Your Name}', caseSensitive: false },
+                    { shortcut: '/breakup', expansion: 'Hi {input:Name},\n\nI\'ve reached out a few times but haven\'t heard back. I don\'t want to keep bothering you, so this will be my last email.\n\nIf {input:pain point} becomes a priority in the future, feel free to reach out.\n\nWishing you all the best,\n{input:Your Name}', caseSensitive: false },
+                    { shortcut: '/linkedin', expansion: 'Hi {input:Name},\n\nI came across your profile and was impressed by {input:something specific}. I\'m reaching out because I think there might be some interesting synergies between our companies.\n\nWould you be open to connecting?', caseSensitive: false },
+                    { shortcut: '/event', expansion: 'Hi {input:Name},\n\nI noticed you\'ll be at {input:event name}! I\'ll be there too, presenting on {input:topic}.\n\nWould you like to meet up for a coffee? I\'d love to hear about {input:their work}.\n\nBest,\n{input:Your Name}', caseSensitive: false },
+                    { shortcut: '/content', expansion: 'Hi {input:Name},\n\nI just read your article on {input:topic} - great insights on {input:specific point}!\n\nIt got me thinking about how our {input:solution} relates to what you discussed. I\'d love to share some thoughts if you\'re interested.\n\nBest,\n{input:Your Name}', caseSensitive: false },
+                    { shortcut: '/trigger', expansion: 'Hi {input:Name},\n\nCongratulations on {input:trigger event}! That\'s a huge milestone.\n\nAs you scale, you might run into {input:pain point}. We specialize in helping companies like yours {input:solution}.\n\nWould love to share how we\'ve helped others in similar situations.\n\nBest,\n{input:Your Name}', caseSensitive: false },
+                    { shortcut: '/casestudy', expansion: 'Hi {input:Name},\n\nI wanted to share a quick case study that might be relevant to you.\n\n{input:Company} was facing {input:challenge}. After implementing our solution, they achieved {input:results}.\n\nWould you be interested in seeing how we could do something similar for {input:their company}?\n\nBest,\n{input:Your Name}', caseSensitive: false },
+                    { shortcut: '/noreply', expansion: 'Hi {input:Name},\n\nI haven\'t heard back, so I wanted to make sure my email landed in your inbox. I know things get busy!\n\nQuick recap: {input:value prop}\n\nIs this something worth exploring, or should I check back another time?\n\nBest,\n{input:Your Name}', caseSensitive: false },
+                    { shortcut: '/voicemail', expansion: 'Hi {input:Name}, this is {input:Your Name} from {input:Company}. I sent you an email about {input:topic}. I\'d love to connect for a quick chat. You can reach me at {input:phone}. Looking forward to hearing from you!', caseSensitive: false },
+                    { shortcut: '/notfit', expansion: 'Hi {input:Name},\n\nThanks for your time today. Based on our conversation, it sounds like our solution might not be the best fit right now given {input:reason}.\n\nIf things change in the future, please don\'t hesitate to reach out. I\'m happy to help however I can.\n\nBest,\n{input:Your Name}', caseSensitive: false },
+                    { shortcut: '/competitor', expansion: 'Hi {input:Name},\n\nI understand you\'re currently using {input:competitor}. Many of our customers made the switch because {input:differentiator}.\n\nWould you be open to a quick comparison call? No pressure - just want to make sure you have all the information.\n\nBest,\n{input:Your Name}', caseSensitive: false }
+                ]
+            },
+            'sales-pricing': {
+                name: 'Pricing & Demos',
+                macros: [
+                    { shortcut: '/pricing', expansion: 'Great question! Our pricing starts at ${input:starting price}/month for our {input:tier name} plan, which includes:\n\n• {input:feature 1}\n• {input:feature 2}\n• {input:feature 3}\n\nI\'d be happy to put together a custom quote based on your specific needs. Would you like to schedule a quick call to discuss?', caseSensitive: false },
+                    { shortcut: '/demo', expansion: 'I\'d love to show you a personalized demo! Here\'s my calendar link: {input:calendar link}\n\nIn the meantime, feel free to check out our product tour: {input:product tour link}\n\nWhat specific features would you like me to focus on during the demo?', caseSensitive: false },
+                    { shortcut: '/proposal', expansion: 'Attached is a proposal based on our discussion. Here\'s a summary:\n\n• Investment: ${input:price}\n• Contract term: {input:term}\n• Includes: {input:what\'s included}\n\nPlease review and let me know if you have any questions. I\'m happy to jump on a call to walk through the details.', caseSensitive: false },
+                    { shortcut: '/discount', expansion: 'I spoke with my team, and I\'m able to offer you a {input:percentage}% discount if you sign by {input:date}. This brings your investment to ${input:discounted price}.\n\nThis is the best I can do, so let me know if you\'d like to move forward!', caseSensitive: false },
+                    { shortcut: '/trial', expansion: 'Great news! I\'ve set up a {input:duration}-day free trial for you. Here are your login details:\n\n• URL: {input:URL}\n• Username: {input:username}\n• Temporary password: {input:password}\n\nI\'ll check in with you next week to see how things are going!', caseSensitive: false },
+                    { shortcut: '/roi', expansion: 'Based on what you\'ve shared, here\'s a rough ROI calculation:\n\n• Current cost/time spent: {input:current state}\n• With our solution: {input:future state}\n• Estimated savings: {input:savings}\n• Payback period: {input:timeframe}\n\nWould you like me to walk through these numbers in more detail?', caseSensitive: false },
+                    { shortcut: '/objection', expansion: 'I totally understand your concern about {input:objection}. Many of our current customers felt the same way initially.\n\nWhat we\'ve found is {input:response}. For example, {input:customer name} saw {input:specific result}.\n\nWould it help to connect you with one of our customers who had similar concerns?', caseSensitive: false },
+                    { shortcut: '/timeline', expansion: 'Great question about timing! Here\'s what our typical implementation looks like:\n\n• Week 1: {input:step 1}\n• Week 2-3: {input:step 2}\n• Week 4: {input:step 3}\n\nWe can often accelerate this timeline depending on your team\'s availability.', caseSensitive: false },
+                    { shortcut: '/stakeholder', expansion: 'I understand you need to get buy-in from {input:stakeholder}. I\'d be happy to:\n\n1. Prepare a summary document for them\n2. Join a call to answer their questions\n3. Provide references from similar companies\n\nWhat would be most helpful?', caseSensitive: false },
+                    { shortcut: '/contract', expansion: 'I\'ve attached the contract for your review. Key points:\n\n• Start date: {input:date}\n• Term: {input:term}\n• Investment: ${input:price}\n• Cancellation: {input:terms}\n\nI\'m available to answer any questions. Once signed, we can get started right away!', caseSensitive: false },
+                    { shortcut: '/renewal', expansion: 'Hi {input:Name},\n\nYour contract is coming up for renewal on {input:date}. Over the past year, you\'ve achieved {input:results}!\n\nI\'d love to discuss your renewal and share some new features that might interest you. Would {input:time} work for a quick call?', caseSensitive: false }
+                ]
+            },
+            'dev-javascript': {
+                name: 'JavaScript Snippets',
+                macros: [
+                    { shortcut: '/clog', expansion: 'console.log(\'{cursor}\');', caseSensitive: false },
+                    { shortcut: '/cerr', expansion: 'console.error(\'{cursor}\');', caseSensitive: false },
+                    { shortcut: '/cwarn', expansion: 'console.warn(\'{cursor}\');', caseSensitive: false },
+                    { shortcut: '/cdir', expansion: 'console.dir({cursor});', caseSensitive: false },
+                    { shortcut: '/ctable', expansion: 'console.table({cursor});', caseSensitive: false },
+                    { shortcut: '/async', expansion: 'async function {input:functionName}({input:params}) {\n  try {\n    {cursor}\n  } catch (error) {\n    console.error(error);\n  }\n}', caseSensitive: false },
+                    { shortcut: '/arrow', expansion: 'const {input:name} = ({input:params}) => {\n  {cursor}\n};', caseSensitive: false },
+                    { shortcut: '/fetch', expansion: 'const response = await fetch(\'{cursor}\');\nconst data = await response.json();', caseSensitive: false },
+                    { shortcut: '/fetchpost', expansion: 'const response = await fetch(\'{input:url}\', {\n  method: \'POST\',\n  headers: {\n    \'Content-Type\': \'application/json\',\n  },\n  body: JSON.stringify({cursor}),\n});\nconst data = await response.json();', caseSensitive: false },
+                    { shortcut: '/map', expansion: '{input:array}.map(({input:item}) => {\n  {cursor}\n});', caseSensitive: false },
+                    { shortcut: '/filter', expansion: '{input:array}.filter(({input:item}) => {\n  {cursor}\n});', caseSensitive: false },
+                    { shortcut: '/reduce', expansion: '{input:array}.reduce((acc, {input:item}) => {\n  {cursor}\n  return acc;\n}, {input:initialValue});', caseSensitive: false },
+                    { shortcut: '/foreach', expansion: '{input:array}.forEach(({input:item}) => {\n  {cursor}\n});', caseSensitive: false },
+                    { shortcut: '/destruct', expansion: 'const { {cursor} } = {input:object};', caseSensitive: false },
+                    { shortcut: '/spread', expansion: 'const newObj = { ...{input:object}, {cursor} };', caseSensitive: false },
+                    { shortcut: '/ternary', expansion: '{input:condition} ? {input:trueValue} : {input:falseValue}', caseSensitive: false },
+                    { shortcut: '/timeout', expansion: 'setTimeout(() => {\n  {cursor}\n}, {input:ms});', caseSensitive: false },
+                    { shortcut: '/interval', expansion: 'const intervalId = setInterval(() => {\n  {cursor}\n}, {input:ms});\n// clearInterval(intervalId);', caseSensitive: false },
+                    { shortcut: '/promise', expansion: 'new Promise((resolve, reject) => {\n  {cursor}\n});', caseSensitive: false },
+                    { shortcut: '/trycatch', expansion: 'try {\n  {cursor}\n} catch (error) {\n  console.error(error);\n}', caseSensitive: false }
+                ]
+            },
+            'dev-git': {
+                name: 'Git Commands',
+                macros: [
+                    { shortcut: '/gcom', expansion: 'git add -A && git commit -m "{cursor}"', caseSensitive: false },
+                    { shortcut: '/gpush', expansion: 'git push origin {input:branch}', caseSensitive: false },
+                    { shortcut: '/gpull', expansion: 'git pull origin {input:branch}', caseSensitive: false },
+                    { shortcut: '/gstash', expansion: 'git stash && git pull && git stash pop', caseSensitive: false },
+                    { shortcut: '/gcheckout', expansion: 'git checkout {input:branch}', caseSensitive: false },
+                    { shortcut: '/gnew', expansion: 'git checkout -b {input:branch-name}', caseSensitive: false },
+                    { shortcut: '/gmerge', expansion: 'git merge {input:branch}', caseSensitive: false },
+                    { shortcut: '/grebase', expansion: 'git rebase {input:branch}', caseSensitive: false },
+                    { shortcut: '/glog', expansion: 'git log --oneline -n {input:count}', caseSensitive: false },
+                    { shortcut: '/gdiff', expansion: 'git diff {input:file}', caseSensitive: false },
+                    { shortcut: '/greset', expansion: 'git reset --soft HEAD~{input:count}', caseSensitive: false },
+                    { shortcut: '/grevert', expansion: 'git revert {input:commit-hash}', caseSensitive: false },
+                    { shortcut: '/gclean', expansion: 'git branch --merged | grep -v "\\*\\|main\\|master" | xargs -n 1 git branch -d', caseSensitive: false },
+                    { shortcut: '/gamend', expansion: 'git commit --amend -m "{cursor}"', caseSensitive: false },
+                    { shortcut: '/gundo', expansion: 'git reset HEAD~1', caseSensitive: false }
+                ]
+            },
+            'dev-htmlcss': {
+                name: 'HTML/CSS Snippets',
+                macros: [
+                    { shortcut: '/html5', expansion: '<!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>{cursor}</title>\n</head>\n<body>\n    \n</body>\n</html>', caseSensitive: false },
+                    { shortcut: '/flex', expansion: 'display: flex;\njustify-content: {input:justify};\nalign-items: {input:align};', caseSensitive: false },
+                    { shortcut: '/flexcenter', expansion: 'display: flex;\njustify-content: center;\nalign-items: center;', caseSensitive: false },
+                    { shortcut: '/grid', expansion: 'display: grid;\ngrid-template-columns: repeat({input:columns}, 1fr);\ngap: {input:gap};', caseSensitive: false },
+                    { shortcut: '/media', expansion: '@media (max-width: {input:breakpoint}px) {\n  {cursor}\n}', caseSensitive: false },
+                    { shortcut: '/transition', expansion: 'transition: {input:property} {input:duration}s ease;', caseSensitive: false },
+                    { shortcut: '/animation', expansion: '@keyframes {input:name} {\n  0% {\n    {cursor}\n  }\n  100% {\n    \n  }\n}', caseSensitive: false },
+                    { shortcut: '/shadow', expansion: 'box-shadow: 0 {input:y}px {input:blur}px rgba(0, 0, 0, {input:opacity});', caseSensitive: false },
+                    { shortcut: '/gradient', expansion: 'background: linear-gradient({input:direction}deg, {input:color1}, {input:color2});', caseSensitive: false },
+                    { shortcut: '/reset', expansion: '* {\n  margin: 0;\n  padding: 0;\n  box-sizing: border-box;\n}', caseSensitive: false },
+                    { shortcut: '/link', expansion: '<link rel="stylesheet" href="{cursor}">', caseSensitive: false },
+                    { shortcut: '/script', expansion: '<script src="{cursor}"></script>', caseSensitive: false },
+                    { shortcut: '/meta', expansion: '<meta name="{input:name}" content="{cursor}">', caseSensitive: false },
+                    { shortcut: '/img', expansion: '<img src="{input:src}" alt="{cursor}" />', caseSensitive: false },
+                    { shortcut: '/input', expansion: '<input type="{input:type}" name="{input:name}" placeholder="{cursor}" />', caseSensitive: false },
+                    { shortcut: '/btn', expansion: '<button type="{input:type}" class="{cursor}">{input:text}</button>', caseSensitive: false }
+                ]
+            },
+            'prod-email': {
+                name: 'Email Templates',
+                macros: [
+                    { shortcut: '/tysm', expansion: 'Thank you so much for your time today. I really appreciate you taking the time to {input:what they did}.\n\nAs discussed, {input:next steps}.\n\nPlease don\'t hesitate to reach out if you have any questions.\n\nBest regards,\n{input:Your Name}', caseSensitive: false },
+                    { shortcut: '/ooo', expansion: 'Thank you for your email. I\'m currently out of the office with limited access to email.\n\nI will be back on {input:return date} and will respond to your message then.\n\nFor urgent matters, please contact {input:backup contact}.\n\nBest regards', caseSensitive: false },
+                    { shortcut: '/sig', expansion: 'Best regards,\n\n{input:Full Name}\n{input:Title}\n{input:Company}\n{input:Phone}\n{input:Email}', caseSensitive: false },
+                    { shortcut: '/intro', expansion: 'Hi {input:Name},\n\nI hope this email finds you well. My name is {input:Your Name} and I\'m {input:your role/context}.\n\nI\'m reaching out because {input:reason}.\n\n{cursor}\n\nI look forward to hearing from you.\n\nBest,\n{input:Your Name}', caseSensitive: false },
+                    { shortcut: '/delay', expansion: 'Hi {input:Name},\n\nI wanted to apologize for the delayed response. {input:brief explanation if appropriate}\n\n{cursor}\n\nThank you for your patience and understanding.\n\nBest,\n{input:Your Name}', caseSensitive: false },
+                    { shortcut: '/attach', expansion: 'Please find attached {input:description of attachment}.\n\nLet me know if you have any trouble accessing the file or if you need any additional information.\n\nBest,\n{input:Your Name}', caseSensitive: false },
+                    { shortcut: '/confirm', expansion: 'Hi {input:Name},\n\nThis is to confirm {input:what you\'re confirming}.\n\nDetails:\n• Date: {input:date}\n• Time: {input:time}\n• Location/Link: {input:location}\n\nPlease let me know if anything needs to be changed.\n\nBest,\n{input:Your Name}', caseSensitive: false },
+                    { shortcut: '/decline', expansion: 'Hi {input:Name},\n\nThank you so much for thinking of me for {input:opportunity}. I really appreciate it.\n\nUnfortunately, I\'m not able to {input:participate/attend/etc.} at this time due to {input:reason}.\n\n{input:alternative if applicable}\n\nThank you again for the opportunity.\n\nBest,\n{input:Your Name}', caseSensitive: false },
+                    { shortcut: '/request', expansion: 'Hi {input:Name},\n\nI hope you\'re doing well. I\'m reaching out to request {input:what you need}.\n\n{input:context/reason}\n\nWould it be possible to {input:specific ask}? I would need this by {input:deadline} if possible.\n\nPlease let me know if you need any additional information.\n\nThank you,\n{input:Your Name}', caseSensitive: false },
+                    { shortcut: '/reminder', expansion: 'Hi {input:Name},\n\nI hope you\'re having a great week! I wanted to send a friendly reminder about {input:what you\'re reminding about}.\n\n{input:any relevant details}\n\nPlease let me know if you have any questions.\n\nBest,\n{input:Your Name}', caseSensitive: false },
+                    { shortcut: '/update', expansion: 'Hi {input:Name},\n\nI wanted to give you a quick update on {input:project/topic}.\n\n{input:update details}\n\nNext steps:\n• {input:next step 1}\n• {input:next step 2}\n\nLet me know if you have any questions.\n\nBest,\n{input:Your Name}', caseSensitive: false },
+                    { shortcut: '/fyi', expansion: 'Hi {input:Name},\n\nJust a quick FYI - {input:information}.\n\nNo action needed on your end, just wanted to keep you in the loop.\n\nBest,\n{input:Your Name}', caseSensitive: false }
+                ]
+            },
+            'prod-datetime': {
+                name: 'Date & Time',
+                macros: [
+                    { shortcut: '/today', expansion: '{date:MMMM D, YYYY}', caseSensitive: false },
+                    { shortcut: '/now', expansion: '{time:h:mm A}', caseSensitive: false },
+                    { shortcut: '/stamp', expansion: '{date:YYYY-MM-DD} {time:HH:mm:ss}', caseSensitive: false },
+                    { shortcut: '/iso', expansion: '{date:YYYY-MM-DDTHH:mm:ssZ}', caseSensitive: false },
+                    { shortcut: '/tomorrow', expansion: '{date+1d:MMMM D, YYYY}', caseSensitive: false },
+                    { shortcut: '/nextweek', expansion: '{date+7d:MMMM D, YYYY}', caseSensitive: false },
+                    { shortcut: '/nextmonth', expansion: '{date+1M:MMMM D, YYYY}', caseSensitive: false },
+                    { shortcut: '/year', expansion: '{date:YYYY}', caseSensitive: false },
+                    { shortcut: '/month', expansion: '{date:MMMM}', caseSensitive: false },
+                    { shortcut: '/day', expansion: '{date:dddd}', caseSensitive: false }
+                ]
+            }
+        };
+
+        // Download single pack
+        function downloadPack(packId) {
+            const pack = macroPacks[packId];
+            if (!pack) {
+                alert('Pack not found!');
+                return;
+            }
+
+            const exportData = {
+                version: '3.1.0',
+                exportDate: new Date().toISOString(),
+                packName: pack.name,
+                macros: pack.macros.map((macro, index) => ({
+                    ...macro,
+                    id: `${packId}_${index}_${Date.now()}`,
+                    createdAt: new Date().toISOString(),
+                    usageCount: 0
+                }))
+            };
+
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `fountain-${packId}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Download all packs
+        function downloadAllPacks() {
+            const allMacros = [];
+            let index = 0;
+            
+            Object.keys(macroPacks).forEach(packId => {
+                const pack = macroPacks[packId];
+                pack.macros.forEach(macro => {
+                    allMacros.push({
+                        ...macro,
+                        id: `all_${index}_${Date.now()}`,
+                        createdAt: new Date().toISOString(),
+                        usageCount: 0,
+                        folder: pack.name
+                    });
+                    index++;
+                });
+            });
+
+            const exportData = {
+                version: '3.1.0',
+                exportDate: new Date().toISOString(),
+                packName: 'All Macro Packs Bundle',
+                macros: allMacros
+            };
+
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'fountain-all-packs.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
+
