@@ -1,17 +1,26 @@
-/* Fountain Branding Colors - Inspired by fountain.net */
+/* Fountain Branding Colors - TextExpander-inspired teal & orange */
 :root {
-    --primary-blue: #0066FF;
-    --secondary-blue: #00B8FF;
-    --dark-blue: #0044CC;
-    --light-blue: #E6F2FF;
+    --primary: #00A67E;
+    --primary-dark: #008F6B;
+    --primary-light: #00C896;
+    --primary-bg: #E6F7F3;
+    --accent: #FF6B35;
+    --accent-dark: #E55A2B;
+    --accent-light: #FF8558;
     --text-dark: #1A1A1A;
-    --text-gray: #666666;
-    --text-light: #999999;
+    --text-gray: #555555;
+    --text-light: #888888;
     --bg-white: #FFFFFF;
-    --bg-light: #F8F9FA;
-    --border-color: #E0E0E0;
-    --shadow: 0 2px 8px rgba(0, 102, 255, 0.1);
-    --shadow-lg: 0 8px 24px rgba(0, 102, 255, 0.15);
+    --bg-light: #F7FAF9;
+    --border-color: #E0E6E4;
+    --shadow: 0 2px 8px rgba(0, 166, 126, 0.12);
+    --shadow-lg: 0 8px 24px rgba(0, 166, 126, 0.18);
+    
+    /* Legacy aliases for compatibility */
+    --primary-blue: var(--primary);
+    --secondary-blue: var(--primary-light);
+    --dark-blue: var(--primary-dark);
+    --light-blue: var(--primary-bg);
 }
 
 * {
@@ -62,7 +71,7 @@ body {
 }
 
 .logo-text {
-    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -86,7 +95,7 @@ body {
 }
 
 .btn-download {
-    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
     color: white !important;
     padding: 10px 20px;
     border-radius: 8px;
@@ -95,7 +104,8 @@ body {
 
 .btn-download:hover {
     transform: translateY(-2px);
-    box-shadow: var(--shadow);
+    box-shadow: var(--shadow-lg);
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
 }
 
 /* Hero Section */
@@ -147,7 +157,7 @@ body {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
     color: white;
     box-shadow: var(--shadow);
 }
@@ -155,16 +165,29 @@ body {
 .btn-primary:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+}
+
+.btn-accent {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(255, 107, 53, 0.25);
+}
+
+.btn-accent:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(255, 107, 53, 0.35);
+    background: linear-gradient(135deg, var(--accent-dark) 0%, var(--accent) 100%);
 }
 
 .btn-secondary {
     background: white;
-    color: var(--primary-blue);
-    border: 2px solid var(--primary-blue);
+    color: var(--primary);
+    border: 2px solid var(--primary);
 }
 
 .btn-secondary:hover {
-    background: var(--light-blue);
+    background: var(--primary-bg);
 }
 
 .btn-large {
@@ -848,7 +871,7 @@ body {
 }
 
 .footer-brand .logo-text {
-    background: linear-gradient(135deg, #FFFFFF 0%, #00B8FF 100%);
+    background: linear-gradient(135deg, #FFFFFF 0%, var(--primary-light) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -1097,12 +1120,12 @@ body {
 }
 
 .typed-text {
-    color: #00B8FF;
+    color: var(--primary-light);
     font-weight: 500;
 }
 
 .cursor {
-    color: #00B8FF;
+    color: var(--primary-light);
     animation: blink 1s infinite;
 }
 
@@ -1115,7 +1138,7 @@ body {
     margin-top: 20px;
     padding: 16px;
     background: rgba(0, 184, 255, 0.1);
-    border-left: 3px solid #00B8FF;
+    border-left: 3px solid var(--primary-light);
     border-radius: 0 8px 8px 0;
     opacity: 0;
     transform: translateY(10px);
@@ -1136,7 +1159,7 @@ body {
 
 .sig-name {
     font-weight: 600;
-    color: #00B8FF;
+    color: var(--primary-light);
     font-size: 15px;
 }
 
@@ -1293,7 +1316,7 @@ body {
     display: inline-block;
     background: linear-gradient(135deg, rgba(0, 102, 255, 0.2) 0%, rgba(0, 184, 255, 0.2) 100%);
     border: 1px solid rgba(0, 184, 255, 0.3);
-    color: #00B8FF;
+    color: var(--primary-light);
     padding: 8px 20px;
     border-radius: 25px;
     font-size: 14px;
@@ -2288,10 +2311,17 @@ body {
    ======================================== */
 
 [data-theme="dark"] {
-    --primary-blue: #4da6ff;
-    --secondary-blue: #66d9ff;
-    --dark-blue: #3399ff;
-    --light-blue: rgba(77, 166, 255, 0.15);
+    --primary: #4dd9ac;
+    --primary-dark: #3cc99c;
+    --primary-light: #66e6bc;
+    --primary-bg: rgba(77, 217, 172, 0.12);
+    --accent: #ff8f66;
+    --accent-dark: #ff7a4d;
+    --accent-light: #ffa380;
+    --primary-blue: var(--primary);
+    --secondary-blue: var(--primary-light);
+    --dark-blue: var(--primary-dark);
+    --light-blue: var(--primary-bg);
     --text-dark: #f0f0f0;
     --text-gray: #b0b0b0;
     --text-light: #808080;
