@@ -1,5 +1,5 @@
 // Shared Macros System
-// Uses Vercel KV API for persistent storage with localStorage fallback
+// Uses Upstash Redis API for persistent storage with localStorage fallback
 
 class SharedMacrosSystem {
     constructor() {
@@ -9,6 +9,7 @@ class SharedMacrosSystem {
         this.cacheKey = 'fountain_shared_macros_cache';
         this.cacheDuration = 60000; // 1 minute cache
         this.useApi = true; // Will be set to false if API fails
+        this.apiChecked = false;
         this.init();
     }
 
@@ -20,6 +21,36 @@ class SharedMacrosSystem {
         if (!localStorage.getItem(this.sharedFoldersKey)) {
             localStorage.setItem(this.sharedFoldersKey, JSON.stringify([]));
         }
+        
+        // Check API availability on init
+        this.checkApiAvailability();
+    }
+    
+    // Check if API is available
+    async checkApiAvailability() {
+        if (this.apiChecked) return this.useApi;
+        
+        try {
+            const response = await fetch(`${this.apiBase}/list?limit=1`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            
+            this.useApi = response.ok;
+            this.apiChecked = true;
+            
+            if (this.useApi) {
+                console.log('✅ Shared Macros API connected (Upstash Redis)');
+            } else {
+                console.warn('⚠️ Shared Macros API unavailable, using localStorage fallback');
+            }
+        } catch (error) {
+            this.useApi = false;
+            this.apiChecked = true;
+            console.warn('⚠️ Shared Macros API unavailable:', error.message);
+        }
+        
+        return this.useApi;
     }
 
     // Helper: Make API request with fallback

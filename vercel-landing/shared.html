@@ -1325,22 +1325,42 @@
 
         // ========== END AUTH FUNCTIONALITY ==========
 
-        // Load and display shared macros
-        function loadSharedMacros() {
-            if (currentTab === 'popular') {
-                allSharedMacros = sharedMacros.getPopularMacros(50, selectedFolderId);
-            } else if (currentTab === 'recent') {
-                allSharedMacros = sharedMacros.getRecentMacros(50, selectedFolderId);
-            } else if (currentTab === 'folders') {
-                loadFolders();
-                return;
+        // Load and display shared macros (async for API support)
+        async function loadSharedMacros() {
+            const grid = document.getElementById('shared-grid');
+            const emptyState = document.getElementById('empty-state');
+            
+            // Show loading state
+            if (grid) {
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 60px; color: var(--text-gray);"><p>Loading shared macros...</p></div>';
+                grid.style.display = 'grid';
+            }
+            if (emptyState) emptyState.style.display = 'none';
+            
+            try {
+                if (currentTab === 'popular') {
+                    allSharedMacros = await sharedMacros.getPopularMacrosAsync(50, selectedFolderId);
+                } else if (currentTab === 'recent') {
+                    allSharedMacros = await sharedMacros.getRecentMacrosAsync(50, selectedFolderId);
+                } else if (currentTab === 'folders') {
+                    await loadFolders();
+                    return;
+                }
+            } catch (error) {
+                console.error('Error loading macros:', error);
+                // Fallback to sync methods
+                if (currentTab === 'popular') {
+                    allSharedMacros = sharedMacros.getPopularMacros(50, selectedFolderId);
+                } else if (currentTab === 'recent') {
+                    allSharedMacros = sharedMacros.getRecentMacros(50, selectedFolderId);
+                }
             }
 
             displaySharedMacros(allSharedMacros);
         }
 
-        // Load and display folders
-        function loadFolders() {
+        // Load and display folders (async for API support)
+        async function loadFolders() {
             const foldersSection = document.getElementById('folders-section');
             const foldersGrid = document.getElementById('folders-grid');
             const sharedGrid = document.getElementById('shared-grid');
@@ -1350,10 +1370,19 @@
             foldersSection.style.display = 'block';
             if (sharedGrid) sharedGrid.style.display = 'none';
             
+            // Show loading
+            foldersGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-gray);"><p>Loading folders...</p></div>';
+            
             // Update folder counts before displaying
             sharedMacros.updateFolderCounts();
             
-            const folders = sharedMacros.getSharedFolders();
+            // Try async first, fallback to sync
+            let folders;
+            try {
+                folders = await sharedMacros.getSharedFoldersAsync();
+            } catch (error) {
+                folders = sharedMacros.getSharedFolders();
+            }
             
             if (folders.length === 0) {
                 foldersGrid.innerHTML = `
@@ -1414,7 +1443,7 @@
         }
 
         // Show create folder modal
-        function showCreateFolderModal() {
+        async function showCreateFolderModal() {
             const name = prompt('Enter folder name:');
             if (!name || name.trim() === '') {
                 return;
@@ -1425,25 +1454,30 @@
             // Use global auth from auth.js
             currentUser = auth.getCurrentUser();
             
-            const result = sharedMacros.createFolder(
-                name.trim(),
-                description.trim(),
-                currentUser ? (currentUser.name || currentUser.email) : 'Anonymous',
-                currentUser ? currentUser.id : null
-            );
-            
-            if (result.success) {
-                alert('Folder created successfully!');
-                loadFolders();
-                // Update folder select in share modal if open
-                const folderSelect = document.getElementById('share-folder-select');
-                if (folderSelect) {
-                    const folders = sharedMacros.getSharedFolders();
-                    folderSelect.innerHTML = '<option value="">No Folder</option>' + 
-                        folders.map(f => `<option value="${f.id}">${escapeHtml(f.name)}</option>`).join('');
+            try {
+                const result = await sharedMacros.createFolderAsync(
+                    name.trim(),
+                    description.trim(),
+                    currentUser ? (currentUser.name || currentUser.email) : 'Anonymous',
+                    currentUser ? currentUser.id : null
+                );
+                
+                if (result.success) {
+                    alert('Folder created successfully!');
+                    loadFolders();
+                    // Update folder select in share modal if open
+                    const folderSelect = document.getElementById('share-folder-select');
+                    if (folderSelect) {
+                        const folders = await sharedMacros.getSharedFoldersAsync();
+                        folderSelect.innerHTML = '<option value="">No Folder</option>' + 
+                            folders.map(f => `<option value="${f.id}">${escapeHtml(f.name)}</option>`).join('');
+                    }
+                } else {
+                    alert('Error: ' + result.error);
                 }
-            } else {
-                alert('Error: ' + result.error);
+            } catch (error) {
+                console.error('Create folder error:', error);
+                alert('Failed to create folder. Please try again.');
             }
         }
 
@@ -1536,7 +1570,7 @@
         }
 
         // Import shared macro - make sure it's in global scope
-        function importSharedMacro(shareCode) {
+        async function importSharedMacro(shareCode) {
             if (!shareCode) {
                 console.error('No share code provided');
                 alert('Error: No share code provided');
@@ -1544,7 +1578,8 @@
             }
             
             try {
-                const result = sharedMacros.importSharedMacro(shareCode);
+                // Try async API first
+                const result = await sharedMacros.importSharedMacroAsync(shareCode);
                 
                 if (result.success) {
                     // Store macros in a way extension can access
@@ -1836,7 +1871,7 @@
         }
 
         // Share macro form submission (openShareModal and closeShareModal defined above)
-        document.getElementById('share-macro-form').addEventListener('submit', (e) => {
+        document.getElementById('share-macro-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const errorEl = document.getElementById('share-error');
@@ -1887,39 +1922,45 @@
             const folderSelect = document.getElementById('share-folder-select');
             const folderId = folderSelect && folderSelect.value ? folderSelect.value : null;
             
-            // Share macros
-            const result = sharedMacros.shareMacros(macros, {
-                title: title,
-                description: description,
-                author: author,
-                authorId: authorId,
-                tags: tags,
-                folderId: folderId
-            });
+            // Share macros (try async API first)
+            try {
+                const result = await sharedMacros.shareMacrosAsync(macros, {
+                    title: title,
+                    description: description,
+                    author: author,
+                    authorId: authorId,
+                    tags: tags,
+                    folderId: folderId
+                });
 
-            if (result.success) {
-                successEl.textContent = `Macros shared successfully! Share code: ${result.shareCode}`;
-                successEl.style.display = 'block';
-                
-                // Clear form after a delay
-                setTimeout(() => {
-                    closeShareModal();
-                    // Reload shared macros
-                    if (currentTab === 'recent') {
-                        loadSharedMacros();
-                    } else {
-                        // Switch to recent tab to show the new macro
-                        document.querySelector('[data-tab="recent"]').click();
-                    }
-                }, 2000);
-            } else {
-                errorEl.textContent = result.error || 'Failed to share macros';
+                if (result.success) {
+                    successEl.textContent = `Macros shared successfully! Share code: ${result.shareCode}`;
+                    successEl.style.display = 'block';
+                    
+                    // Clear form after a delay
+                    setTimeout(() => {
+                        closeShareModal();
+                        // Reload shared macros
+                        if (currentTab === 'recent') {
+                            loadSharedMacros();
+                        } else {
+                            // Switch to recent tab to show the new macro
+                            document.querySelector('[data-tab="recent"]').click();
+                        }
+                    }, 2000);
+                } else {
+                    errorEl.textContent = result.error || 'Failed to share macros';
+                    errorEl.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Share error:', error);
+                errorEl.textContent = 'Failed to share macros. Please try again.';
                 errorEl.style.display = 'block';
             }
         });
 
         // Manual macro form submission
-        document.getElementById('manual-macro-entry-form').addEventListener('submit', (e) => {
+        document.getElementById('manual-macro-entry-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const shortcut = document.getElementById('manual-shortcut').value.trim();
@@ -1947,28 +1988,33 @@
             const author = currentUser ? currentUser.name : 'Anonymous';
             const authorId = currentUser ? currentUser.id : null;
 
-            // Share as a single macro collection
-            const result = sharedMacros.shareMacros([macro], {
-                title: title || shortcut,
-                description: description || `Macro: ${shortcut} → ${expansion.substring(0, 50)}${expansion.length > 50 ? '...' : ''}`,
-                author: author,
-                authorId: authorId,
-                tags: tags
-            });
+            // Share as a single macro collection (try async API first)
+            try {
+                const result = await sharedMacros.shareMacrosAsync([macro], {
+                    title: title || shortcut,
+                    description: description || `Macro: ${shortcut} → ${expansion.substring(0, 50)}${expansion.length > 50 ? '...' : ''}`,
+                    author: author,
+                    authorId: authorId,
+                    tags: tags
+                });
 
-            if (result.success) {
-                alert(`Macro "${shortcut}" added successfully! Share code: ${result.shareCode}`);
-                closeManualForm();
-                
-                // Reload shared macros to show the new one
-                if (currentTab === 'recent') {
-                    loadSharedMacros();
+                if (result.success) {
+                    alert(`Macro "${shortcut}" added successfully! Share code: ${result.shareCode}`);
+                    closeManualForm();
+                    
+                    // Reload shared macros to show the new one
+                    if (currentTab === 'recent') {
+                        loadSharedMacros();
+                    } else {
+                        // Switch to recent tab to show the new macro
+                        document.querySelector('[data-tab="recent"]').click();
+                    }
                 } else {
-                    // Switch to recent tab to show the new macro
-                    document.querySelector('[data-tab="recent"]').click();
+                    alert('Failed to add macro: ' + (result.error || 'Unknown error'));
                 }
-            } else {
-                alert('Failed to add macro: ' + (result.error || 'Unknown error'));
+            } catch (error) {
+                console.error('Add macro error:', error);
+                alert('Failed to add macro. Please try again.');
             }
         });
 
