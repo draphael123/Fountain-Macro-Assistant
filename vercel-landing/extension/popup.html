@@ -13,6 +13,7 @@
       <div class="header-actions">
         <button id="syncBtn" class="btn btn-sync" title="Your macros sync automatically via Chrome">✓ Synced</button>
         <button id="sharedBtn" class="btn btn-icon" title="Browse Shared Macros">🌐</button>
+        <button id="compactToggle" class="btn btn-icon" title="Compact Mode">📐</button>
         <button id="themeToggle" class="btn btn-icon" title="Toggle Theme">🌙</button>
         <button id="dashboardBtn" class="btn btn-icon" title="Dashboard">📊</button>
         <button id="packagesBtn" class="btn btn-icon" title="Packages">📦</button>
@@ -40,6 +41,27 @@
         <div class="stat-value" id="timeSaved">0m</div>
         <div class="stat-label">Saved</div>
       </div>
+    </div>
+
+    <!-- Backup Reminder -->
+    <div class="backup-reminder" id="backupReminder" style="display: none;">
+      <div class="backup-reminder-icon">💾</div>
+      <div class="backup-reminder-text">
+        <strong>Time to backup!</strong>
+        <span>You haven't backed up your macros recently</span>
+      </div>
+      <div class="backup-reminder-actions">
+        <button class="btn-backup" id="backupNowBtn">Backup</button>
+        <button class="btn-dismiss" id="dismissBackupBtn">Later</button>
+      </div>
+    </div>
+
+    <!-- Pinned Macros -->
+    <div class="pinned-section" id="pinnedSection" style="display: none;">
+      <div class="pinned-header">
+        <span>📌</span> Pinned
+      </div>
+      <div class="pinned-macros" id="pinnedMacros"></div>
     </div>
 
     <!-- Favorites Section -->
@@ -301,6 +323,7 @@ Evening (18-24): "Good evening!"</pre>
           <label for="shortcutInput">Shortcut</label>
           <input type="text" id="shortcutInput" placeholder="e.g., /email, .sig, @hello">
           <small>What you'll type to trigger the expansion</small>
+          <div class="duplicate-warning" id="duplicateWarning" style="display: none;"></div>
         </div>
         
         <div class="form-group">

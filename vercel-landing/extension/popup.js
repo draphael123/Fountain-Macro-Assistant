@@ -15,6 +15,9 @@ let draggedItem = null;
 let lightMode = false;
 let isFirstRun = false;
 let onboardingStep = 0;
+let compactMode = false;
+let hoverTimeout = null;
+let currentTooltip = null;
 
 // Templates
 const TEMPLATES = [
@@ -344,21 +347,25 @@ async function checkPendingMacro() {
 // Load all data
 async function loadData() {
   try {
-    const result = await chrome.storage.sync.get(['macros', 'folders', 'macroStats', 'counters', 'lightMode', 'hasOnboarded']);
+    const result = await chrome.storage.sync.get(['macros', 'folders', 'macroStats', 'counters', 'lightMode', 'hasOnboarded', 'compactMode', 'lastBackup']);
     macros = result.macros || [];
     folders = result.folders || [];
     macroStats = result.macroStats || {};
     counters = result.counters || {};
     lightMode = result.lightMode || false;
+    compactMode = result.compactMode || false;
     isFirstRun = !result.hasOnboarded;
     
     applyTheme();
+    applyCompactMode();
     updateFolderSelects();
     updateQuickStats();
     renderFavorites();
     renderRecentMacros();
+    renderPinnedMacros();
     renderMacros();
     generateHeatmap();
+    checkBackupReminder(result.lastBackup);
   } catch (error) {
     console.error('Error loading data:', error);
   }
@@ -393,6 +400,172 @@ async function toggleTheme() {
   lightMode = !lightMode;
   applyTheme();
   await chrome.storage.sync.set({ lightMode });
+}
+
+// Compact Mode
+function applyCompactMode() {
+  document.body.classList.toggle('compact-mode', compactMode);
+}
+
+async function toggleCompactMode() {
+  compactMode = !compactMode;
+  applyCompactMode();
+  await chrome.storage.sync.set({ compactMode });
+  showToast(compactMode ? 'Compact mode enabled' : 'Normal view', 'success');
+}
+
+// Pinned Macros
+function renderPinnedMacros() {
+  const container = document.getElementById('pinnedMacros');
+  const section = document.getElementById('pinnedSection');
+  
+  if (!container || !section) return;
+  
+  const pinned = macros.filter(m => m.pinned);
+  
+  if (pinned.length === 0) {
+    section.style.display = 'none';
+    return;
+  }
+  
+  section.style.display = 'block';
+  container.innerHTML = pinned.map(m => `
+    <div class="pinned-macro-chip" data-id="${m.id}">
+      <span class="pin-icon">📌</span>
+      <span class="shortcut">${escapeHtml(m.shortcut)}</span>
+    </div>
+  `).join('');
+  
+  container.querySelectorAll('.pinned-macro-chip').forEach(el => {
+    el.addEventListener('click', () => editMacro(el.dataset.id));
+  });
+}
+
+// Backup Reminder
+function checkBackupReminder(lastBackup) {
+  const reminderEl = document.getElementById('backupReminder');
+  if (!reminderEl) return;
+  
+  // Show reminder if no backup in 7 days and has more than 5 macros
+  const daysSinceBackup = lastBackup ? Math.floor((Date.now() - lastBackup) / (1000 * 60 * 60 * 24)) : 999;
+  
+  if (daysSinceBackup >= 7 && macros.length >= 5) {
+    reminderEl.style.display = 'flex';
+    reminderEl.querySelector('.backup-reminder-text span').textContent = 
+      lastBackup ? `Last backup: ${daysSinceBackup} days ago` : 'You\'ve never backed up your macros';
+  } else {
+    reminderEl.style.display = 'none';
+  }
+}
+
+async function dismissBackupReminder() {
+  const reminderEl = document.getElementById('backupReminder');
+  if (reminderEl) reminderEl.style.display = 'none';
+  // Snooze for 3 days
+  await chrome.storage.sync.set({ lastBackup: Date.now() - (4 * 24 * 60 * 60 * 1000) });
+}
+
+async function performBackup() {
+  await exportMacros();
+  await chrome.storage.sync.set({ lastBackup: Date.now() });
+  const reminderEl = document.getElementById('backupReminder');
+  if (reminderEl) reminderEl.style.display = 'none';
+  showToast('Backup created! 💾', 'success');
+}
+
+// Duplicate Detection
+function checkDuplicateShortcut(shortcut, excludeId = null) {
+  const normalizedShortcut = shortcut.toLowerCase().trim();
+  const duplicates = macros.filter(m => 
+    m.id !== excludeId && 
+    (m.shortcut.toLowerCase() === normalizedShortcut ||
+     (m.aliases || []).some(a => a.toLowerCase() === normalizedShortcut))
+  );
+  return duplicates;
+}
+
+function showDuplicateWarning(duplicates) {
+  const warningEl = document.getElementById('duplicateWarning');
+  if (!warningEl) return;
+  
+  if (duplicates.length > 0) {
+    warningEl.style.display = 'flex';
+    warningEl.innerHTML = `
+      <span class="duplicate-warning-icon">⚠️</span>
+      <span><strong>Duplicate found!</strong> This shortcut is already used by "${escapeHtml(duplicates[0].shortcut)}"</span>
+    `;
+  } else {
+    warningEl.style.display = 'none';
+  }
+}
+
+// Enhanced Usage Insights
+function renderUsageInsights() {
+  const panel = document.getElementById('usageInsightsPanel');
+  if (!panel) return;
+  
+  // Calculate stats
+  let totalExpansions = 0;
+  let totalCharsSaved = 0;
+  let uniqueDays = new Set();
+  
+  Object.entries(macroStats).forEach(([id, s]) => {
+    totalExpansions += s.count || 0;
+    if (s.lastUsed) {
+      uniqueDays.add(new Date(s.lastUsed).toDateString());
+    }
+  });
+  
+  macros.forEach(m => {
+    const stat = macroStats[m.id] || { count: 0 };
+    totalCharsSaved += Math.max(0, (m.expansion.length - m.shortcut.length) * stat.count);
+  });
+  
+  // Top macros
+  const topMacros = macros
+    .filter(m => macroStats[m.id]?.count > 0)
+    .sort((a, b) => (macroStats[b.id]?.count || 0) - (macroStats[a.id]?.count || 0))
+    .slice(0, 5);
+  
+  const avgPerDay = uniqueDays.size > 0 ? Math.round(totalExpansions / uniqueDays.size) : 0;
+  const timeSaved = Math.round(totalCharsSaved / 200); // ~200 chars per minute
+  
+  panel.innerHTML = `
+    <div class="insights-header">
+      <h3>📊 Usage Insights</h3>
+      ${uniqueDays.size >= 3 ? '<span class="streak-badge">🔥 Active User</span>' : ''}
+    </div>
+    <div class="insights-grid">
+      <div class="insight-card">
+        <div class="insight-value">${totalExpansions.toLocaleString()}</div>
+        <div class="insight-label">Total Expansions</div>
+      </div>
+      <div class="insight-card">
+        <div class="insight-value">${timeSaved >= 60 ? Math.round(timeSaved/60) + 'h' : timeSaved + 'm'}</div>
+        <div class="insight-label">Time Saved</div>
+      </div>
+      <div class="insight-card">
+        <div class="insight-value">${avgPerDay}</div>
+        <div class="insight-label">Avg/Day</div>
+      </div>
+      <div class="insight-card">
+        <div class="insight-value">${totalCharsSaved.toLocaleString()}</div>
+        <div class="insight-label">Chars Saved</div>
+      </div>
+    </div>
+    ${topMacros.length > 0 ? `
+      <div class="top-macros-list">
+        <div class="top-macros-header">🏆 Top Macros</div>
+        ${topMacros.map((m, i) => `
+          <div class="top-macro-item">
+            <span class="top-macro-rank ${i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : ''}">${i + 1}</span>
+            <span class="top-macro-shortcut">${escapeHtml(m.shortcut)}</span>
+            <span class="top-macro-count">${macroStats[m.id]?.count || 0} uses</span>
+          </div>
+        `).join('')}
+      </div>
+    ` : ''}
+  `;
 }
 
 // Check first run
@@ -613,15 +786,30 @@ function renderMacros(filter = '') {
   setupMacroListeners();
 }
 
+// Detect macro type from expansion content
+function detectMacroType(expansion) {
+  if (expansion.includes('{js:')) return { type: 'js', label: 'JS', icon: '💻' };
+  if (expansion.includes('{input:')) return { type: 'input', label: 'INPUT', icon: '📝' };
+  if (expansion.includes('{date') || expansion.includes('{time}') || expansion.includes('{datetime}')) return { type: 'date', label: 'DATE', icon: '📅' };
+  if (expansion.includes('{counter:')) return { type: 'counter', label: 'COUNT', icon: '🔢' };
+  if (expansion.includes('{random:')) return { type: 'random', label: 'RAND', icon: '🎲' };
+  if (expansion.includes('{clipboard}')) return { type: 'clipboard', label: 'CLIP', icon: '📋' };
+  return { type: 'text', label: 'TEXT', icon: '📄' };
+}
+
 // Render single macro item
 function renderMacroItem(macro, filter = '') {
   const stats = macroStats[macro.id] || { count: 0 };
   const isSelected = selectedMacros.has(macro.id);
   const isEnabled = macro.enabled !== false;
   const isFavorite = macro.favorited;
+  const isPinned = macro.pinned;
   
   const shortcutDisplay = filter ? highlight(macro.shortcut, filter) : escapeHtml(macro.shortcut);
   const preview = macro.expansion.substring(0, 80) + (macro.expansion.length > 80 ? '...' : '');
+  
+  // Detect type for color-coding
+  const typeInfo = macro.isRegex ? { type: 'regex', label: 'REGEX', icon: '🎯' } : detectMacroType(macro.expansion);
   
   const indicators = [];
   if (macro.aliases?.length) indicators.push('<span class="indicator alias" title="Has aliases">🔗</span>');
@@ -631,19 +819,23 @@ function renderMacroItem(macro, filter = '') {
   if (macro.expansion.includes('{js:')) indicators.push('<span class="indicator js" title="JavaScript">💻</span>');
   
   return `
-    <div class="macro-item ${isSelected ? 'selected' : ''} ${!isEnabled ? 'disabled' : ''} ${isFavorite ? 'favorited' : ''}" 
-         data-id="${macro.id}" draggable="true">
+    <div class="macro-item ${isSelected ? 'selected' : ''} ${!isEnabled ? 'disabled' : ''} ${isFavorite ? 'favorited' : ''} ${isPinned ? 'pinned' : ''}" 
+         data-id="${macro.id}" data-expansion="${escapeHtml(macro.expansion)}" draggable="true">
       <div class="macro-header">
         <div class="macro-header-left">
           <input type="checkbox" class="macro-checkbox" ${isSelected ? 'checked' : ''} data-id="${macro.id}">
           <span class="drag-handle">⠿</span>
-          <div class="macro-shortcut">
+          <div class="macro-shortcut shortcut-type-${typeInfo.type}">
             ${shortcutDisplay}
+            <span class="type-indicator ${typeInfo.type}">${typeInfo.icon} ${typeInfo.label}</span>
             <div class="macro-indicators">${indicators.join('')}</div>
           </div>
         </div>
         <div class="macro-header-right">
           ${stats.count > 0 ? `<span class="usage-badge">⚡${stats.count}</span>` : ''}
+          <button class="pin-btn ${isPinned ? 'active' : ''}" data-id="${macro.id}" title="Pin to top">
+            ${isPinned ? '📌' : '📍'}
+          </button>
           <button class="favorite-btn ${isFavorite ? 'active' : ''}" data-id="${macro.id}" title="Favorite">
             ${isFavorite ? '⭐' : '☆'}
           </button>
@@ -667,12 +859,23 @@ function setupMacroListeners() {
       if (e.target.classList.contains('macro-checkbox') || 
           e.target.classList.contains('toggle-switch') ||
           e.target.classList.contains('favorite-btn') ||
+          e.target.classList.contains('pin-btn') ||
           e.target.classList.contains('drag-handle')) return;
       editMacro(el.dataset.id);
     });
     
     el.addEventListener('dblclick', e => {
       // Quick inline edit could go here
+    });
+    
+    // Hover preview tooltip
+    el.addEventListener('mouseenter', e => {
+      hoverTimeout = setTimeout(() => showMacroTooltip(el, e), 500);
+    });
+    
+    el.addEventListener('mouseleave', () => {
+      clearTimeout(hoverTimeout);
+      hideMacroTooltip();
     });
     
     // Drag & drop
@@ -719,6 +922,83 @@ function setupMacroListeners() {
       }
     });
   });
+  
+  // Pin buttons
+  document.querySelectorAll('.pin-btn').forEach(btn => {
+    btn.addEventListener('click', async e => {
+      e.stopPropagation();
+      const macro = macros.find(m => m.id === btn.dataset.id);
+      if (macro) {
+        macro.pinned = !macro.pinned;
+        await saveMacros();
+        renderPinnedMacros();
+        showToast(macro.pinned ? 'Pinned to top 📌' : 'Unpinned', 'success');
+      }
+    });
+  });
+}
+
+// Show macro preview tooltip on hover
+function showMacroTooltip(element, event) {
+  const macroId = element.dataset.id;
+  const macro = macros.find(m => m.id === macroId);
+  if (!macro) return;
+  
+  hideMacroTooltip();
+  
+  const stats = macroStats[macroId] || { count: 0 };
+  const typeInfo = macro.isRegex ? { type: 'regex', label: 'REGEX' } : detectMacroType(macro.expansion);
+  
+  const tooltip = document.createElement('div');
+  tooltip.className = 'macro-preview-tooltip';
+  tooltip.innerHTML = `
+    <div class="tooltip-header">
+      <span class="tooltip-shortcut">${escapeHtml(macro.shortcut)}</span>
+      <span class="tooltip-type-badge type-indicator ${typeInfo.type}">${typeInfo.label}</span>
+    </div>
+    <div class="tooltip-expansion">${escapeHtml(macro.expansion)}</div>
+    <div class="tooltip-stats">
+      <span>⚡ ${stats.count} uses</span>
+      ${stats.lastUsed ? `<span>🕐 ${formatRelativeTime(stats.lastUsed)}</span>` : ''}
+    </div>
+  `;
+  
+  document.body.appendChild(tooltip);
+  
+  // Position tooltip
+  const rect = element.getBoundingClientRect();
+  const tooltipRect = tooltip.getBoundingClientRect();
+  
+  let left = rect.right + 10;
+  let top = rect.top;
+  
+  // Adjust if would go off screen
+  if (left + tooltipRect.width > window.innerWidth) {
+    left = rect.left - tooltipRect.width - 10;
+  }
+  if (top + tooltipRect.height > window.innerHeight) {
+    top = window.innerHeight - tooltipRect.height - 10;
+  }
+  
+  tooltip.style.left = `${left}px`;
+  tooltip.style.top = `${top}px`;
+  
+  currentTooltip = tooltip;
+}
+
+function hideMacroTooltip() {
+  if (currentTooltip) {
+    currentTooltip.remove();
+    currentTooltip = null;
+  }
+}
+
+function formatRelativeTime(timestamp) {
+  const seconds = Math.floor((Date.now() - timestamp) / 1000);
+  if (seconds < 60) return 'just now';
+  if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+  return `${Math.floor(seconds / 86400)}d ago`;
 }
 
 // Drag handlers
@@ -1781,6 +2061,17 @@ function downloadJSON(data, filename) {
 function setupEventListeners() {
   // Theme
   document.getElementById('themeToggle')?.addEventListener('click', toggleTheme);
+  document.getElementById('compactToggle')?.addEventListener('click', toggleCompactMode);
+  
+  // Backup reminder
+  document.getElementById('backupNowBtn')?.addEventListener('click', performBackup);
+  document.getElementById('dismissBackupBtn')?.addEventListener('click', dismissBackupReminder);
+  
+  // Duplicate detection on shortcut input
+  document.getElementById('shortcutInput')?.addEventListener('input', e => {
+    const duplicates = checkDuplicateShortcut(e.target.value, currentEditingId);
+    showDuplicateWarning(duplicates);
+  });
   
   // Main buttons
   document.getElementById('addMacroBtn')?.addEventListener('click', openAddMacro);
